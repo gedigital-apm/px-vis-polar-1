@@ -1,0 +1,131 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      px-vis-xy-chart Demo</title>
+    <!-- Requires Webcomponents.js polyfill is provided by the page for browsers that don't support html imports -->
+    <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+
+    <link rel="import" href="../px-theme/px-theme-styles.html">
+    <style include="px-theme-styles" is="custom-style"></style>
+
+    <!-- Import custom element. Note: see comment about relative paths to dependencies in the *.html file referenced below -->
+    <link rel="import" href="px-vis-polar.html" />
+    <link rel="import" href="../iron-ajax/iron-ajax.html" />
+    <link rel="import" href="../px-vis/px-vis-chart-navigator.html"/>
+  </head>
+
+  <body>
+
+    <template id="demo" is="dom-bind">
+      <h3>Demo</h3>
+      <iron-ajax
+             url="../px-demo-data/demo-data/apm/polar.json"
+             handle-as="json"
+             last-response="{{data}}" auto></iron-ajax>
+
+      <button id="btnInc">Increase wrapper width</button>
+      <button id="btnDec">Decrease wrapper width</button>
+      <button id="btnIH">Increase wrapper height</button>
+      <button id="btnDH">Decrease wrapper height</button>
+      <div id="wrap" style="height:600px; width:600px; border:1px solid black">
+          <px-vis-polar
+            id="chart"
+            chart-data="{{data}}"
+            margin='{ "top": "20", "bottom": "60", "left": "20", "right": "40" }'
+            register-config='{
+                "height": 50,
+                "type": "horizontal"}'
+            series-config='{
+                "firstSerie": {
+                "type": "line",
+                "name": "Data",
+                "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                }
+            }'
+            >
+            </px-vis-polar> 
+          
+        </div>
+
+<!--        
+        <div style="height:100px">
+            <px-vis-chart-navigator
+                id="navigator"
+                x-axis-type="time"
+                y-axis-type="linear"
+                margin='{
+                "top": 5,
+                "right": 10,
+                "bottom": 20,
+                "left": 10
+                }'
+                chart-data="[[data]]"
+                default-series-config='{
+                    "x": "T48A",
+                    "xMin": "dynamic",
+                    "xMax": "dynamic",
+                    "yMin": "dynamic",
+                    "yMax": "dynamic"
+                }'
+                series-config='{
+                "T48A": {
+                "type": "line",
+                "name": "Trend",
+                "x": "Date",
+                "y":"T48A"
+                }}'
+                selected-domain="{{selectedDomain}}">
+            </px-vis-chart-navigator>
+        </div>-->
+    </template>
+  </body>
+  <script>
+    document.addEventListener('WebComponentsReady', function() {
+      var chart = document.getElementById('chart'),
+          xConfigText = document.getElementById('xConfig'),
+          yConfigText = document.getElementById('yConfig'),
+          btnInc = document.getElementById('btnInc'),
+          btnDec = document.getElementById('btnDec'),
+          btnIH = document.getElementById('btnIH'),
+          btnDH = document.getElementById('btnDH'),
+          wrap = document.getElementById('wrap'),
+          chart = document.getElementById('chart');
+
+      btnInc.addEventListener('click', function() {
+        var width = window.getComputedStyle(wrap).getPropertyValue("width");
+        var cur = width.substr(0, width.length-2);
+        wrap.style['width'] = Number(cur) + 10 + 'px';
+        chart.notifyResize();
+      });
+
+      btnDec.addEventListener('click', function() {
+        var width = window.getComputedStyle(wrap).getPropertyValue("width");
+        var cur = width.substr(0, width.length-2);
+        wrap.style['width'] = Number(cur) - 10 + 'px';
+        chart.notifyResize();
+      });
+
+      btnIH.addEventListener('click', function() {
+
+        var width = window.getComputedStyle(wrap).getPropertyValue("height");
+        var cur = width.substr(0, width.length-2);
+        wrap.style['height'] = Number(cur) + 10 + 'px';
+        chart.notifyResize();
+      });
+
+      btnDH.addEventListener('click', function() {
+        var width = window.getComputedStyle(wrap).getPropertyValue("height");
+        var cur = width.substr(0, width.length-2);
+        wrap.style['height'] = Number(cur) - 10 + 'px';
+        chart.notifyResize();
+      });
+    });
+  </script>
+
+</html>

@@ -1,0 +1,332 @@
+<!--
+    Relative paths assume component is being run from inside an app or another component, where dependencies are flat
+    siblings. When this component is run from its own repo (e.g. tests, examples), we assume the server is started with
+    'gulp serve' (or similar server setup) to enable correct finding of bower dependencies for local runs.
+-->
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../px-vis/px-vis-behavior-chart.html"/>
+<link rel="import" href="../px-vis/px-vis-behavior-common.html"/>
+<link rel="import" href="../px-vis/px-vis-behavior-d3.html"/>
+<link rel="import" href="../px-vis/px-vis-radial-scale.html"/>
+<link rel="import" href="../px-vis/px-vis-svg.html"/>
+<link rel="import" href="../px-vis/px-vis-scatter.html"/>
+<link rel="import" href="../px-vis/px-vis-line.html"/>
+<link rel="import" href="../px-vis/px-vis-axis.html"/>
+<link rel="import" href="../px-vis/px-vis-tooltip.html"/>
+<link rel="import" href="../px-vis/px-vis-interaction-space.html"/>
+<link rel="import" href="../px-vis/px-vis-register.html"/>
+<link rel="import" href="../px-vis/px-vis-zoom.html"/>
+<link rel="import" href="../px-vis/px-vis-cursor.html"/>
+<link rel="import" href="../px-vis/px-vis-clip-path.html"/>
+<link rel="import" href="../px-vis/px-vis-radial-gridlines.html"/>
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
+
+<link rel="import" href="css/px-vis-polar-styles.html">
+
+<!--
+REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
+
+##### Usage
+
+    <px-vis-polar counter-value="1"><a href="javascript:" on-click="handleClick">Click here to increment counter:</a><span>{{counterValue}}</span></px-vis-polar>
+
+@element px-vis-polar
+@blurb REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
+@homepage index.html
+@demo index.html
+-->
+
+<dom-module id="px-vis-polar">
+  <template>
+    <style include="px-vis-polar-styles"></style>
+    <style include="px-theme-styles"></style>
+
+    <div id="wrapper" class="wrapper">
+      <!-- Legend -->
+      <div class$="{{_getWrapperClass(_registerType)}}">
+
+        <!--<px-vis-register
+          id="register"
+          class$="{{_getHideClass(hideRegister)}}"
+          tooltip-data="[[tooltipData]]"
+          chart-data="[[_filteredData]]"
+          complete-series-config="[[completeSeriesConfig]]"
+          muted-series={{mutedSeries}}
+          type="{{_registerType}}"
+          x-axis-type="[[xAxisType]]"
+          y-axis-type="[[yAxisType]]">
+        </px-vis-register>-->
+
+        <div id="svgWrapper">
+          <!-- Core -->
+          <px-vis-radial-scale
+            id="scale"
+            width="[[_radius]]"
+            height="[[_radius]]"
+            margin="[[margin]]"
+            chart-data="[[chartData]]"
+            x="{{x}}"
+            y="{{y}}"
+            domain-changed="{{domainChanged}}"
+            current-domain-x="{{currentDomainX}}"
+            current-domain-y="{{currentDomainY}}"
+            selected-domain="[[selectedDomain]]"
+            chart-extents="[[chartExtents]]"
+            complete-series-config="[[completeSeriesConfig]]"
+            amplitude-keys="[[amplitudeKey]]">
+          </px-vis-radial-scale>
+          <!--<px-vis-tooltip
+            class$="{{_getHideClass(hideTooltip)}}"
+            tooltip-data="[[tooltipData]]"
+            chart-data="[[_filteredData]]"
+            muted-series="[[mutedSeries]]"
+            x-axis-type="[[xAxisType]]"
+            y-axis-type="[[yAxisType]]"
+            complete-series-config="[[completeSeriesConfig]]"
+            mouse-position="[[mousePosition]]"
+            hover-target="[[mouseRect]]"
+            tooltip-style="light">
+          </px-vis-tooltip>-->
+          <px-vis-svg
+            class="inline--flex"
+            id="svg"
+            width="[[width]]"
+            height="[[height]]"
+            margin="[[margin]]"
+            svg="{{svg}}"
+            px-svg-elem="{{pxSvgElem}}"
+            offset="[[_center]]">
+          </px-vis-svg>
+          <!--<px-vis-clip-path
+            svg="[[svg]]"
+            x="[[x]]"
+            y="[[y]]"
+            width="[[width]]"
+            height="[[height]]"
+            margin="[[margin]]"
+            clip-path="{{clipPath}}"
+            series-clip-path="{{seriesClipPath}}">
+          </px-vis-clip-path>-->
+          <!-- scatter series -->
+          <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
+            <px-vis-scatter
+              svg="[[svg]]"
+              series-id="[[item]]"
+              chart-data="[[chartData]]"
+              radial
+              x="[[x]]"
+              y="[[y]]"
+              current-domain-x="[[currentDomainX]]"
+              current-domain-y="[[currentDomainY]]"
+              muted-series="[[mutedSeries]]"
+              complete-series-config="[[completeSeriesConfig]]">
+            </px-vis-scatter>
+            <px-vis-line
+              svg="[[svg]]"
+              radial-line
+              series-id="[[item]]"
+              chart-data="[[chartData]]"
+              x="[[x]]"
+              y="[[y]]"
+              current-domain-x="[[currentDomainX]]"
+              current-domain-y="[[currentDomainY]]"
+              domain-changed="[[domainChanged]]"
+              complete-series-config="[[completeSeriesConfig]]"
+              interpolation-function="[[_returnInterpolation()]]">
+            </px-vis-line>
+          </template>
+          <span>{{_getClockWiseLabel(clockwise)}}</span>
+        </div>
+      </div>
+      <!-- the 4 axis -->
+      <template is="dom-repeat" items="[[_axisConfigArray]]">
+        <px-vis-axis
+        svg="[[svg]]"
+        axis="[[y]]"
+        height="[[item.height]]"
+        title="[[item.title]]"
+        title-location="[[item.titleLocation]]"
+        
+        ticks="5"
+        rotation="[[item.rotation]]"
+        orientation="[[item.orientation]]"
+        width="[[item.width]]"
+        margin="[[margin]]"
+        complete-series-config="[[completeSeriesConfig]]"
+        prevent-series-bar
+        current-domain="[[currentDomainY]]"
+        domain-changed="[[domainChanged]]"
+        label-position="inline"
+        axis-color="grey4"
+        title-type-size="26"
+        label-rotation="[[item.labelRotation]]"
+        drawn-tick-values="{{drawnTickValues}}"
+        >
+        </px-vis-axis>
+      </template>
+      <px-vis-radial-gridlines
+        id="gridlines"
+        svg="[[svg]]"
+        axis="[[y]]"
+        domain-changed="[[domainChanged]]"
+        margin="[[margin]]"
+        tick-values="[[drawnTickValues]]"
+      >
+      </px-vis-radial-gridlines>
+      <px-vis-tooltip
+        class$="{{_getHideClass(hideTooltip)}}"
+        tooltip-data="[[tooltipData]]"
+        chart-data="[[_filteredData]]"
+        muted-series="[[mutedSeries]]"
+        x-axis-type="linear"
+        y-axis-type="linear"
+        complete-series-config="[[completeSeriesConfig]]"
+        mouse-position="[[mousePosition]]"
+        hover-target="[[mouseRect]]"
+        tooltip-style="light">
+      </px-vis-tooltip>
+      
+    </div>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+
+    is: 'px-vis-polar', 
+    behaviors: [
+      PxVisBehaviorD3.svg,
+      PxVisBehaviorD3.axes,
+      PxVisBehaviorD3.selectedDomain,
+      PxVisBehaviorD3.clipPath,
+      PxVisBehavior.dataset,
+      PxVisBehavior.mutedSeries,
+      PxVisBehavior.sizing,
+      PxVisBehavior.tooltipData,
+      PxVisBehavior.extentsData,
+      PxVisBehavior.axisTypes,
+      PxVisBehavior.events,
+      PxVisBehavior.completeSeriesConfig,
+      PxVisBehaviorChart.chartCommon,
+      Polymer.IronResizableBehavior,
+      PxVisBehaviorChart.saveImage,
+      PxVisBehaviorChart.subConfiguration,
+      PxVisBehaviorD3.domainUpdate
+    ],
+    /**
+    * Properties block, expose attribute values to the DOM via 'notify'
+    *
+    * @property properties
+    * @type Object
+    */
+    properties: {
+      diameter: {
+        type: Number,
+        computed: '_computeDiameter(height, width, margin)'
+      },
+      _radius: {
+        type: Number,
+        computed: '_computeRadius(diameter)'
+      },
+      _axisConfigArray: {
+        type: Array,
+        computed: '_computeAxisConfig(diameter, clockwise)'
+      },
+      clockwise: {
+        type: Boolean,
+        value: true
+      },
+      amplitudeKey: {
+        type: String,
+        computed: '_computeAmplitudeKey(completeSeriesConfig)'
+      },
+      _center: {
+        type: Array,
+        computed: '_computeCenter(_radius)'
+      },
+      /**
+       * Returned tick values from the axis
+       *
+       */
+      drawnTickValues: {
+        type: Array,
+        notify: true
+      }
+    },
+    listeners: {
+     'iron-resize': '_onIronResize'
+    },
+ 
+    _onIronResize: function() {
+      if(!this.preventResize) {
+        this.debounce('ironresize', function() {
+          var wrapperRect = this.$.wrapper.getBoundingClientRect();
+          this.set('width', wrapperRect.width);
+          this.set('height', wrapperRect.height);
+        },50);
+      }
+    },
+    _computeDiameter: function(height, width, margin) {
+      return Math.min(this.height - Number(this.margin.top) - Number(this.margin.bottom) ,
+                      this.width - Number(this.margin.left) - Number(this.margin.right));
+    },
+    _computeRadius: function(diameter) {
+      return diameter/2 - 35;
+    },
+    _computeAxisConfig: function(diameter, clockwise) {
+
+      var angles = this.clockwise ? [0,90,180,270] : [0,270,180,90],
+          labelTranslation = [[0,-16], [7,-7], [0,0], [-7,-7]],
+          degreeSign = '°',
+          margins = this.clockwise ? 
+            [this.margin.top, this.margin.right, this.margin.bottom, this.margin.left] :
+            [this.margin.top, this.margin.left, this.margin.bottom, this.margin.right],
+          result = [],
+          axisLength = diameter/2;
+
+      for( var i=0; i<4; i++) {
+        var config = {},
+            titleLoc = {};
+        config.title = angles[i] + degreeSign;
+        config.rotation = -angles[i] + 180;
+        config.orientation = 'custom';
+        config.width = axisLength;
+        config.height = axisLength;
+        config.labelRotation = this.clockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
+        config.labelTranslation = labelTranslation[i];
+
+        titleLoc.x =  3 + Number(Math.cos((i-1) * Math.PI/2) * axisLength);
+        titleLoc.y =  8 + Number(Math.sin((i-1) * Math.PI/2) * axisLength);
+
+        titleLoc.r = 0;
+        //might have to adjust that?
+        titleLoc.anchor = 'middle';
+        config.titleLocation = titleLoc;
+
+        result.push(config);
+      } 
+
+      return result;
+    },
+    _getClockWiseLabel: function(clockwise) {
+      return clockwise ? 'clockwise' : 'counter-clockwise'
+    },
+    _computeAmplitudeKey: function(completeSeriesConfig) {
+
+      var serieName = Object.keys(completeSeriesConfig)[0];
+      return [completeSeriesConfig[serieName].y];
+    },
+    _returnInterpolation: function() {
+      return Px.d3.curveLinearClosed;
+    },
+    _computeCenter: function(radius) {
+      return [this.diameter/2 + Number(this.margin.left),this.diameter/2 + Number(this.margin.top)];
+    },
+    // _svgChanged: function(svg) {
+    //   var newSvg = this.cloneSVGElem(svg.node(), 'gridSvg');
+
+    //   this.$.gridlines.set('svg', newSvg);
+    // }
+  });
+</script>
