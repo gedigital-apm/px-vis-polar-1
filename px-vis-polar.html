@@ -93,7 +93,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
               series-id="[[item]]"
               chart-data="[[chartData]]"
               radial
-              clockwise="[[clockwise]]"
+              counter-clockwise="[[counterClockwise]]"
               x="[[x]]"
               y="[[y]]"
               domain-changed="[[domainChanged]]"
@@ -106,7 +106,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
             <px-vis-line
               svg="[[_drawingSvg]]"
               radial-line
-              clockwise="[[clockwise]]"
+              counter-clockwise="[[counterClockwise]]"
               series-id="[[item]]"
               chart-data="[[chartData]]"
               muted-series="[[mutedSeries]]"
@@ -117,7 +117,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
               interpolation-function="[[_returnInterpolation()]]">
             </px-vis-line>
           </template>
-          <span>{{_getClockWiseLabel(clockwise)}}</span>
+          <span>{{_getClockWiseLabel(counterClockwise)}}</span>
         </div>
       </div>
       <!-- the 4 axis -->
@@ -126,12 +126,12 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         svg="[[svg]]"
         axis="[[y]]"
         height="[[item.height]]"
+        width="[[item.width]]"
         title="[[item.title]]"
         title-location="[[item.titleLocation]]"
         ticks="5"
         rotation="[[item.rotation]]"
         orientation="[[item.orientation]]"
-        width="[[item.width]]"
         margin="[[margin]]"
         complete-series-config="[[completeSeriesConfig]]"
         prevent-series-bar
@@ -212,14 +212,14 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       },
       _axisConfigArray: {
         type: Array,
-        computed: '_computeAxisConfig(diameter, clockwise)'
+        computed: '_computeAxisConfig(diameter, counterClockwise)'
       },
       /**
        * whether the polar data should be interepreted clockwise or counter-clockwise
        */
-      clockwise: {
+      counterClockwise: {
         type: Boolean,
-        value: true
+        value: false
       },
       amplitudeKey: {
         type: String,
@@ -275,12 +275,12 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
     _computeRadius: function(diameter) {
       return diameter/2 - 35;
     },
-    _computeAxisConfig: function(diameter, clockwise) {
+    _computeAxisConfig: function(diameter, counterClockwise) {
 
-      var angles = this.clockwise ? [0,90,180,270] : [0,270,180,90],
+      var angles = !this.counterClockwise ? [0,90,180,270] : [0,270,180,90],
           labelTranslation = [[0,-16], [7,-7], [0,0], [-7,-7]],
           degreeSign = '°',
-          margins = this.clockwise ? 
+          margins = !this.counterClockwise ? 
             [this.margin.top, this.margin.right, this.margin.bottom, this.margin.left] :
             [this.margin.top, this.margin.left, this.margin.bottom, this.margin.right],
           result = [],
@@ -294,7 +294,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         config.orientation = 'custom';
         config.width = axisLength;
         config.height = axisLength;
-        config.labelRotation = this.clockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
+        config.labelRotation = !this.counterClockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
         config.labelTranslation = labelTranslation[i];
 
         titleLoc.x =  3 + Number(Math.cos((i-1) * Math.PI/2) * axisLength);
@@ -310,8 +310,8 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
 
       return result;
     },
-    _getClockWiseLabel: function(clockwise) {
-      return clockwise ? 'clockwise' : 'counter-clockwise'
+    _getClockWiseLabel: function(counterClockwise) {
+      return !counterClockwise ? 'clockwise' : 'counter-clockwise'
     },
     _computeAmplitudeKey: function(completeSeriesConfig) {
 
