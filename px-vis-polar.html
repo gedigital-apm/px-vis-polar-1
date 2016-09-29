@@ -89,7 +89,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
           <!-- scatter series -->
           <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
             <px-vis-scatter
-              svg="[[svg]]"
+              svg="[[_drawingSvg]]"
               series-id="[[item]]"
               chart-data="[[chartData]]"
               radial
@@ -104,7 +104,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
               tooltip-target="{{tooltipTarget}}">
             </px-vis-scatter>
             <px-vis-line
-              svg="[[svg]]"
+              svg="[[_drawingSvg]]"
               radial-line
               clockwise="[[clockwise]]"
               series-id="[[item]]"
@@ -147,7 +147,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       </template>
       <px-vis-radial-gridlines
         id="gridlines"
-        svg="[[svg]]"
+        svg="[[_gridSvg]]"
         axis="[[y]]"
         domain-changed="[[domainChanged]]"
         margin="[[margin]]"
@@ -236,11 +236,18 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       drawnTickValues: {
         type: Array,
         notify: true
+      },
+      _gridSvg: {
+        type: Object
+      },
+      _drawingSvg: {
+        type: Object
       }
     },
     listeners: {
      'iron-resize': '_onIronResize',
-     'px-vis-scatter-request-tooltip': '_onTooltipRequest'
+     'px-vis-scatter-request-tooltip': '_onTooltipRequest',
+     'px-vis-svg-updated': '_svgReady'
     },
  
     _onIronResize: function() {
@@ -316,6 +323,26 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
     },
     _computeCenter: function(radius) {
       return [this.diameter/2 + Number(this.margin.left),this.diameter/2 + Number(this.margin.top)];
+    },
+    _svgReady: function(svg) {
+
+      if(!this._gridSvg) {
+        //create svgs
+        this.cloneSVGElem(this.svg.node(), '_gridSvg', true);
+        this.cloneSVGElem(this.svg.node(), '_drawingSvg', false);
+
+      } else {
+        //keep svg attributes in sync
+        var attrs = this.svg.node().attributes,
+            grid = this._gridSvg.node(),
+            drawing = this._drawingSvg.node();
+
+        for(var i=0; i<attrs.length; i++) {
+          grid.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
+          drawing.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
+        }
+      }
+
     }
   });
 </script>
