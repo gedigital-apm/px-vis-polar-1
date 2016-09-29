@@ -75,18 +75,6 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
             complete-series-config="[[completeSeriesConfig]]"
             amplitude-keys="[[amplitudeKey]]">
           </px-vis-radial-scale>
-          <!--<px-vis-tooltip
-            class$="{{_getHideClass(hideTooltip)}}"
-            tooltip-data="[[tooltipData]]"
-            chart-data="[[_filteredData]]"
-            muted-series="[[mutedSeries]]"
-            x-axis-type="[[xAxisType]]"
-            y-axis-type="[[yAxisType]]"
-            complete-series-config="[[completeSeriesConfig]]"
-            mouse-position="[[mousePosition]]"
-            hover-target="[[mouseRect]]"
-            tooltip-style="light">
-          </px-vis-tooltip>-->
           <px-vis-svg
             class="inline--flex"
             id="svg"
@@ -97,16 +85,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
             px-svg-elem="{{pxSvgElem}}"
             offset="[[_center]]">
           </px-vis-svg>
-          <!--<px-vis-clip-path
-            svg="[[svg]]"
-            x="[[x]]"
-            y="[[y]]"
-            width="[[width]]"
-            height="[[height]]"
-            margin="[[margin]]"
-            clip-path="{{clipPath}}"
-            series-clip-path="{{seriesClipPath}}">
-          </px-vis-clip-path>-->
+          
           <!-- scatter series -->
           <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
             <px-vis-scatter
@@ -114,22 +93,25 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
               series-id="[[item]]"
               chart-data="[[chartData]]"
               radial
+              clockwise="[[clockwise]]"
               x="[[x]]"
               y="[[y]]"
-              current-domain-x="[[currentDomainX]]"
-              current-domain-y="[[currentDomainY]]"
+              domain-changed="[[domainChanged]]"
               muted-series="[[mutedSeries]]"
-              complete-series-config="[[completeSeriesConfig]]">
+              complete-series-config="[[completeSeriesConfig]]"
+              tooltip-data="{{tooltipData}}"
+              tooltip-on-hover
+              tooltip-target="{{tooltipTarget}}">
             </px-vis-scatter>
             <px-vis-line
               svg="[[svg]]"
               radial-line
+              clockwise="[[clockwise]]"
               series-id="[[item]]"
               chart-data="[[chartData]]"
+              muted-series="[[mutedSeries]]"
               x="[[x]]"
               y="[[y]]"
-              current-domain-x="[[currentDomainX]]"
-              current-domain-y="[[currentDomainY]]"
               domain-changed="[[domainChanged]]"
               complete-series-config="[[completeSeriesConfig]]"
               interpolation-function="[[_returnInterpolation()]]">
@@ -146,7 +128,6 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         height="[[item.height]]"
         title="[[item.title]]"
         title-location="[[item.titleLocation]]"
-        
         ticks="5"
         rotation="[[item.rotation]]"
         orientation="[[item.orientation]]"
@@ -174,15 +155,15 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       >
       </px-vis-radial-gridlines>
       <px-vis-tooltip
+        id="tooltip"
         class$="{{_getHideClass(hideTooltip)}}"
         tooltip-data="[[tooltipData]]"
-        chart-data="[[_filteredData]]"
+        chart-data="[[chartData]]"
         muted-series="[[mutedSeries]]"
         x-axis-type="linear"
         y-axis-type="linear"
         complete-series-config="[[completeSeriesConfig]]"
-        mouse-position="[[mousePosition]]"
-        hover-target="[[mouseRect]]"
+        hover-target="[[tooltipTarget]]"
         tooltip-style="light">
       </px-vis-tooltip>
       
@@ -233,6 +214,9 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         type: Array,
         computed: '_computeAxisConfig(diameter, clockwise)'
       },
+      /**
+       * whether the polar data should be interepreted clockwise or counter-clockwise
+       */
       clockwise: {
         type: Boolean,
         value: true
@@ -255,7 +239,8 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       }
     },
     listeners: {
-     'iron-resize': '_onIronResize'
+     'iron-resize': '_onIronResize',
+     'px-vis-scatter-request-tooltip': '_onTooltipRequest'
     },
  
     _onIronResize: function() {
@@ -265,6 +250,15 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
           this.set('width', wrapperRect.width);
           this.set('height', wrapperRect.height);
         },50);
+      }
+    },
+    _onTooltipRequest: function(evt) {
+      if(evt.detail.show) {
+      //  debugger
+        this.$.tooltip.mousePosition = evt.detail.mouseCoords;
+        this.$.tooltip.tooltipElem._show();
+      } else {
+        this.$.tooltip.tooltipElem._hide();
       }
     },
     _computeDiameter: function(height, width, margin) {
@@ -322,11 +316,6 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
     },
     _computeCenter: function(radius) {
       return [this.diameter/2 + Number(this.margin.left),this.diameter/2 + Number(this.margin.top)];
-    },
-    // _svgChanged: function(svg) {
-    //   var newSvg = this.cloneSVGElem(svg.node(), 'gridSvg');
-
-    //   this.$.gridlines.set('svg', newSvg);
-    // }
+    }
   });
 </script>
