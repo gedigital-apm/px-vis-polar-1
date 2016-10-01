@@ -44,46 +44,40 @@
                 "firstSerie": {
                 "type": "line",
                 "name": "Data",
-                "markerScale": "1.5",
+                "yAxisUnit": "m/s",                
                 "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
                 "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                 }
             }'
+            show-tooltip
+            time-data="x"
+            time-domain="[[selectedDomain]]"
             >
             </px-vis-polar> 
-          
+            <div style="height:100px">
+              <px-vis-chart-navigator
+                  id="navigator"
+                  x-axis-type="time"
+                  y-axis-type="linear"
+                  margin='{
+                  "top": 5,
+                  "right": 10,
+                  "bottom": 20,
+                  "left": 10
+                  }'
+                  chart-data="[[data]]"
+                  series-config='{
+                      "firstSerie": {
+                      "type": "line",
+                      "name": "Data",           
+                      "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                      "x":"x"
+                      }
+                  }'
+                  selected-domain="{{selectedDomain}}">
+              </px-vis-chart-navigator>
+          </div>
         </div>
-
-<!--        
-        <div style="height:100px">
-            <px-vis-chart-navigator
-                id="navigator"
-                x-axis-type="time"
-                y-axis-type="linear"
-                margin='{
-                "top": 5,
-                "right": 10,
-                "bottom": 20,
-                "left": 10
-                }'
-                chart-data="[[data]]"
-                default-series-config='{
-                    "x": "T48A",
-                    "xMin": "dynamic",
-                    "xMax": "dynamic",
-                    "yMin": "dynamic",
-                    "yMax": "dynamic"
-                }'
-                series-config='{
-                "T48A": {
-                "type": "line",
-                "name": "Trend",
-                "x": "Date",
-                "y":"T48A"
-                }}'
-                selected-domain="{{selectedDomain}}">
-            </px-vis-chart-navigator>
-        </div>-->
     </template>
   </body>
   <script>
@@ -101,14 +95,14 @@
       btnInc.addEventListener('click', function() {
         var width = window.getComputedStyle(wrap).getPropertyValue("width");
         var cur = width.substr(0, width.length-2);
-        wrap.style['width'] = Number(cur) + 10 + 'px';
+        wrap.style['width'] = Number(cur) + 25 + 'px';
         chart.notifyResize();
       });
 
       btnDec.addEventListener('click', function() {
         var width = window.getComputedStyle(wrap).getPropertyValue("width");
         var cur = width.substr(0, width.length-2);
-        wrap.style['width'] = Number(cur) - 10 + 'px';
+        wrap.style['width'] = Number(cur) - 25 + 'px';
         chart.notifyResize();
       });
 
@@ -116,14 +110,14 @@
 
         var width = window.getComputedStyle(wrap).getPropertyValue("height");
         var cur = width.substr(0, width.length-2);
-        wrap.style['height'] = Number(cur) + 10 + 'px';
+        wrap.style['height'] = Number(cur) + 25 + 'px';
         chart.notifyResize();
       });
 
       btnDH.addEventListener('click', function() {
         var width = window.getComputedStyle(wrap).getPropertyValue("height");
         var cur = width.substr(0, width.length-2);
-        wrap.style['height'] = Number(cur) - 10 + 'px';
+        wrap.style['height'] = Number(cur) - 25 + 'px';
         chart.notifyResize();
       });
     });

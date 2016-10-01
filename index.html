@@ -15,6 +15,7 @@
   <link rel="import" href="../px-api-viewer/px-api-viewer.html" />
   <link rel="import" href="../px-tabs/px-tab-set.html" />
   <link rel="import" href="../px-dropdown/px-dropdown.html" />
+  <link rel="import" href="../px-vis/px-vis-chart-navigator.html" />
   <link rel="import" href="px-vis-polar.html" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
@@ -28,6 +29,11 @@
   <!-- Wrap elements with auto-binding template to -->
   <!-- allow use of Polymer bindings in main document -->
   <template id="just-for-demo" is="dom-bind">
+
+    <iron-ajax
+      url="../px-demo-data/demo-data/apm/polar.json"
+      handle-as="json"
+      last-response="{{data}}" auto></iron-ajax>
 
     <!-- discription -->
     <div class="hero u-p++ text--shadow">
@@ -86,16 +92,19 @@
                       </px-vis-polar> 
                   </div>
                 </div> -->
-                <!--
-                //code sample for input box:
-                <div class="u-mb-">Text Input Label: <input class="text-input" type="text" placeholder="{{item.textInputProp}}" value="{{item.textInputProp::input}}" /></div> -->
-                <!--
-                //code for boolean option
+                
+                <div class="u-mb-">Width: <input id="width" class="text-input" type="text" placeholder="{{item.width}}" value="{{item.width::input}}" /></div>
+                <div class="u-mb-">Height: <input id="height" class="text-input" type="text" placeholder="{{item.height}}" value="{{item.height::input}}" /></div>
                 <div class="flex u-mb-">
-                  <input id="booleanID{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.booleanID::change}}">
-                  <label for$="booleanID{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
-                  <div class="u-ml-">BOOLEAN TITLE</div>
-                </div> -->
+                  <input id="counterClockwise{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.counterClockwise::change}}">
+                  <label for$="counterClockwise{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
+                  <div class="u-ml-">Counter Clockwise</div>
+                </div>
+                <div class="flex u-mb-">
+                  <input id="showTooltip{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.showTooltip::change}}">
+                  <label for$="showTooltip{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
+                  <div class="u-ml-">Show Tooltip</div>
+                </div>
 
               </div>
 
@@ -103,24 +112,56 @@
                 <!-- demo -->
                 <div class="flex flex--col">
                   <div class="flex__item demo u-ph+ u-pb+">
-                    <div class="u-mt+">
+                    <div class="u-mt+ flex">
                       <px-vis-polar
+                        class="flex__item"
                         id="chart"
-                        width="350"
-                        height="350"
                         chart-data="{{data}}"
-                        margin='{ "top": "20", "bottom": "60", "left": "20", "right": "40" }'
+                        margin='{ "top": "0", "bottom": "60", "left": "20", "right": "40" }'
+                        width="{{item.width}}"
+                        height="{{item.height}}"
+                        counter-clockwise="{{item.counterClockwise}}"
+                        show-tooltip="item.showTooltip"
+                        register-config='{
+                            "height": 50,
+                            "type": "horizontal"}'
                         series-config='{
                             "firstSerie": {
                             "type": "line",
                             "name": "Data",
-                            "markerScale": "1.5",
+                            "yAxisUnit": "m/s",                
                             "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
                             "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                             }
                         }'
+                        time-data="x"
+                        time-domain="[[selectedDomain]]"
                         >
                         </px-vis-polar> 
+                        <div style="height:100px" class="flex__item">
+                          <px-vis-chart-navigator
+                          
+                              id="navigator"
+                              x-axis-type="time"
+                              y-axis-type="linear"
+                              margin='{
+                                "top": 5,
+                                "right": 10,
+                                "bottom": 20,
+                                "left": 10
+                              }'
+                              chart-data="[[data]]"
+                              series-config='{
+                                "firstSerie": {
+                                "type": "line",
+                                "name": "Data",           
+                                "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                                "x":"x"
+                                }
+                              }'
+                              selected-domain="{{selectedDomain}}">
+                          </px-vis-chart-navigator>
+                      </div>
                     </div>
                   </div>
                   <div class="flex__item">
@@ -194,8 +235,21 @@
       var template = document.querySelector('template[is=dom-bind]'),
           optionsArray = [
             {
-              "conterValue" : "0",
-              "lightDomContent": '<a href="javascript:" on-click="handleClick">Click here to increment counter:</a><span>{{counterValue}}</span>'
+              "margin": { "top": "20", "bottom": "60", "left": "20", "right": "40" },
+              "width": 550,
+              "height": 400,
+              "counterClockwise": false,
+              "showTooltip": true,
+              "seriesConfig": {
+                  "firstSerie": {
+                  "type": "line",
+                  "name": "Data",
+                  "yAxisUnit": "m/s",                
+                  "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                  "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                  }
+              },
+              "timeData": "x"
             }
           ],
           indexPlusOne = function(num) {

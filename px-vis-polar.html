@@ -91,9 +91,10 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
             <px-vis-scatter
               svg="[[_drawingSvg]]"
               series-id="[[item]]"
-              chart-data="[[chartData]]"
+              chart-data="[[_filteredData]]"
               radial
               counter-clockwise="[[counterClockwise]]"
+              use-degrees="[[useDegrees]]"
               x="[[x]]"
               y="[[y]]"
               domain-changed="[[domainChanged]]"
@@ -101,23 +102,23 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
               complete-series-config="[[completeSeriesConfig]]"
               tooltip-data="{{tooltipData}}"
               tooltip-on-hover
-              tooltip-target="{{tooltipTarget}}">
+              time-data="{{timeData}}"
+              >
             </px-vis-scatter>
             <px-vis-line
               svg="[[_drawingSvg]]"
               radial-line
               counter-clockwise="[[counterClockwise]]"
+              use-degrees="[[useDegrees]]"
               series-id="[[item]]"
-              chart-data="[[chartData]]"
+              chart-data="[[_filteredData]]"
               muted-series="[[mutedSeries]]"
               x="[[x]]"
               y="[[y]]"
               domain-changed="[[domainChanged]]"
-              complete-series-config="[[completeSeriesConfig]]"
-              interpolation-function="[[_returnInterpolation()]]">
+              complete-series-config="[[completeSeriesConfig]]">
             </px-vis-line>
           </template>
-          <span>{{_getClockWiseLabel(counterClockwise)}}</span>
         </div>
       </div>
       <!-- the 4 axis -->
@@ -129,9 +130,10 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         width="[[item.width]]"
         title="[[item.title]]"
         title-location="[[item.titleLocation]]"
-        ticks="5"
         rotation="[[item.rotation]]"
         orientation="[[item.orientation]]"
+        label-rotation="[[item.labelRotation]]"
+        ticks="5"
         margin="[[margin]]"
         complete-series-config="[[completeSeriesConfig]]"
         prevent-series-bar
@@ -139,8 +141,6 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         domain-changed="[[domainChanged]]"
         label-position="inline"
         axis-color="grey4"
-        title-type-size="26"
-        label-rotation="[[item.labelRotation]]"
         drawn-tick-values="{{drawnTickValues}}"
         >
         </px-vis-axis>
@@ -154,18 +154,21 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         tick-values="[[drawnTickValues]]"
       >
       </px-vis-radial-gridlines>
-      <px-vis-tooltip
-        id="tooltip"
-        class$="{{_getHideClass(hideTooltip)}}"
-        tooltip-data="[[tooltipData]]"
-        chart-data="[[chartData]]"
-        muted-series="[[mutedSeries]]"
-        x-axis-type="linear"
-        y-axis-type="linear"
-        complete-series-config="[[completeSeriesConfig]]"
-        hover-target="[[tooltipTarget]]"
-        tooltip-style="light">
-      </px-vis-tooltip>
+      <template is="dom-if" if="{{showTooltip}}">
+        <px-vis-tooltip
+          id="tooltip"
+          force-date-time-display
+          tooltip-data="[[tooltipData]]"
+          chart-data="[[chartData]]"
+          muted-series="[[mutedSeries]]"
+          x-axis-type="linear"
+          y-axis-type="linear"
+          complete-series-config="[[completeSeriesConfig]]"
+          hover-target="[[tooltipTarget]]"
+          tooltip-style="light">
+        </px-vis-tooltip>
+      </template>
+      
       
     </div>
 
@@ -193,7 +196,9 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       Polymer.IronResizableBehavior,
       PxVisBehaviorChart.saveImage,
       PxVisBehaviorChart.subConfiguration,
-      PxVisBehaviorD3.domainUpdate
+      PxVisBehaviorD3.domainUpdate,
+      PxVisBehaviorChart.polarData,
+      PxVisBehaviorChart.timeFiltering,
     ],
     /**
     * Properties block, expose attribute values to the DOM via 'notify'
@@ -202,17 +207,26 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
     * @type Object
     */
     properties: {
+      /**
+       * diameter of the chart drawing
+       */
       diameter: {
         type: Number,
         computed: '_computeDiameter(height, width, margin)'
       },
+      /**
+       * radius of the chart drawing
+       */
       _radius: {
         type: Number,
         computed: '_computeRadius(diameter)'
       },
+      /**
+       * configuration for the 4 axis and how to draw them/their labels
+       */
       _axisConfigArray: {
         type: Array,
-        computed: '_computeAxisConfig(diameter, counterClockwise)'
+        computed: '_computeAxisConfig(diameter, counterClockwise, y, axisLabels)'
       },
       /**
        * whether the polar data should be interepreted clockwise or counter-clockwise
@@ -221,10 +235,16 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         type: Boolean,
         value: false
       },
+      /**
+       * used for the radial scale
+       */
       amplitudeKey: {
         type: String,
         computed: '_computeAmplitudeKey(completeSeriesConfig)'
       },
+      /**
+       * center of the chart
+       */
       _center: {
         type: Array,
         computed: '_computeCenter(_radius)'
@@ -237,10 +257,47 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         type: Array,
         notify: true
       },
+      /**
+       * Labels to be used for axis. Provide them sorted clockwise, 
+       * the chart will reorder them if needed.
+       * default [0,90,180,270]
+       */
+      axisLabels: {
+        type: Array,
+        value: function () {
+          return ['0°','90°','180°','270°'];
+        }
+      },
+      /**
+       *
+       * Allows to show the tooltip
+       */
+      showTooltip: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * svg object used for the gridlines
+       */
       _gridSvg: {
         type: Object
       },
+      /**
+       * svg object used fro drawing lines and markers
+       */
       _drawingSvg: {
+        type: Object
+      },
+      /**
+       * <g> element used to draw the clockwise/counter clockwise label
+       */
+      _clockwiseLabelGroup: {
+        type: Object
+      },
+      /**
+       * <g> element used to draw the unit label
+       */
+      _unitLabelGroup: {
         type: Object
       }
     },
@@ -248,6 +305,25 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
      'iron-resize': '_onIronResize',
      'px-vis-scatter-request-tooltip': '_onTooltipRequest',
      'px-vis-svg-updated': '_svgReady'
+    },
+    observers: [
+      '_drawUnitLabel(svg, completeSeriesConfig.*, _radius)',
+      '_drawClockwiseLabel(svg, _radius, counterClockwise)'
+    ],
+    ready: function() {
+      //set defaults if they have not been set
+      if(!this.defaultSeriesConfig.markerScale) {
+        this.defaultSeriesConfig.markerScale = '0.75';
+      }
+      if(!this.defaultSeriesConfig.markerFillOpacity) {
+        this.defaultSeriesConfig.markerFillOpacity = '0.5';
+      }
+      if(!this.defaultSeriesConfig.markerStrokeOpacity) {
+        this.defaultSeriesConfig.markerStrokeOpacity = '0';
+      }
+      if(!this.defaultSeriesConfig.xAxisUnit) {
+        this.defaultSeriesConfig.xAxisUnit = '°';
+      }
     },
  
     _onIronResize: function() {
@@ -260,12 +336,13 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       }
     },
     _onTooltipRequest: function(evt) {
-      if(evt.detail.show) {
-      //  debugger
-        this.$.tooltip.mousePosition = evt.detail.mouseCoords;
-        this.$.tooltip.tooltipElem._show();
-      } else {
-        this.$.tooltip.tooltipElem._hide();
+      if(this.showTooltip) {
+        if(evt.detail.show) {
+          this.$$('px-vis-tooltip').mousePosition = evt.detail.mouseCoords;
+          this.$$('px-vis-tooltip').tooltipElem._show();
+        } else {
+          this.$$('px-vis-tooltip').tooltipElem._hide();
+        }
       }
     },
     _computeDiameter: function(height, width, margin) {
@@ -275,34 +352,47 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
     _computeRadius: function(diameter) {
       return diameter/2 - 35;
     },
-    _computeAxisConfig: function(diameter, counterClockwise) {
+    _adjustArrayForCounterclockwise: function(arr) {
+      var result = [];
+      result[0] = arr[0];
+      result[1] = arr[3];
+      result[2] = arr[2];
+      result[3] = arr[1];
+      return result;
+    },
+    _computeAxisConfig: function(diameter, counterClockwise, y, axisLabels) {
 
-      var angles = !this.counterClockwise ? [0,90,180,270] : [0,270,180,90],
-          labelTranslation = [[0,-16], [7,-7], [0,0], [-7,-7]],
-          degreeSign = '°',
-          margins = !this.counterClockwise ? 
-            [this.margin.top, this.margin.right, this.margin.bottom, this.margin.left] :
-            [this.margin.top, this.margin.left, this.margin.bottom, this.margin.right],
+      var angles = [0,90,180,270],
+          anchors = ['middle', 'start', 'middle', 'end'],
           result = [],
-          axisLength = diameter/2;
+          axisLength = y.range()[1] - y.range()[0],
+          labelToGrid = 10,
+          halfLabelHeight = 5,
+          tickRectHalfWidth = 6,
+          labels = axisLabels;
 
+      //if counter clockwise adjust various values
+      if(this.counterClockwise) {
+        angles = this._adjustArrayForCounterclockwise(angles);
+        labels = this._adjustArrayForCounterclockwise(labels);
+      }
+
+      //build 4 config objects, one for each axis
       for( var i=0; i<4; i++) {
         var config = {},
             titleLoc = {};
-        config.title = angles[i] + degreeSign;
+        config.title = labels[i];
         config.rotation = -angles[i] + 180;
         config.orientation = 'custom';
-        config.width = axisLength;
         config.height = axisLength;
         config.labelRotation = !this.counterClockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
-        config.labelTranslation = labelTranslation[i];
 
-        titleLoc.x =  3 + Number(Math.cos((i-1) * Math.PI/2) * axisLength);
-        titleLoc.y =  8 + Number(Math.sin((i-1) * Math.PI/2) * axisLength);
+        titleLoc.x = Number(Math.cos((i-1) * Math.PI/2) * (axisLength + labelToGrid + tickRectHalfWidth));
+        titleLoc.y = halfLabelHeight + Number(Math.sin((i-1) * Math.PI/2) * (axisLength + labelToGrid + halfLabelHeight + tickRectHalfWidth));
 
         titleLoc.r = 0;
         //might have to adjust that?
-        titleLoc.anchor = 'middle';
+        titleLoc.anchor = anchors[i];
         config.titleLocation = titleLoc;
 
         result.push(config);
@@ -310,30 +400,25 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
 
       return result;
     },
-    _getClockWiseLabel: function(counterClockwise) {
-      return !counterClockwise ? 'clockwise' : 'counter-clockwise'
-    },
     _computeAmplitudeKey: function(completeSeriesConfig) {
 
       var serieName = Object.keys(completeSeriesConfig)[0];
       return [completeSeriesConfig[serieName].y];
     },
-    _returnInterpolation: function() {
-      return Px.d3.curveLinearClosed;
-    },
     _computeCenter: function(radius) {
       return [this.diameter/2 + Number(this.margin.left),this.diameter/2 + Number(this.margin.top)];
     },
-    _svgReady: function(svg) {
+    _svgReady: function(evt) {
 
+      var svg = evt.detail.data;
       if(!this._gridSvg) {
         //create svgs
-        this.cloneSVGElem(this.svg.node(), '_gridSvg', true);
-        this.cloneSVGElem(this.svg.node(), '_drawingSvg', false);
+        this.cloneSVGElem(svg.node(), '_gridSvg', true);
+        this.cloneSVGElem(svg.node(), '_drawingSvg', false);
 
       } else {
         //keep svg attributes in sync
-        var attrs = this.svg.node().attributes,
+        var attrs = svg.node().attributes,
             grid = this._gridSvg.node(),
             drawing = this._drawingSvg.node();
 
@@ -342,7 +427,55 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
           drawing.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
         }
       }
+    },
+    _drawUnitLabel: function(svg, completeSeriesConfig, _radius) {
 
+      //fetch unit from first config...
+      var seriesId = Object.keys(this.completeSeriesConfig),
+          unit = this.completeSeriesConfig[seriesId[0]].yAxisUnit,
+          angle = Math.PI/4,
+          length = this._radius + 10;
+
+      //create the svg if needed
+      if(!this._unitLabelGroup) {
+        this.set('_unitLabelGroup', this.svg.append('g').attr('class','unit-group'));
+        this._unitLabelGroup.append('text');
+      }
+
+      //make sure text is up to date
+      this._unitLabelGroup.selectAll('text')
+            .text(unit)
+            .attr('font-size', '15px')
+            .style('font-family','GE Inspira Sans')
+            .attr('fill', this.colors['grey4']);
+
+      //place label
+      this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) + 
+              ',' + (-Math.sin(angle) * length) + ')');
+    },
+    _drawClockwiseLabel: function(svg, _radius, counterClockwise) {
+
+      //fetch unit from first config...
+      var angle = -Math.PI/2,
+          length = this._radius + 55;
+
+      //create the svg if needed
+      if(!this._clockwiseLabelGroup) {
+        this.set('_clockwiseLabelGroup', this.svg.append('g').attr('class','clockwise-group'));
+        this._clockwiseLabelGroup.append('text');
+      }
+
+      //make sure text is up to date
+      this._clockwiseLabelGroup.selectAll('text')
+            .text(!counterClockwise ? 'clockwise' : 'counter clockwise')
+            .attr('font-size', '15px')
+            .style('font-family','GE Inspira Sans')
+            .attr('fill', this.colors['grey4'])
+            .attr('text-anchor', 'middle');
+
+      //place label
+      this._clockwiseLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) + 
+              ',' + (-Math.sin(angle) * length) + ')');
     }
   });
 </script>
