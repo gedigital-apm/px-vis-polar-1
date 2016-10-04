@@ -32,14 +32,13 @@
       <button id="btnDec">Decrease wrapper width</button>
       <button id="btnIH">Increase wrapper height</button>
       <button id="btnDH">Decrease wrapper height</button>
-      <div id="wrap" style="height:600px; width:600px; border:1px solid black">
+      <div id="wrap" style="height:600px; width:900px; border:1px solid black">
           <px-vis-polar
             id="chart"
             chart-data="{{data}}"
-            margin='{ "top": "20", "bottom": "60", "left": "20", "right": "40" }'
+            margin='{ "top": "0", "bottom": "40", "left": "50", "right": "10" }'
             register-config='{
-                "height": 50,
-                "type": "horizontal"}'
+                "type": "vertical"}'
             series-config='{
                 "firstSerie": {
                 "type": "line",
@@ -61,9 +60,9 @@
                   y-axis-type="linear"
                   margin='{
                   "top": 5,
-                  "right": 10,
+                  "right": 5,
                   "bottom": 20,
-                  "left": 10
+                  "left": 5
                   }'
                   chart-data="[[data]]"
                   series-config='{

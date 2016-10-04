@@ -24,14 +24,33 @@
 <link rel="import" href="css/px-vis-polar-styles.html">
 
 <!--
-REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
+The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
 
 ##### Usage
 
-    <px-vis-polar counter-value="1"><a href="javascript:" on-click="handleClick">Click here to increment counter:</a><span>{{counterValue}}</span></px-vis-polar>
-
+```
+<px-vis-polar
+id="chart"
+chart-data="{{data}}"
+margin='{ "top": "0", "bottom": "40", "left": "50", "right": "10" }'
+register-config='{
+    "type": "vertical"}'
+series-config='{
+    "firstSerie": {
+    "name": "Data",
+    "yAxisUnit": "m/s",                
+    "y": "amplitudeId",
+    "x":"phaseId"
+    }
+}'
+show-tooltip
+time-data="x"
+time-domain="[[selectedDomain]]"
+>
+</px-vis-polar> 
+```
 @element px-vis-polar
-@blurb REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
+@blurb The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
 @homepage index.html
 @demo index.html
 -->
@@ -43,20 +62,6 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
 
     <div id="wrapper" class="wrapper">
       <!-- Legend -->
-      <div class$="{{_getWrapperClass(_registerType)}}">
-
-        <!--<px-vis-register
-          id="register"
-          class$="{{_getHideClass(hideRegister)}}"
-          tooltip-data="[[tooltipData]]"
-          chart-data="[[_filteredData]]"
-          complete-series-config="[[completeSeriesConfig]]"
-          muted-series={{mutedSeries}}
-          type="{{_registerType}}"
-          x-axis-type="[[xAxisType]]"
-          y-axis-type="[[yAxisType]]">
-        </px-vis-register>-->
-
         <div id="svgWrapper">
           <!-- Core -->
           <px-vis-radial-scale
@@ -73,52 +78,65 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
             selected-domain="[[selectedDomain]]"
             chart-extents="[[chartExtents]]"
             complete-series-config="[[completeSeriesConfig]]"
-            amplitude-keys="[[amplitudeKey]]">
+            amplitude-keys="[[_amplitudeKey]]">
           </px-vis-radial-scale>
-          <px-vis-svg
-            class="inline--flex"
-            id="svg"
-            width="[[width]]"
-            height="[[height]]"
-            margin="[[margin]]"
-            svg="{{svg}}"
-            px-svg-elem="{{pxSvgElem}}"
-            offset="[[_center]]">
-          </px-vis-svg>
-          
-          <!-- scatter series -->
-          <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
-            <px-vis-scatter
-              svg="[[_drawingSvg]]"
-              series-id="[[item]]"
+          <div class$="{{_getWrapperClass(_registerType)}}">
+            <px-vis-register
+              id="register"
+              class$="{{_getHideClass(hideRegister)}}"
+              tooltip-data="[[tooltipData]]"
               chart-data="[[_filteredData]]"
-              radial
-              counter-clockwise="[[counterClockwise]]"
-              use-degrees="[[useDegrees]]"
-              x="[[x]]"
-              y="[[y]]"
-              domain-changed="[[domainChanged]]"
-              muted-series="[[mutedSeries]]"
               complete-series-config="[[completeSeriesConfig]]"
-              tooltip-data="{{tooltipData}}"
-              tooltip-on-hover
-              time-data="{{timeData}}"
-              >
-            </px-vis-scatter>
-            <px-vis-line
-              svg="[[_drawingSvg]]"
-              radial-line
-              counter-clockwise="[[counterClockwise]]"
-              use-degrees="[[useDegrees]]"
-              series-id="[[item]]"
-              chart-data="[[_filteredData]]"
-              muted-series="[[mutedSeries]]"
-              x="[[x]]"
-              y="[[y]]"
-              domain-changed="[[domainChanged]]"
-              complete-series-config="[[completeSeriesConfig]]">
-            </px-vis-line>
-          </template>
+              muted-series={{mutedSeries}}
+              type="{{_registerType}}"
+              x-axis-type="linear"
+              y-axis-type="linear"
+              force-date-time-display>
+            </px-vis-register>
+            <px-vis-svg
+              class="inline--flex"
+              id="svg"
+              width="[[width]]"
+              height="[[height]]"
+              margin="[[margin]]"
+              svg="{{svg}}"
+              px-svg-elem="{{pxSvgElem}}"
+              offset="[[_center]]">
+            </px-vis-svg>
+            
+            <!-- scatter series -->
+            <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
+              <px-vis-scatter
+                svg="[[_drawingSvg]]"
+                series-id="[[item]]"
+                chart-data="[[_filteredData]]"
+                radial
+                counter-clockwise="[[counterClockwise]]"
+                use-degrees="[[useDegrees]]"
+                x="[[x]]"
+                y="[[y]]"
+                domain-changed="[[domainChanged]]"
+                muted-series="[[mutedSeries]]"
+                complete-series-config="[[completeSeriesConfig]]"
+                tooltip-data="{{tooltipData}}"
+                tooltip-on-hover
+                time-data="{{timeData}}"
+                >
+              </px-vis-scatter>
+              <px-vis-line
+                svg="[[_drawingSvg]]"
+                radial-line
+                counter-clockwise="[[counterClockwise]]"
+                use-degrees="[[useDegrees]]"
+                series-id="[[item]]"
+                chart-data="[[_filteredData]]"
+                muted-series="[[mutedSeries]]"
+                x="[[x]]"
+                y="[[y]]"
+                domain-changed="[[domainChanged]]"
+                complete-series-config="[[completeSeriesConfig]]">
+              </px-vis-line>
+            </template>
         </div>
       </div>
       <!-- the 4 axis -->
@@ -141,7 +159,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         domain-changed="[[domainChanged]]"
         label-position="inline"
         axis-color="grey4"
-        drawn-tick-values="{{drawnTickValues}}"
+        drawn-tick-values="{{_drawnTickValues}}"
         >
         </px-vis-axis>
       </template>
@@ -151,7 +169,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         axis="[[y]]"
         domain-changed="[[domainChanged]]"
         margin="[[margin]]"
-        tick-values="[[drawnTickValues]]"
+        tick-values="[[_drawnTickValues]]"
       >
       </px-vis-radial-gridlines>
       <template is="dom-if" if="{{showTooltip}}">
@@ -238,7 +256,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       /**
        * used for the radial scale
        */
-      amplitudeKey: {
+      _amplitudeKey: {
         type: String,
         computed: '_computeAmplitudeKey(completeSeriesConfig)'
       },
@@ -253,7 +271,7 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
        * Returned tick values from the axis
        *
        */
-      drawnTickValues: {
+      _drawnTickValues: {
         type: Array,
         notify: true
       },
@@ -269,12 +287,47 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
         }
       },
       /**
+       * Configuration object used to customize the tooltip.
+       * Please refer to px-vis-tooltip (https://github.com/PredixDev/px-vis) for a list of supported proerties.
+       * Most interesting properties include:
+       * -width
+       * -height
+       * -tooltipStyle
+       */
+      tooltipConfig: {
+        type: Object,
+        observer: '_tooltipConfigChanged'
+      },
+      /**
+       * Configuration object used to customize the tooltip.
+       * Please refer to px-vis-register (https://github.com/PredixDev/px-vis) for a list of supported properties.
+       * Most interesting properties include:
+       * -width
+       * -height
+       *
+       */
+      registerConfig: {
+        type: Object,
+        observer: '_registerConfigChanged'
+      },
+      /**
        *
        * Allows to show the tooltip
        */
       showTooltip: {
         type: Boolean,
         value: false
+      },
+      /**
+       *
+       * Allows to hide the register
+       */
+      hideRegister: {
+        type: Boolean,
+        value: false
+      },
+      _registerType: {
+        type: String
       },
       /**
        * svg object used for the gridlines
@@ -324,14 +377,36 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       if(!this.defaultSeriesConfig.xAxisUnit) {
         this.defaultSeriesConfig.xAxisUnit = '°';
       }
+      //make sure the change is processed... might be a better way
+      this._setCompleteSeriesConfig();
     },
- 
+    _tooltipConfigChanged: function(conf) {
+
+      this._applyConfigToElement(this.tooltipConfig, this.$.tooltip);
+    },
+    _registerConfigChanged: function(conf) {
+
+      this._applyConfigToElement(this.registerConfig, this.$.register);
+    },
+    _getHideClass: function(hide) {
+      if(hide === true) {
+        return 'visuallyhidden';
+      }
+      return '';
+    },
     _onIronResize: function() {
       if(!this.preventResize) {
         this.debounce('ironresize', function() {
-          var wrapperRect = this.$.wrapper.getBoundingClientRect();
-          this.set('width', wrapperRect.width);
-          this.set('height', wrapperRect.height);
+          var wrapperRect = this.$.wrapper.getBoundingClientRect(),
+              registerRect = this.$.register.getBoundingClientRect();
+
+          if(this.$.register.type === 'horizontal') {
+            this.set('width', wrapperRect.width);
+            this.set('height', wrapperRect.height - registerRect.height);
+          } else {
+            this.set('width', wrapperRect.width - registerRect.width);
+            this.set('height', wrapperRect.height);
+          }
         },50);
       }
     },
@@ -360,6 +435,9 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
       result[3] = arr[1];
       return result;
     },
+    /**
+     * Builds a config object used to build our 4 axis
+     */
     _computeAxisConfig: function(diameter, counterClockwise, y, axisLabels) {
 
       var angles = [0,90,180,270],
@@ -407,6 +485,19 @@ REPLACE THIS TEXT WITH A COMPONENT DESCRIPTION
     },
     _computeCenter: function(radius) {
       return [this.diameter/2 + Number(this.margin.left),this.diameter/2 + Number(this.margin.top)];
+    },
+    _getWrapperClass: function() {
+      var classList = "flex ";
+
+      if(!this.hideRegister) {
+        if(this._registerType === 'vertical') {
+          classList += "flex--row--rev";
+        }
+        else {
+          classList += "flex--col";
+        }
+      }
+      return classList;
     },
     _svgReady: function(evt) {
 
