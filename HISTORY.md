@@ -1,3 +1,7 @@
+v0.0.3
+==================
+* make sure polarData behavior is coming from the right place
+
 v0.0.2
 ==================
 * travis integration, bump iron-ajax and add gh pages
