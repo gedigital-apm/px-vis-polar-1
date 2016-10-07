@@ -38,7 +38,7 @@ register-config='{
 series-config='{
     "firstSerie": {
     "name": "Data",
-    "yAxisUnit": "m/s",                
+    "yAxisUnit": "m/s",
     "y": "amplitudeId",
     "x":"phaseId"
     }
@@ -47,7 +47,7 @@ show-tooltip
 time-data="x"
 time-domain="[[selectedDomain]]"
 >
-</px-vis-polar> 
+</px-vis-polar>
 ```
 @element px-vis-polar
 @blurb The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
@@ -76,7 +76,6 @@ time-domain="[[selectedDomain]]"
             current-domain-x="{{currentDomainX}}"
             current-domain-y="{{currentDomainY}}"
             selected-domain="[[selectedDomain]]"
-            chart-extents="[[chartExtents]]"
             complete-series-config="[[completeSeriesConfig]]"
             amplitude-keys="[[_amplitudeKey]]">
           </px-vis-radial-scale>
@@ -103,7 +102,7 @@ time-domain="[[selectedDomain]]"
               px-svg-elem="{{pxSvgElem}}"
               offset="[[_center]]">
             </px-vis-svg>
-            
+
             <!-- scatter series -->
             <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
               <px-vis-scatter
@@ -186,8 +185,8 @@ time-domain="[[selectedDomain]]"
           tooltip-style="light">
         </px-vis-tooltip>
       </template>
-      
-      
+
+
     </div>
 
   </template>
@@ -196,7 +195,7 @@ time-domain="[[selectedDomain]]"
 <script>
   Polymer({
 
-    is: 'px-vis-polar', 
+    is: 'px-vis-polar',
     behaviors: [
       PxVisBehaviorD3.svg,
       PxVisBehaviorD3.axes,
@@ -276,7 +275,7 @@ time-domain="[[selectedDomain]]"
         notify: true
       },
       /**
-       * Labels to be used for axis. Provide them sorted clockwise, 
+       * Labels to be used for axis. Provide them sorted clockwise,
        * the chart will reorder them if needed.
        * default [0,90,180,270]
        */
@@ -474,7 +473,7 @@ time-domain="[[selectedDomain]]"
         config.titleLocation = titleLoc;
 
         result.push(config);
-      } 
+      }
 
       return result;
     },
@@ -541,7 +540,7 @@ time-domain="[[selectedDomain]]"
             .attr('fill', this.colors['grey4']);
 
       //place label
-      this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) + 
+      this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
     },
     _drawClockwiseLabel: function(svg, _radius, counterClockwise) {
@@ -565,7 +564,7 @@ time-domain="[[selectedDomain]]"
             .attr('text-anchor', 'middle');
 
       //place label
-      this._clockwiseLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) + 
+      this._clockwiseLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
     }
   });
