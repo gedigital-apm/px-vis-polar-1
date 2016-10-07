@@ -1,3 +1,7 @@
+v0.0.4
+==================
+* removed chartExtents from radial scale
+
 v0.0.3
 ==================
 * make sure polarData behavior is coming from the right place
