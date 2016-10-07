@@ -167,6 +167,7 @@ time-domain="[[selectedDomain]]"
         svg="[[_gridSvg]]"
         axis="[[y]]"
         domain-changed="[[domainChanged]]"
+        current-domain-y="[[currentDomainY]]"
         margin="[[margin]]"
         tick-values="[[_drawnTickValues]]"
       >
@@ -420,11 +421,11 @@ time-domain="[[selectedDomain]]"
       }
     },
     _computeDiameter: function(height, width, margin) {
-      return Math.min(this.height - Number(this.margin.top) - Number(this.margin.bottom) ,
-                      this.width - Number(this.margin.left) - Number(this.margin.right));
+      return Math.min(Math.max(0,this.height - Number(this.margin.top) - Number(this.margin.bottom)) ,
+                      Math.max(0,this.width - Number(this.margin.left) - Number(this.margin.right)));
     },
     _computeRadius: function(diameter) {
-      return diameter/2 - 35;
+      return Math.max(0,diameter/2 - 35);
     },
     _adjustArrayForCounterclockwise: function(arr) {
       var result = [];

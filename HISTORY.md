@@ -1,3 +1,7 @@
+v0.0.7
+==================
+* draw maximum value for gridlines
+
 v0.0.5
 ==================
 * Dynamic tick count
