@@ -1,3 +1,8 @@
+v0.0.5
+==================
+* Dynamic tick count
+* Fix labels
+
 v0.0.4
 ==================
 * removed chartExtents from radial scale

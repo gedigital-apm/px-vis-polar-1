@@ -150,7 +150,7 @@ time-domain="[[selectedDomain]]"
         rotation="[[item.rotation]]"
         orientation="[[item.orientation]]"
         label-rotation="[[item.labelRotation]]"
-        ticks="5"
+        ticks="[[_getNumberOfTick(_radius)]]"
         margin="[[margin]]"
         complete-series-config="[[completeSeriesConfig]]"
         prevent-series-bar
@@ -459,6 +459,7 @@ time-domain="[[selectedDomain]]"
         var config = {},
             titleLoc = {};
         config.title = labels[i];
+        config.width = axisLength;
         config.rotation = -angles[i] + 180;
         config.orientation = 'custom';
         config.height = axisLength;
@@ -566,6 +567,9 @@ time-domain="[[selectedDomain]]"
       //place label
       this._clockwiseLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
+    },
+    _getNumberOfTick: function(_radius) {
+      return Math.min(Math.max(_radius/70,2),7);
     }
   });
 </script>
