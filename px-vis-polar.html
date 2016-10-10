@@ -150,6 +150,8 @@ time-domain="[[selectedDomain]]"
         rotation="[[item.rotation]]"
         orientation="[[item.orientation]]"
         label-rotation="[[item.labelRotation]]"
+        label-type-size="[[item.labelTypeSize]]"
+        title-type-size="[[item.titleTypeSize]]"
         ticks="[[_getNumberOfTick(_radius)]]"
         margin="[[margin]]"
         complete-series-config="[[completeSeriesConfig]]"
@@ -365,9 +367,6 @@ time-domain="[[selectedDomain]]"
     ],
     ready: function() {
       //set defaults if they have not been set
-      if(!this.defaultSeriesConfig.markerScale) {
-        this.defaultSeriesConfig.markerScale = '0.75';
-      }
       if(!this.defaultSeriesConfig.markerFillOpacity) {
         this.defaultSeriesConfig.markerFillOpacity = '0.5';
       }
@@ -447,7 +446,8 @@ time-domain="[[selectedDomain]]"
           labelToGrid = 10,
           halfLabelHeight = 5,
           tickRectHalfWidth = 6,
-          labels = axisLabels;
+          labels = axisLabels,
+          fontSize = 15;
 
       //if counter clockwise adjust various values
       if(this.counterClockwise) {
@@ -463,6 +463,8 @@ time-domain="[[selectedDomain]]"
         config.width = axisLength;
         config.rotation = -angles[i] + 180;
         config.orientation = 'custom';
+        config.labelTypeSize = 12;
+        config.titleTypeSize = fontSize;
         config.height = axisLength;
         config.labelRotation = !this.counterClockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
 
@@ -526,7 +528,8 @@ time-domain="[[selectedDomain]]"
       var seriesId = Object.keys(this.completeSeriesConfig),
           unit = this.completeSeriesConfig[seriesId[0]].yAxisUnit,
           angle = Math.PI/4,
-          length = this._radius + 10;
+          length = this._radius + 10,
+          fontSize = 15;
 
       //create the svg if needed
       if(!this._unitLabelGroup) {
@@ -537,7 +540,7 @@ time-domain="[[selectedDomain]]"
       //make sure text is up to date
       this._unitLabelGroup.selectAll('text')
             .text(unit)
-            .attr('font-size', '15px')
+            .attr('font-size', fontSize + 'px')
             .style('font-family','GE Inspira Sans')
             .attr('fill', this.colors['grey4']);
 
@@ -549,7 +552,8 @@ time-domain="[[selectedDomain]]"
 
       //fetch unit from first config...
       var angle = -Math.PI/2,
-          length = this._radius + 55;
+          length = this._radius + 55,
+          fontSize = 15;
 
       //create the svg if needed
       if(!this._clockwiseLabelGroup) {
@@ -560,7 +564,7 @@ time-domain="[[selectedDomain]]"
       //make sure text is up to date
       this._clockwiseLabelGroup.selectAll('text')
             .text(!counterClockwise ? 'clockwise' : 'counter clockwise')
-            .attr('font-size', '15px')
+            .attr('font-size', fontSize + 'px')
             .style('font-family','GE Inspira Sans')
             .attr('fill', this.colors['grey4'])
             .attr('text-anchor', 'middle');
