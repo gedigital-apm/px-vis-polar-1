@@ -1,3 +1,8 @@
+v0.0.8
+==================
+* change font size
+* added preventResize
+
 v0.0.7
 ==================
 * draw maximum value for gridlines
