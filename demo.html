@@ -27,7 +27,8 @@
              url="../px-demo-data/demo-data/apm/polar.json"
              handle-as="json"
              last-response="{{data}}" auto></iron-ajax>
-
+      <span>Open new tab with snapshot of parallel chart with its navigator</span>
+      <button id="btnSnap">Smile!</button>
       <button id="btnInc">Increase wrapper width</button>
       <button id="btnDec">Decrease wrapper width</button>
       <button id="btnIH">Increase wrapper height</button>
@@ -58,7 +59,7 @@
             </px-vis-polar> 
             <div style="height:100px">
               <px-vis-chart-navigator
-                  id="navigator"
+                  id="navigatoor"
                   x-axis-type="time"
                   y-axis-type="linear"
                   margin='{
@@ -92,7 +93,43 @@
           btnIH = document.getElementById('btnIH'),
           btnDH = document.getElementById('btnDH'),
           wrap = document.getElementById('wrap'),
-          chart = document.getElementById('chart');
+          chart = document.getElementById('chart'),
+          navigator = document.getElementById('navigatoor');
+
+      btnSnap.addEventListener('click', function() {
+
+        //fetch svg+canvas from chart and svg
+        //from navigator and render them on a canvas
+        var canvas = document.createElement('canvas'),
+                context,
+                chartCanvasContext = chart.canvasContext,
+                svgChart = chart.pxSvgElem,
+                svgNavigator = navigator.pxSvgElem,
+                count = 0;
+
+        canvas.width = Math.max(chart.width, navigator.width);
+        canvas.height = chart.height + navigator.height;
+        context = canvas.getContext('2d');
+
+        //render chart canvas
+     //   context.drawImage(chartCanvasContext.canvas, 0, 0);
+
+        //to be called when svg is done drawing
+        var callback = function(res) {
+          if(count === 0) {
+            //first svg has rendered, wait for second one
+            count++;
+          } else {
+
+            //everything done
+            window.open().location = res.toDataURL("image/png");
+          }
+        }
+
+        //render chart svg and navigator svg
+        chart._drawSVGOnCanvas(canvas, callback);
+        navigator._drawSVGOnCanvas(canvas, callback, 0, chart.height);
+      });
 
       btnInc.addEventListener('click', function() {
         var width = window.getComputedStyle(wrap).getPropertyValue("width");
