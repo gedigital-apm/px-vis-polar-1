@@ -1,3 +1,9 @@
+v0.1.0
+===================
+* Update diameter property to private
+* moved to px-vis 0.6.0
+* ensure tooltip-config is applied always
+
 v0.0.8
 ==================
 * change font size

@@ -174,7 +174,7 @@ time-domain="[[selectedDomain]]"
         tick-values="[[_drawnTickValues]]"
       >
       </px-vis-radial-gridlines>
-      <template is="dom-if" if="{{showTooltip}}">
+      <template id="tooltipTemplate" is="dom-if" if="{{showTooltip}}">
         <px-vis-tooltip
           id="tooltip"
           force-date-time-display
@@ -185,7 +185,8 @@ time-domain="[[selectedDomain]]"
           y-axis-type="linear"
           complete-series-config="[[completeSeriesConfig]]"
           hover-target="[[tooltipTarget]]"
-          tooltip-style="light">
+          tooltip-style="light"
+          muted-series="[[mutedSeries]]">
         </px-vis-tooltip>
       </template>
 
@@ -231,7 +232,7 @@ time-domain="[[selectedDomain]]"
       /**
        * diameter of the chart drawing
        */
-      diameter: {
+      _diameter: {
         type: Number,
         computed: '_computeDiameter(height, width, margin)'
       },
@@ -240,14 +241,14 @@ time-domain="[[selectedDomain]]"
        */
       _radius: {
         type: Number,
-        computed: '_computeRadius(diameter)'
+        computed: '_computeRadius(_diameter)'
       },
       /**
        * configuration for the 4 axis and how to draw them/their labels
        */
       _axisConfigArray: {
         type: Array,
-        computed: '_computeAxisConfig(diameter, counterClockwise, y, axisLabels)'
+        computed: '_computeAxisConfig(_diameter, counterClockwise, y, axisLabels)'
       },
       /**
        * whether the polar data should be interepreted clockwise or counter-clockwise
@@ -319,7 +320,8 @@ time-domain="[[selectedDomain]]"
        */
       showTooltip: {
         type: Boolean,
-        value: false
+        value: false,
+        observer: '_showTooltipChanged'
       },
       /**
        *
@@ -381,8 +383,9 @@ time-domain="[[selectedDomain]]"
       this._setCompleteSeriesConfig();
     },
     _tooltipConfigChanged: function(conf) {
-
-      this._applyConfigToElement(this.tooltipConfig, this.$.tooltip);
+      if(this.$$('px-vis-tooltip')) {
+        this._applyConfigToElement(this.tooltipConfig, this.$$('px-vis-tooltip'));
+      }
     },
     _registerConfigChanged: function(conf) {
 
@@ -488,7 +491,7 @@ time-domain="[[selectedDomain]]"
       return [completeSeriesConfig[serieName].y];
     },
     _computeCenter: function(radius) {
-      return [this.diameter/2 + Number(this.margin.left),this.diameter/2 + Number(this.margin.top)];
+      return [this._diameter/2 + Number(this.margin.left),this._diameter/2 + Number(this.margin.top)];
     },
     _getWrapperClass: function() {
       var classList = "flex ";
@@ -576,6 +579,15 @@ time-domain="[[selectedDomain]]"
     },
     _getNumberOfTick: function(_radius) {
       return Math.min(Math.max(_radius/70,2),7);
+    },
+    _showTooltipChanged: function() {
+
+      //make sure the dom if is processed....
+      this.$.tooltipTemplate.render()
+
+      if(this.showTooltip && this.tooltipConfig) {
+        this._tooltipConfigChanged();
+      }
     }
   });
 </script>
