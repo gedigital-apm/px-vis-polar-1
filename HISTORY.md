@@ -1,3 +1,7 @@
+v0.1.1
+===================
+* Added math.max check to width and height
+
 v0.1.0
 ===================
 * Update diameter property to private
