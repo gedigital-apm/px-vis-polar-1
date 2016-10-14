@@ -104,7 +104,7 @@ time-domain="[[selectedDomain]]"
             </px-vis-svg>
 
             <!-- scatter series -->
-            <template is="dom-repeat" items="[[_returnKeys(completeSeriesConfig)]]">
+            <template is="dom-repeat" items="[[_seriesKeys]]">
               <px-vis-scatter
                 svg="[[_drawingSvg]]"
                 series-id="[[item]]"

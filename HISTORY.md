@@ -1,3 +1,8 @@
+v0.1.1
+===================
+* make sure addition/removal of series to seriesConfig are correctly processed
+* fixed demo scrollbar bug on IE
+
 v0.1.0
 ===================
 * Update diameter property to private
