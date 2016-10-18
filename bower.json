@@ -1,6 +1,6 @@
 {
   "name": "px-vis-polar",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": [
     "px-vis-polar.html"
   ],
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "iron-ajax": "PolymerElements/iron-ajax#~1.4.1",
-    "px-demo-data": "~0.0.1",
+    "px-demo-data": "~0.0.20",
     "px-forms-design": "^0.3.17",
     "px-tables-design": "^0.3.13",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
