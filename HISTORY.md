@@ -1,3 +1,7 @@
+v0.1.4
+===================
+* Updated dependencies
+
 v0.1.2
 ===================
 * make sure addition/removal of series to seriesConfig are correctly processed
