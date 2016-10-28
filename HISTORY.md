@@ -1,3 +1,7 @@
+v0.1.6
+===================
+* adjust labels position
+
 v0.1.5
 ===================
 * fixed use degrees so it is correct

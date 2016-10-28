@@ -150,6 +150,7 @@ time-domain="[[selectedDomain]]"
         rotation="[[item.rotation]]"
         orientation="[[item.orientation]]"
         label-rotation="[[item.labelRotation]]"
+        label-translation="[[item.labelTranslation]]"
         label-type-size="[[item.labelTypeSize]]"
         title-type-size="[[item.titleTypeSize]]"
         ticks="[[_getNumberOfTick(_radius)]]"
@@ -471,6 +472,7 @@ time-domain="[[selectedDomain]]"
         config.titleTypeSize = fontSize;
         config.height = axisLength;
         config.labelRotation = !this.counterClockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
+        config.labelTranslation = [0,4];
 
         titleLoc.x = Number(Math.cos((i-1) * Math.PI/2) * (axisLength + labelToGrid + tickRectHalfWidth));
         titleLoc.y = halfLabelHeight + Number(Math.sin((i-1) * Math.PI/2) * (axisLength + labelToGrid + halfLabelHeight + tickRectHalfWidth));
