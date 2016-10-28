@@ -1,6 +1,10 @@
-v0.1.3
+v0.1.5
 ===================
 * fixed use degrees so it is correct
+
+v0.1.4
+===================
+* Updated dependencies
 
 v0.1.2
 ===================
