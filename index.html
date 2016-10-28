@@ -89,10 +89,10 @@
                           }
                       }'
                       >
-                      </px-vis-polar> 
+                      </px-vis-polar>
                   </div>
                 </div> -->
-                
+
                 <div class="u-mb-">Width: <input id="width" class="text-input" type="text" placeholder="{{item.width}}" value="{{item.width::input}}" /></div>
                 <div class="u-mb-">Height: <input id="height" class="text-input" type="text" placeholder="{{item.height}}" value="{{item.height::input}}" /></div>
                 <div class="flex u-mb-">
@@ -127,6 +127,7 @@
                       counter-clockwise="{{item.counterClockwise}}"
                       show-tooltip="{{item.showTooltip}}"
                       hide-register="{{item.hideRegister}}"
+                      use-degrees="{{item.useDegrees}}"
                       register-config='{
                           "height": 50,
                           "type": "horizontal"}'
@@ -134,7 +135,7 @@
                           "firstSerie": {
                           "type": "line",
                           "name": "Data",
-                          "yAxisUnit": "m/s",                
+                          "yAxisUnit": "m/s",
                           "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
                           "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                           }
@@ -142,10 +143,10 @@
                       time-data="x"
                       time-domain="[[selectedDomain]]"
                       >
-                      </px-vis-polar> 
+                      </px-vis-polar>
                       <div style="height:100px" class="flex__item">
                         <px-vis-chart-navigator
-                        
+
                             id="navigator"
                             x-axis-type="time"
                             y-axis-type="linear"
@@ -159,7 +160,7 @@
                             series-config='{
                               "firstSerie": {
                               "type": "line",
-                              "name": "Data",           
+                              "name": "Data",
                               "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
                               "x":"x"
                               }
@@ -245,11 +246,12 @@
               "counterClockwise": false,
               "showTooltip": true,
               "hideRegister": false,
+              "useDegrees": true,
               "seriesConfig": {
                   "firstSerie": {
                   "type": "line",
                   "name": "Data",
-                  "yAxisUnit": "m/s",                
+                  "yAxisUnit": "m/s",
                   "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
                   "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                   }

@@ -1,3 +1,7 @@
+v0.1.3
+===================
+* fixed use degrees so it is correct
+
 v0.1.2
 ===================
 * make sure addition/removal of series to seriesConfig are correctly processed

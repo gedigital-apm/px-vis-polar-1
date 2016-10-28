@@ -52,7 +52,7 @@ $inuit-enable-list-inline--delimited : true;
 @import "px-list-inline-design/_objects.list-inline.scss";
 
 // Component
-// 
+//
 .mega-demo{
   background: $gray1;
   width: 100%;
@@ -84,8 +84,9 @@ $inuit-enable-list-inline--delimited : true;
     margin-right: calculateRem(50px);
   }
 }
+
 .demo{
-  flex-basis: calculateRem(400px);
+  min-height: calculateRem(500px);
   background: $white;
   border: 1px solid $gray4;
   overflow: auto;
