@@ -415,6 +415,7 @@ time-domain="[[selectedDomain]]"
       }
     },
     _onTooltipRequest: function(evt) {
+      //somehting requested the tooltip (likely a scatter point)
       if(this.showTooltip) {
         if(evt.detail.show) {
           this.$$('px-vis-tooltip').mousePosition = evt.detail.mouseCoords;
@@ -431,6 +432,10 @@ time-domain="[[selectedDomain]]"
     _computeRadius: function(diameter) {
       return Math.max(0,diameter/2 - 35);
     },
+    /**
+     * take an array of values aimed at clockwise and return one usable in 
+     * counter clockwise: swap value 1 and 3
+     */
     _adjustArrayForCounterclockwise: function(arr) {
       var result = [];
       result[0] = arr[0];
@@ -471,14 +476,15 @@ time-domain="[[selectedDomain]]"
         config.labelTypeSize = 12;
         config.titleTypeSize = fontSize;
         config.height = axisLength;
+        //since we rotate the axis we need to rotate the tick labels as well
         config.labelRotation = !this.counterClockwise ? 180 + (i * 90) % 360 : (180) - i * 90;
         config.labelTranslation = [0,4];
 
+        //MATH. positioning the 4 labels appropriately at the end of their axis
         titleLoc.x = Number(Math.cos((i-1) * Math.PI/2) * (axisLength + labelToGrid + tickRectHalfWidth));
         titleLoc.y = halfLabelHeight + Number(Math.sin((i-1) * Math.PI/2) * (axisLength + labelToGrid + halfLabelHeight + tickRectHalfWidth));
 
         titleLoc.r = 0;
-        //might have to adjust that?
         titleLoc.anchor = anchors[i];
         config.titleLocation = titleLoc;
 
@@ -487,14 +493,24 @@ time-domain="[[selectedDomain]]"
 
       return result;
     },
+    /**
+     * amplitude keys are needed by the radial scale so we have to 
+     * artificially build them
+     */
     _computeAmplitudeKey: function(completeSeriesConfig) {
 
       var serieName = Object.keys(completeSeriesConfig)[0];
       return [completeSeriesConfig[serieName].y];
     },
+    /**
+     * get the center of the svg drawing
+     */
     _computeCenter: function(radius) {
       return [this._diameter/2 + Number(this.margin.left),this._diameter/2 + Number(this.margin.top)];
     },
+    /**
+     * determine the flex class on the wrapper depending on where the register is
+     */
     _getWrapperClass: function() {
       var classList = "flex ";
 
@@ -508,6 +524,10 @@ time-domain="[[selectedDomain]]"
       }
       return classList;
     },
+    /**
+     * when our SVG has been created clone it into several one so we have 
+     * control over layer orders, allowing to draw lines over axis etc...
+     */
     _svgReady: function(evt) {
 
       var svg = evt.detail.data;
@@ -531,6 +551,7 @@ time-domain="[[selectedDomain]]"
     _drawUnitLabel: function(svg, completeSeriesConfig, _radius) {
 
       //fetch unit from first config...
+      //TODO: multi series?
       var seriesId = Object.keys(this.completeSeriesConfig),
           unit = this.completeSeriesConfig[seriesId[0]].yAxisUnit,
           angle = Math.PI/4,
@@ -579,6 +600,9 @@ time-domain="[[selectedDomain]]"
       this._clockwiseLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
     },
+    /**
+     * process  how many ticks we want on our axis, depending on size
+     */
     _getNumberOfTick: function(_radius) {
       return Math.min(Math.max(_radius/70,2),7);
     },
