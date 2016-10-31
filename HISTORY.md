@@ -1,3 +1,7 @@
+v0.1.7
+===================
+* ensure markers are always drawn on top of lines
+
 v0.1.6
 ===================
 * adjust labels position

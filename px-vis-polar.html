@@ -106,7 +106,7 @@ time-domain="[[selectedDomain]]"
             <!-- scatter series -->
             <template is="dom-repeat" items="[[_seriesKeys]]">
               <px-vis-scatter
-                svg="[[_drawingSvg]]"
+                svg="[[_drawingScatterSvg]]"
                 series-id="[[item]]"
                 chart-data="[[_filteredData]]"
                 radial
@@ -123,7 +123,7 @@ time-domain="[[selectedDomain]]"
                 >
               </px-vis-scatter>
               <px-vis-line
-                svg="[[_drawingSvg]]"
+                svg="[[_drawingLineSvg]]"
                 radial-line
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
@@ -342,9 +342,15 @@ time-domain="[[selectedDomain]]"
         type: Object
       },
       /**
-       * svg object used fro drawing lines and markers
+       * svg object used for drawing lines 
        */
-      _drawingSvg: {
+      _drawingLineSvg: {
+        type: Object
+      },
+      /**
+       * svg object used for drawing markers
+       */
+      _drawingScatterSvg: {
         type: Object
       },
       /**
@@ -534,13 +540,14 @@ time-domain="[[selectedDomain]]"
       if(!this._gridSvg) {
         //create svgs
         this.cloneSVGElem(svg.node(), '_gridSvg', true);
-        this.cloneSVGElem(svg.node(), '_drawingSvg', false);
+        this.cloneSVGElem(svg.node(), '_drawingLineSvg', false);
+        this.cloneSVGElem(svg.node(), '_drawingScatterSvg', false);
 
       } else {
         //keep svg attributes in sync
         var attrs = svg.node().attributes,
             grid = this._gridSvg.node(),
-            drawing = this._drawingSvg.node();
+            drawing = this._drawingLineSvg.node();
 
         for(var i=0; i<attrs.length; i++) {
           grid.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
