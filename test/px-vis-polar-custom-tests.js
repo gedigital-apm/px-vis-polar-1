@@ -12,7 +12,7 @@ function runCustomTests() {
       //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 400);
+      }, 600);
     });
 
     test('counterClockwise false by default', function() {
