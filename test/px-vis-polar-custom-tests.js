@@ -12,7 +12,7 @@ function runCustomTests() {
       //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 200);
+      }, 400);
     });
 
     test('counterClockwise false by default', function() {
@@ -48,7 +48,18 @@ function runCustomTests() {
     test('layers order', function() {
 
       var root = Polymer.dom(polar.root).querySelector('px-vis-svg'),
-          svgs = Polymer.dom(root.root).querySelector('svg').children;
+          svg = Polymer.dom(root.root).querySelector('svg'),
+          children = svg.childNodes,
+          svgs = [];
+
+      //because of mibofsoft we can't use 'children' on the svg, so building
+      //it ourselves...
+      for(var i = 0; i<children.length; i++) {
+        //ignore text nodes
+        if(children[i].nodeType !== 3) {
+          svgs.push(children[i]);
+        }
+      }
 
       //order MATTERS for svg drawing: first one is behind, last one on top
       assert.equal(polar._gridSvg.node(), svgs[0]);
@@ -73,7 +84,7 @@ function runCustomTests() {
        //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 200);
+      }, 400);
     });
 
     test('labels are counter clockwise', function() {
@@ -93,7 +104,7 @@ function runCustomTests() {
        //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 200);
+      }, 400);
     });
 
     test('labels are counter clockwise', function() {
@@ -129,7 +140,7 @@ function runCustomTests() {
       //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 200);
+      }, 400);
     });
 
     test('counterClockwise false', function() {
@@ -156,7 +167,7 @@ function runCustomTests() {
       //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 200);
+      }, 400);
     });
 
     test('register hidden', function() {
