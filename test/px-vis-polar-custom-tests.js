@@ -10,9 +10,11 @@ function runCustomTests() {
     suiteSetup(function(done) {
 
       //give enough time for drawing
-      setTimeout(function() {
-        done();
-      }, 600);
+      flush(function() {
+        setTimeout(function() {
+          done();
+        }, 600);
+      })
     });
 
     test('counterClockwise false by default', function() {
