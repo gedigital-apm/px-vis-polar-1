@@ -1,3 +1,7 @@
+v0.1.8
+===================
+* ensure markers svg is kept in sync with others
+
 v0.1.7
 ===================
 * ensure markers are always drawn on top of lines

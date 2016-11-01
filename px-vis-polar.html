@@ -547,11 +547,13 @@ time-domain="[[selectedDomain]]"
         //keep svg attributes in sync
         var attrs = svg.node().attributes,
             grid = this._gridSvg.node(),
-            drawing = this._drawingLineSvg.node();
+            drawing = this._drawingLineSvg.node(),
+            drawingScatter = this._drawingScatterSvg.node();
 
         for(var i=0; i<attrs.length; i++) {
           grid.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
           drawing.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
+          drawingScatter.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
         }
       }
     },
