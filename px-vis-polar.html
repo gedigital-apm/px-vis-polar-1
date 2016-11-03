@@ -60,7 +60,7 @@ time-domain="[[selectedDomain]]"
     <style include="px-vis-polar-styles"></style>
     <style include="px-theme-styles"></style>
 
-    <div id="wrapper" class="wrapper">
+    <div id="wrapper" class$="{{_chartWrapperClass}}">
       <!-- Legend -->
         <div id="svgWrapper">
           <!-- Core -->
@@ -79,7 +79,7 @@ time-domain="[[selectedDomain]]"
             complete-series-config="[[completeSeriesConfig]]"
             amplitude-keys="[[_amplitudeKey]]">
           </px-vis-radial-scale>
-          <div class$="{{_getWrapperClass(_registerType)}}">
+          <div class$="{{_registerWrapperClass}}">
             <px-vis-register
               id="register"
               class$="{{_getHideClass(hideRegister)}}"
@@ -95,9 +95,8 @@ time-domain="[[selectedDomain]]"
             <px-vis-svg
               class="inline--flex"
               id="svg"
-              width="[[width]]"
-              height="[[height]]"
-              margin="[[margin]]"
+              width="[[_smallerSide]]"
+              height="[[_smallerSide]]"
               svg="{{svg}}"
               px-svg-elem="{{pxSvgElem}}"
               offset="[[_center]]">
@@ -208,7 +207,7 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorD3.clipPath,
       PxVisBehavior.dataset,
       PxVisBehavior.mutedSeries,
-      PxVisBehavior.sizing,
+      PxVisBehaviorChart.circleChart,
       PxVisBehavior.tooltipData,
       PxVisBehavior.extentsData,
       PxVisBehavior.axisTypes,
@@ -221,29 +220,17 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorD3.domainUpdate,
       PxVisBehavior.polarData,
       PxVisBehaviorChart.timeFiltering,
-      PxVisBehaviorChart.chartAutoResize
+      PxVisBehaviorChart.chartAutoResize,
+      PxVisBehaviorChart.registerPositioning
     ],
     /**
-    * Properties block, expose attribute values to the DOM via 'notify'
+    * Properties block
     *
     * @property properties
     * @type Object
     */
     properties: {
-      /**
-       * diameter of the chart drawing
-       */
-      _diameter: {
-        type: Number,
-        computed: '_computeDiameter(height, width, margin)'
-      },
-      /**
-       * radius of the chart drawing
-       */
-      _radius: {
-        type: Number,
-        computed: '_computeRadius(_diameter)'
-      },
+      
       /**
        * configuration for the 4 axis and how to draw them/their labels
        */
@@ -264,13 +251,6 @@ time-domain="[[selectedDomain]]"
       _amplitudeKey: {
         type: String,
         computed: '_computeAmplitudeKey(completeSeriesConfig)'
-      },
-      /**
-       * center of the chart
-       */
-      _center: {
-        type: Array,
-        computed: '_computeCenter(_radius)'
       },
       /**
        * Returned tick values from the axis
@@ -325,15 +305,18 @@ time-domain="[[selectedDomain]]"
         observer: '_showTooltipChanged'
       },
       /**
-       *
-       * Allows to hide the register
+       * Font size for the unit label
        */
-      hideRegister: {
-        type: Boolean,
-        value: false
+      unitLabelFontSize: {
+        type: Number,
+        value: 15
       },
-      _registerType: {
-        type: String
+      /**
+       * Font size for the clockwise/counter clockwise label
+       */
+      clockwiseLabelFontSize: {
+        type: Number,
+        value: 15
       },
       /**
        * svg object used for the gridlines
@@ -372,8 +355,8 @@ time-domain="[[selectedDomain]]"
      'px-vis-svg-updated': '_svgReady'
     },
     observers: [
-      '_drawUnitLabel(svg, completeSeriesConfig.*, _radius)',
-      '_drawClockwiseLabel(svg, _radius, counterClockwise)'
+      '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
+      '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)'
     ],
     ready: function() {
       //set defaults if they have not been set
@@ -386,6 +369,10 @@ time-domain="[[selectedDomain]]"
       if(!this.defaultSeriesConfig.xAxisUnit) {
         this.defaultSeriesConfig.xAxisUnit = '°';
       }
+
+      //use some default internal margins to make space for labels
+      this.set('_internalCircleMargins', {top: 30, right: 0, bottom: 60,left: 10});
+
       //make sure the change is processed... might be a better way
       this._setCompleteSeriesConfig();
     },
@@ -397,12 +384,6 @@ time-domain="[[selectedDomain]]"
     _registerConfigChanged: function(conf) {
 
       this._applyConfigToElement(this.registerConfig, this.$.register);
-    },
-    _getHideClass: function(hide) {
-      if(hide === true) {
-        return 'visuallyhidden';
-      }
-      return '';
     },
     _onIronResize: function() {
       if(!this.preventResize) {
@@ -430,13 +411,6 @@ time-domain="[[selectedDomain]]"
           this.$$('px-vis-tooltip').tooltipElem._hide();
         }
       }
-    },
-    _computeDiameter: function(height, width, margin) {
-      return Math.min(Math.max(0,this.height - Number(this.margin.top) - Number(this.margin.bottom)) ,
-                      Math.max(0,this.width - Number(this.margin.left) - Number(this.margin.right)));
-    },
-    _computeRadius: function(diameter) {
-      return Math.max(0,diameter/2 - 35);
     },
     /**
      * take an array of values aimed at clockwise and return one usable in 
@@ -509,28 +483,6 @@ time-domain="[[selectedDomain]]"
       return [completeSeriesConfig[serieName].y];
     },
     /**
-     * get the center of the svg drawing
-     */
-    _computeCenter: function(radius) {
-      return [this._diameter/2 + Number(this.margin.left),this._diameter/2 + Number(this.margin.top)];
-    },
-    /**
-     * determine the flex class on the wrapper depending on where the register is
-     */
-    _getWrapperClass: function() {
-      var classList = "flex ";
-
-      if(!this.hideRegister) {
-        if(this._registerType === 'vertical') {
-          classList += "flex--row--rev";
-        }
-        else {
-          classList += "flex--col";
-        }
-      }
-      return classList;
-    },
-    /**
      * when our SVG has been created clone it into several one so we have 
      * control over layer orders, allowing to draw lines over axis etc...
      */
@@ -557,15 +509,14 @@ time-domain="[[selectedDomain]]"
         }
       }
     },
-    _drawUnitLabel: function(svg, completeSeriesConfig, _radius) {
+    _drawUnitLabel: function(svg, completeSeriesConfig, _radius, unitLabelFontSize) {
 
       //fetch unit from first config...
       //TODO: multi series?
       var seriesId = Object.keys(this.completeSeriesConfig),
           unit = this.completeSeriesConfig[seriesId[0]].yAxisUnit,
           angle = Math.PI/4,
-          length = this._radius + 10,
-          fontSize = 15;
+          length = this._radius + 10;
 
       //create the svg if needed
       if(!this._unitLabelGroup) {
@@ -576,7 +527,7 @@ time-domain="[[selectedDomain]]"
       //make sure text is up to date
       this._unitLabelGroup.selectAll('text')
             .text(unit)
-            .attr('font-size', fontSize + 'px')
+            .attr('font-size', unitLabelFontSize + 'px')
             .style('font-family','GE Inspira Sans')
             .attr('fill', this.colors['grey4']);
 
@@ -584,12 +535,11 @@ time-domain="[[selectedDomain]]"
       this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
     },
-    _drawClockwiseLabel: function(svg, _radius, counterClockwise) {
+    _drawClockwiseLabel: function(svg, _radius, counterClockwise, fontSize) {
 
       //fetch unit from first config...
       var angle = -Math.PI/2,
-          length = this._radius + 55,
-          fontSize = 15;
+          length = this._radius + 55;
 
       //create the svg if needed
       if(!this._clockwiseLabelGroup) {
