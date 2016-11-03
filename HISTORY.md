@@ -1,3 +1,8 @@
+v1.0.0
+===================
+* modified internal mechanism for sizing and laying out the chart
+* added chartHorizontalAlignment and chartVerticalAlignment to alignt he chart drawing when smaller than its container
+
 v0.1.8
 ===================
 * ensure markers svg is kept in sync with others
