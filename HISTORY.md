@@ -1,7 +1,7 @@
 v1.0.0
 ===================
 * modified internal mechanism for sizing and laying out the chart
-* added chartHorizontalAlignment and chartVerticalAlignment to alignt he chart drawing when smaller than its container
+* added chartHorizontalAlignment and chartVerticalAlignment to alignt the chart drawing when smaller than its container
 * alignment of the chart is now centered by default
 * register now "stick" to the chart rather than sitting at the border of the container
 
