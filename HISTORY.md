@@ -1,3 +1,7 @@
+v0.1.9
+===================
+* fix codepen
+
 v0.1.8
 ===================
 * ensure markers svg is kept in sync with others
