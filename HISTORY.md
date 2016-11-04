@@ -1,3 +1,7 @@
+v0.1.10
+===================
+* added numbro to codepen
+
 v0.1.9
 ===================
 * fix codepen

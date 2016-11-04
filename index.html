@@ -173,7 +173,9 @@
                     <px-demo-snippet
                       element-properties={{item}}
                       element-name="px-vis-polar"
+                      scripts-includes="[[scriptsIncludes]]"
                       links-includes="[[linksIncludes]]"
+                      polygit-includes="[[polygitIncludes]]"
                       >
                     </px-demo-snippet>
                   </div>
@@ -279,7 +281,9 @@
           template.optionsArray = optionsArray;
           template.indexPlusOne = indexPlusOne;
 
+          template.scriptsIncludes = ['https://cdn.rawgit.com/foretagsplatsen/numbro/1.7.1/numbro.js'];
           template.linksIncludes = ['px-vis/px-polygit-imports-vis.html', 'px-datetime-common/px-polygit-imports-datetime.html'];
+          template.polygitIncludes = ['numbro*+MeTaNoV+*'];
 
     });
   </script>
