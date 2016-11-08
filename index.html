@@ -80,7 +80,7 @@
                           "height": 50,
                           "type": "horizontal"}'
                       series-config='{
-                          "firstSerie": {
+                          "firstSeries": {
                           "type": "line",
                           "name": "Data",
                           "markerScale": "1.5",
@@ -165,7 +165,7 @@
                           "height": 50,
                           "type": "horizontal"}'
                       series-config='{
-                          "firstSerie": {
+                          "firstSeries": {
                           "type": "line",
                           "name": "Data",
                           "yAxisUnit": "m/s",
@@ -192,7 +192,7 @@
                             }'
                             chart-data="[[data]]"
                             series-config='{
-                              "firstSerie": {
+                              "firstSeries": {
                               "type": "line",
                               "name": "Data",
                               "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
@@ -206,7 +206,11 @@
                   <div class="flex__item">
                     <px-demo-snippet
                       element-properties={{item}}
-                      element-name="px-vis-polar">
+                      element-name="px-vis-polar"
+                      scripts-includes="[[scriptsIncludes]]"
+                      links-includes="[[linksIncludes]]"
+                      polygit-includes="[[polygitIncludes]]"
+                      >
                     </px-demo-snippet>
                   </div>
                 </div>
@@ -274,7 +278,16 @@
       var template = document.querySelector('template[is=dom-bind]'),
           optionsArray = [
             {
-              "margin": { "top": "0", "bottom": "0", "left": "0", "right": "0" },
+            "margin": { "top": "0", "bottom": "0", "left": "0", "right": "0" },
+            "chartData" : [
+              	{"tag1": 2.923, "tag2": 298.318, "x": 1469017257508},
+                {"tag1": 2.912, "tag2": 299.195, "x": 1469019549396},
+                {"tag1": 0.243, "tag2": 275.593, "x": 1469021841284},
+                {"tag1": 0,     "tag2": 0,       "x": 1469024133172},
+                {"tag1": 3.121, "tag2": 298.87,  "x": 1468985171076},
+                {"tag1": 4.02,  "tag2": 258.66,  "x": 1468982879188},
+                {"tag1": 0,     "tag2": 0,       "x": 1469026425060}
+              ],
               "width": 550,
               "height": 400,
               "counterClockwise": false,
@@ -283,17 +296,18 @@
               "hideRegister": false,
               "useDegrees": true,
               "seriesConfig": {
-                  "firstSerie": {
+                  "firstSeries": {
                   "type": "line",
                   "name": "Data",
                   "yAxisUnit": "m/s",
-                  "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
-                  "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                  "y": "tag1",
+                  "x": "tag2"
                   }
               },
               "timeData": "x",
               "chartHorizontalAlignment": "center",
-              "chartVerticalAlignment": "center"
+              "chartVerticalAlignment": "center",
+              "parentComponent": ["<div style='width:600px'>","</div>"]
             }
           ],
           indexPlusOne = function(num) {
@@ -303,6 +317,10 @@
           template.selected = "0";
           template.optionsArray = optionsArray;
           template.indexPlusOne = indexPlusOne;
+          template.scriptsIncludes = ['https://cdn.rawgit.com/foretagsplatsen/numbro/1.7.1/numbro.js'];
+          template.linksIncludes = ['px-vis/px-polygit-imports-vis.html', 'px-datetime-common/px-polygit-imports-datetime.html'];
+          template.polygitIncludes = ['numbro*+MeTaNoV+*'];
+
     });
   </script>
 </body>

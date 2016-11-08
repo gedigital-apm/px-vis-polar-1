@@ -5,6 +5,14 @@ v1.0.0
 * alignment of the chart is now centered by default
 * register now "stick" to the chart rather than sitting at the border of the container
 
+v0.1.10
+===================
+* added numbro to codepen
+
+v0.1.9
+===================
+* fix codepen
+
 v0.1.8
 ===================
 * ensure markers svg is kept in sync with others
