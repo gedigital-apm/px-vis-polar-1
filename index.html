@@ -110,6 +110,31 @@
                   <label for$="hideRegister{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
                   <div class="u-ml-">Hide Register</div>
                 </div>
+                <div class="u-mb-">Horizontal Alignment:
+                <div style="width: 100%;">
+                  <px-dropdown id="chartHorizontalAlignment" value="{{item.chartHorizontalAlignment}}" display-value="{{item.chartHorizontalAlignment}}" bound-target="properties">
+                    <px-dropdown-content
+                      items='[
+                        {"key":"one", "val": "left"},
+                        {"key":"two", "val": "center"},
+                        {"key":"three", "val": "right"}]'>
+                    </px-dropdown-content>
+                  </px-dropdown>
+                </div>
+              </div>
+
+              <div class="u-mb-">Vertical Alignment:
+                <div style="width: 100%;">
+                  <px-dropdown id="chartVerticalAlignment" value="{{item.chartVerticalAlignment}}" display-value="{{item.chartVerticalAlignment}}" bound-target="properties">
+                    <px-dropdown-content
+                      items='[
+                        {"key":"one", "val": "top"},
+                        {"key":"two", "val": "center"},
+                        {"key":"three", "val": "bottom"}]'>
+                    </px-dropdown-content>
+                  </px-dropdown>
+                </div>
+              </div>
 
               </div>
 
@@ -117,11 +142,12 @@
                 <!-- demo -->
                 <div class="flex flex--col">
                   <div class="flex__item demo u-ph+ u-pb+" style="overflow:auto">
+                    <div>
                     <px-vis-polar
                       class="flex__item"
                       id="chart"
                       chart-data="{{data}}"
-                      margin='{ "top": "0", "bottom": "60", "left": "20", "right": "40" }'
+                      margin='{ "top": "0", "bottom": "0", "left": "0", "right": "0" }'
                       width="{{item.width}}"
                       height="{{item.height}}"
                       counter-clockwise="{{item.counterClockwise}}"
@@ -144,6 +170,7 @@
                       time-domain="[[selectedDomain]]"
                       >
                       </px-vis-polar>
+                      </div>
                       <div style="height:100px" class="flex__item">
                         <px-vis-chart-navigator
 
@@ -240,7 +267,7 @@
       var template = document.querySelector('template[is=dom-bind]'),
           optionsArray = [
             {
-              "margin": { "top": "0", "bottom": "60", "left": "20", "right": "40" },
+              "margin": { "top": "0", "bottom": "0", "left": "0", "right": "0" },
               "width": 550,
               "height": 400,
               "counterClockwise": false,
@@ -256,7 +283,9 @@
                   "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                   }
               },
-              "timeData": "x"
+              "timeData": "x",
+              "chartHorizontalAlignment": "center",
+              "chartVerticalAlignment": "center"
             }
           ],
           indexPlusOne = function(num) {
