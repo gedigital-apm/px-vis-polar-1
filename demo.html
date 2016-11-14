@@ -54,33 +54,82 @@
             show-tooltip
             time-data="x"
             time-domain="[[selectedDomain]]"
+            use-degrees>
+            </px-vis-polar>
+        </div>
+        <div style="height:100px">
+          <px-vis-chart-navigator
+              id="navigatoor"
+              x-axis-type="time"
+              y-axis-type="linear"
+              margin='{
+              "top": 5,
+              "right": 5,
+              "bottom": 20,
+              "left": 5
+              }'
+              chart-data="[[data]]"
+              series-config='{
+                  "firstSerie": {
+                  "type": "line",
+                  "name": "Data",
+                  "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                  "x":"x"
+                  }
+              }'
+              selected-domain="{{selectedDomain}}">
+          </px-vis-chart-navigator>
+        </div>
+        <div style="height:500px; border:1px solid black">
+          <px-vis-polar
+            id="chart2"
+            chart-data="{{data}}"
+            register-config='{
+                "type": "vertical",
+                "numberFormat": "0,0.0",
+                "forceDateTimeDisplay": true}'
+            tooltip-config='{
+                "numberFormat": "0,0.0",
+                "forceDateTimeDisplay": true}'
+            series-config='{
+                "firstSerie": {
+                "type": "line",
+                "name": "Data",
+                "yAxisUnit": "m/s",
+                "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                }
+            }'
+            show-tooltip
+            time-data="x"
+            time-domain="[[selectedDomain]]"
             use-degrees
             >
             </px-vis-polar>
-            <div style="height:100px">
-              <px-vis-chart-navigator
-                  id="navigatoor"
-                  x-axis-type="time"
-                  y-axis-type="linear"
-                  margin='{
-                  "top": 5,
-                  "right": 5,
-                  "bottom": 20,
-                  "left": 5
-                  }'
-                  chart-data="[[data]]"
-                  series-config='{
-                      "firstSerie": {
-                      "type": "line",
-                      "name": "Data",
-                      "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
-                      "x":"x"
-                      }
-                  }'
-                  selected-domain="{{selectedDomain}}">
-              </px-vis-chart-navigator>
-          </div>
         </div>
+        <div style="height:100px">
+            <px-vis-chart-navigator
+                id="navigatoor"
+                x-axis-type="time"
+                y-axis-type="linear"
+                margin='{
+                "top": 5,
+                "right": 5,
+                "bottom": 20,
+                "left": 5
+                }'
+                chart-data="[[data]]"
+                series-config='{
+                    "firstSerie": {
+                    "type": "line",
+                    "name": "Data",
+                    "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                    "x":"x"
+                    }
+                }'
+                selected-domain="{{selectedDomain}}">
+            </px-vis-chart-navigator>
+          </div>
     </template>
   </body>
   <script>

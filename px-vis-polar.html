@@ -89,8 +89,7 @@ time-domain="[[selectedDomain]]"
               muted-series={{mutedSeries}}
               type="{{_registerType}}"
               x-axis-type="linear"
-              y-axis-type="linear"
-              force-date-time-display>
+              y-axis-type="linear">
             </px-vis-register>
             <px-vis-svg
               class="inline--flex"
@@ -177,7 +176,6 @@ time-domain="[[selectedDomain]]"
       <template id="tooltipTemplate" is="dom-if" if="{{showTooltip}}">
         <px-vis-tooltip
           id="tooltip"
-          force-date-time-display
           tooltip-data="[[tooltipData]]"
           chart-data="[[chartData]]"
           muted-series="[[mutedSeries]]"
@@ -274,9 +272,10 @@ time-domain="[[selectedDomain]]"
        * Configuration object used to customize the tooltip.
        * Please refer to px-vis-tooltip (https://github.com/PredixDev/px-vis) for a list of supported properties.
        * Most interesting properties include:
-       * -width
-       * -height
-       * -tooltipStyle
+       * - width
+       * - height
+       * - tooltipStyle
+       * - forceDateTimeDisplay
        */
       tooltipConfig: {
         type: Object,
