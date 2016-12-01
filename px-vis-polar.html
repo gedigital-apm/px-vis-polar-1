@@ -10,7 +10,7 @@
 <link rel="import" href="../px-vis/px-vis-radial-scale.html"/>
 <link rel="import" href="../px-vis/px-vis-svg.html"/>
 <link rel="import" href="../px-vis/px-vis-scatter.html"/>
-<link rel="import" href="../px-vis/px-vis-line.html"/>
+<link rel="import" href="../px-vis/px-vis-line-svg.html"/>
 <link rel="import" href="../px-vis/px-vis-axis.html"/>
 <link rel="import" href="../px-vis/px-vis-tooltip.html"/>
 <link rel="import" href="../px-vis/px-vis-interaction-space.html"/>
@@ -104,7 +104,7 @@ time-domain="[[selectedDomain]]"
             <!-- scatter series -->
             <template is="dom-repeat" items="[[_seriesKeys]]">
               <px-vis-scatter
-                svg="[[_drawingScatterSvg]]"
+                svg="[[layer.3]]"
                 series-id="[[item]]"
                 chart-data="[[_filteredData]]"
                 radial
@@ -120,8 +120,8 @@ time-domain="[[selectedDomain]]"
                 time-data="{{timeData}}"
                 >
               </px-vis-scatter>
-              <px-vis-line
-                svg="[[_drawingLineSvg]]"
+              <px-vis-line-svg
+                svg="[[layer.2]]"
                 radial-line
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
@@ -132,14 +132,14 @@ time-domain="[[selectedDomain]]"
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
                 complete-series-config="[[completeSeriesConfig]]">
-              </px-vis-line>
+              </px-vis-line-svg>
             </template>
         </div>
       </div>
       <!-- the 4 axis -->
       <template is="dom-repeat" items="[[_axisConfigArray]]">
         <px-vis-axis
-        svg="[[svg]]"
+        svg="[[layer.1]]"
         axis="[[y]]"
         height="[[item.height]]"
         width="[[item.width]]"
@@ -165,7 +165,7 @@ time-domain="[[selectedDomain]]"
       </template>
       <px-vis-radial-gridlines
         id="gridlines"
-        svg="[[_gridSvg]]"
+        svg="[[layer.0]]"
         axis="[[y]]"
         domain-changed="[[domainChanged]]"
         current-domain-y="[[currentDomainY]]"
@@ -218,7 +218,8 @@ time-domain="[[selectedDomain]]"
       PxVisBehavior.polarData,
       PxVisBehaviorChart.timeFiltering,
       PxVisBehaviorChart.chartAutoResize,
-      PxVisBehaviorChart.registerPositioning
+      PxVisBehaviorChart.registerPositioning,
+      PxVisBehaviorChart.layers
     ],
     /**
     * Properties block
@@ -227,7 +228,7 @@ time-domain="[[selectedDomain]]"
     * @type Object
     */
     properties: {
-      
+
       /**
        * configuration for the 4 axis and how to draw them/their labels
        */
@@ -323,7 +324,7 @@ time-domain="[[selectedDomain]]"
         type: Object
       },
       /**
-       * svg object used for drawing lines 
+       * svg object used for drawing lines
        */
       _drawingLineSvg: {
         type: Object
@@ -354,7 +355,8 @@ time-domain="[[selectedDomain]]"
     },
     observers: [
       '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
-      '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)'
+      '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)',
+      '_createLayersOnce(svg, numberOfLayers)'
     ],
     ready: function() {
       //set defaults if they have not been set
@@ -367,6 +369,8 @@ time-domain="[[selectedDomain]]"
       if(!this.defaultSeriesConfig.xAxisUnit) {
         this.defaultSeriesConfig.xAxisUnit = '°';
       }
+
+      this.set('numberOfLayers',4);
 
       //use some default internal margins to make space for labels
       this.set('_internalCircleMargins', {top: 30, right: 0, bottom: 60,left: 10});
@@ -411,7 +415,7 @@ time-domain="[[selectedDomain]]"
       }
     },
     /**
-     * take an array of values aimed at clockwise and return one usable in 
+     * take an array of values aimed at clockwise and return one usable in
      * counter clockwise: swap value 1 and 3
      */
     _adjustArrayForCounterclockwise: function(arr) {
@@ -472,7 +476,7 @@ time-domain="[[selectedDomain]]"
       return result;
     },
     /**
-     * amplitude keys are needed by the radial scale so we have to 
+     * amplitude keys are needed by the radial scale so we have to
      * artificially build them
      */
     _computeAmplitudeKey: function(completeSeriesConfig) {
@@ -480,33 +484,7 @@ time-domain="[[selectedDomain]]"
       var serieName = Object.keys(completeSeriesConfig)[0];
       return [completeSeriesConfig[serieName].y];
     },
-    /**
-     * when our SVG has been created clone it into several one so we have 
-     * control over layer orders, allowing to draw lines over axis etc...
-     */
-    _svgReady: function(evt) {
 
-      var svg = evt.detail.data;
-      if(!this._gridSvg) {
-        //create svgs
-        this.cloneSVGElem(svg.node(), '_gridSvg', true);
-        this.cloneSVGElem(svg.node(), '_drawingLineSvg', false);
-        this.cloneSVGElem(svg.node(), '_drawingScatterSvg', false);
-
-      } else {
-        //keep svg attributes in sync
-        var attrs = svg.node().attributes,
-            grid = this._gridSvg.node(),
-            drawing = this._drawingLineSvg.node(),
-            drawingScatter = this._drawingScatterSvg.node();
-
-        for(var i=0; i<attrs.length; i++) {
-          grid.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
-          drawing.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
-          drawingScatter.attributes[attrs[i].nodeName].nodeValue = attrs[i].nodeValue;
-        }
-      }
-    },
     _drawUnitLabel: function(svg, completeSeriesConfig, _radius, unitLabelFontSize) {
 
       //fetch unit from first config...

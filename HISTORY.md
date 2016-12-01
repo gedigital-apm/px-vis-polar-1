@@ -5,6 +5,8 @@ v1.0.0
 * alignment of the chart is now centered by default
 * register now "stick" to the chart rather than sitting at the border of the container
 * forceDateTimeDisplay is now turned off by default for tooltip and registers, it can be re-enabled through their respective configs
+* Added layers
+* Changed line to line-svg
 
 v0.1.10
 ===================
