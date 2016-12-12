@@ -20,7 +20,7 @@
 <link rel="import" href="../px-vis/px-vis-clip-path.html"/>
 <link rel="import" href="../px-vis/px-vis-radial-gridlines.html"/>
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
-
+<link rel="import" href="../px-colors-design/colors.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
 
 <!--
@@ -219,7 +219,8 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorChart.timeFiltering,
       PxVisBehaviorChart.chartAutoResize,
       PxVisBehaviorChart.registerPositioning,
-      PxVisBehaviorChart.layers
+      PxVisBehaviorChart.layers,
+      baseColors
     ],
     /**
     * Properties block
@@ -350,8 +351,7 @@ time-domain="[[selectedDomain]]"
     },
     listeners: {
      'iron-resize': '_onIronResize',
-     'px-vis-scatter-request-tooltip': '_onTooltipRequest',
-     'px-vis-svg-updated': '_svgReady'
+     'px-vis-scatter-request-tooltip': '_onTooltipRequest'
     },
     observers: [
       '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
