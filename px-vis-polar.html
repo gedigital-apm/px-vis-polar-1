@@ -58,7 +58,7 @@ time-domain="[[selectedDomain]]"
 <dom-module id="px-vis-polar">
   <template>
     <style include="px-vis-polar-styles"></style>
-    
+
 
     <div id="wrapper" class="wrapper">
       <!-- Legend -->
@@ -221,7 +221,8 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorD3.domainUpdate,
       PxVisBehavior.polarData,
       PxVisBehaviorChart.timeFiltering,
-      PxVisBehaviorChart.chartAutoResize
+      PxVisBehaviorChart.chartAutoResize,
+      PxVisBehaviorChart.dataVisColorTheming
     ],
     /**
     * Properties block, expose attribute values to the DOM via 'notify'
@@ -342,7 +343,7 @@ time-domain="[[selectedDomain]]"
         type: Object
       },
       /**
-       * svg object used for drawing lines 
+       * svg object used for drawing lines
        */
       _drawingLineSvg: {
         type: Object
@@ -439,7 +440,7 @@ time-domain="[[selectedDomain]]"
       return Math.max(0,diameter/2 - 35);
     },
     /**
-     * take an array of values aimed at clockwise and return one usable in 
+     * take an array of values aimed at clockwise and return one usable in
      * counter clockwise: swap value 1 and 3
      */
     _adjustArrayForCounterclockwise: function(arr) {
@@ -500,7 +501,7 @@ time-domain="[[selectedDomain]]"
       return result;
     },
     /**
-     * amplitude keys are needed by the radial scale so we have to 
+     * amplitude keys are needed by the radial scale so we have to
      * artificially build them
      */
     _computeAmplitudeKey: function(completeSeriesConfig) {
@@ -531,7 +532,7 @@ time-domain="[[selectedDomain]]"
       return classList;
     },
     /**
-     * when our SVG has been created clone it into several one so we have 
+     * when our SVG has been created clone it into several one so we have
      * control over layer orders, allowing to draw lines over axis etc...
      */
     _svgReady: function(evt) {
@@ -577,8 +578,8 @@ time-domain="[[selectedDomain]]"
       this._unitLabelGroup.selectAll('text')
             .text(unit)
             .attr('font-size', fontSize + 'px')
-            .style('font-family','GE Inspira Sans')
-            .attr('fill', this.colors['grey4']);
+            .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
+            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']));
 
       //place label
       this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
@@ -601,8 +602,8 @@ time-domain="[[selectedDomain]]"
       this._clockwiseLabelGroup.selectAll('text')
             .text(!counterClockwise ? 'clockwise' : 'counter clockwise')
             .attr('font-size', fontSize + 'px')
-            .style('font-family','GE Inspira Sans')
-            .attr('fill', this.colors['grey4'])
+            .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
+            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']))
             .attr('text-anchor', 'middle');
 
       //place label
