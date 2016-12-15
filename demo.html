@@ -147,22 +147,8 @@
           chart = document.getElementById('chart'),
           navigator = document.getElementById('navigatoor');
 
-      btnSnap.addEventListener('click', function() {
 
-        //fetch svg+canvas from chart and svg
-        //from navigator and render them on a canvas
-        var canvas = document.createElement('canvas'),
-                context,
-                chartCanvasContext = chart.canvasContext,
-                svgChart = chart.pxSvgElem,
-                svgNavigator = navigator.pxSvgElem,
-                count = 0;
-
-        canvas.width = Math.max(chart.width, navigator.width);
-        canvas.height = chart.height + navigator.height;
-        context = canvas.getContext('2d');
-
-        var menuConfig = [
+      var menuConfig = [
           {
             'name': 'Delete',
             'action': function(itemConfig, additionalDetail) {
@@ -188,6 +174,20 @@
         
         chart.set('dynamicMenuConfig', menuConfig);
 
+      btnSnap.addEventListener('click', function() {
+
+        //fetch svg+canvas from chart and svg
+        //from navigator and render them on a canvas
+        var canvas = document.createElement('canvas'),
+                context,
+                chartCanvasContext = chart.canvasContext,
+                svgChart = chart.pxSvgElem,
+                svgNavigator = navigator.pxSvgElem,
+                count = 0;
+
+        canvas.width = Math.max(chart.width, navigator.width);
+        canvas.height = chart.height + navigator.height;
+        context = canvas.getContext('2d');
         //render chart canvas
      //   context.drawImage(chartCanvasContext.canvas, 0, 0);
 
