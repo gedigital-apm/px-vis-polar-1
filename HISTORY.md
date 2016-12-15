@@ -8,6 +8,36 @@ v1.0.0
 * Added layers
 * Changed line to line-svg
 
+v0.2.1
+==================
+* Themeable
+
+v0.2.0
+==================
+* Updated dependencies
+
+v0.1.15
+==================
+* changing all devDeps to ^
+
+v0.1.14
+==================
+* Update px-theme to 2.0.1 and update test fixtures
+
+v0.1.13
+==================
+* update dependencies for dropdown
+
+v0.1.12
+==================
+* removing px-theme style call
+
+
+v0.1.11
+==================
+* bower updating px-demo-snippet
+>>>>>>> master
+
 v0.1.10
 ===================
 * added numbro to codepen

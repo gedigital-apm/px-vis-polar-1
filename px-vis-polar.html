@@ -58,7 +58,7 @@ time-domain="[[selectedDomain]]"
 <dom-module id="px-vis-polar">
   <template>
     <style include="px-vis-polar-styles"></style>
-    <style include="px-theme-styles"></style>
+
 
     <div id="wrapper" class$="{{_chartWrapperClass}}">
       <!-- Legend -->
@@ -219,7 +219,8 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorChart.timeFiltering,
       PxVisBehaviorChart.chartAutoResize,
       PxVisBehaviorChart.registerPositioning,
-      PxVisBehaviorChart.layers
+      PxVisBehaviorChart.layers,
+      PxVisBehaviorChart.dataVisColorTheming
     ],
     /**
     * Properties block
@@ -348,16 +349,18 @@ time-domain="[[selectedDomain]]"
         type: Object
       }
     },
+
     listeners: {
      'iron-resize': '_onIronResize',
-     'px-vis-scatter-request-tooltip': '_onTooltipRequest',
-     'px-vis-svg-updated': '_svgReady'
+     'px-vis-scatter-request-tooltip': '_onTooltipRequest'
     },
+
     observers: [
       '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
       '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)',
       '_createLayersOnce(svg, numberOfLayers)'
     ],
+
     ready: function() {
       //set defaults if they have not been set
       if(!this.defaultSeriesConfig.markerFillOpacity) {
@@ -378,15 +381,18 @@ time-domain="[[selectedDomain]]"
       //make sure the change is processed... might be a better way
       this._setCompleteSeriesConfig();
     },
+
     _tooltipConfigChanged: function(conf) {
       if(this.$$('px-vis-tooltip')) {
         this._applyConfigToElement(this.tooltipConfig, this.$$('px-vis-tooltip'));
       }
     },
+
     _registerConfigChanged: function(conf) {
 
       this._applyConfigToElement(this.registerConfig, this.$.register);
     },
+
     _onIronResize: function() {
       if(!this.preventResize) {
         this.debounce('ironresize', function() {
@@ -403,6 +409,7 @@ time-domain="[[selectedDomain]]"
         },50);
       }
     },
+
     _onTooltipRequest: function(evt) {
       //somehting requested the tooltip (likely a scatter point)
       if(this.showTooltip) {
@@ -414,6 +421,7 @@ time-domain="[[selectedDomain]]"
         }
       }
     },
+
     /**
      * take an array of values aimed at clockwise and return one usable in
      * counter clockwise: swap value 1 and 3
@@ -426,6 +434,7 @@ time-domain="[[selectedDomain]]"
       result[3] = arr[1];
       return result;
     },
+
     /**
      * Builds a config object used to build our 4 axis
      */
@@ -475,6 +484,7 @@ time-domain="[[selectedDomain]]"
 
       return result;
     },
+
     /**
      * amplitude keys are needed by the radial scale so we have to
      * artificially build them
@@ -486,7 +496,6 @@ time-domain="[[selectedDomain]]"
     },
 
     _drawUnitLabel: function(svg, completeSeriesConfig, _radius, unitLabelFontSize) {
-
       //fetch unit from first config...
       //TODO: multi series?
       var seriesId = Object.keys(this.completeSeriesConfig),
@@ -504,13 +513,14 @@ time-domain="[[selectedDomain]]"
       this._unitLabelGroup.selectAll('text')
             .text(unit)
             .attr('font-size', unitLabelFontSize + 'px')
-            .style('font-family','GE Inspira Sans')
-            .attr('fill', this.colors['grey4']);
+            .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
+            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']));
 
       //place label
       this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
     },
+
     _drawClockwiseLabel: function(svg, _radius, counterClockwise, fontSize) {
 
       //fetch unit from first config...
@@ -527,20 +537,22 @@ time-domain="[[selectedDomain]]"
       this._clockwiseLabelGroup.selectAll('text')
             .text(!counterClockwise ? 'clockwise' : 'counter clockwise')
             .attr('font-size', fontSize + 'px')
-            .style('font-family','GE Inspira Sans')
-            .attr('fill', this.colors['grey4'])
+            .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
+            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']))
             .attr('text-anchor', 'middle');
 
       //place label
       this._clockwiseLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
               ',' + (-Math.sin(angle) * length) + ')');
     },
+
     /**
      * process  how many ticks we want on our axis, depending on size
      */
     _getNumberOfTick: function(_radius) {
       return Math.min(Math.max(_radius/70,2),7);
     },
+
     _showTooltipChanged: function() {
 
       //make sure the dom if is processed....
