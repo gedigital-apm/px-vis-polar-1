@@ -83,6 +83,7 @@ time-domain="[[selectedDomain]]"
             <px-vis-register
               id="register"
               class$="{{_getHideClass(hideRegister)}}"
+              dynamic-menu-config="[[dynamicMenuConfig]]"
               tooltip-data="[[tooltipData]]"
               chart-data="[[_filteredData]]"
               complete-series-config="[[completeSeriesConfig]]"
@@ -221,7 +222,8 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorChart.registerPositioning,
       PxVisBehaviorChart.layers,
       baseColors,
-      PxVisBehaviorChart.dataVisColorTheming
+      PxVisBehaviorChart.dataVisColorTheming,
+      PxVisBehavior.dynamicMenuConfig
     ],
     /**
     * Properties block
