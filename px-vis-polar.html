@@ -20,7 +20,7 @@
 <link rel="import" href="../px-vis/px-vis-clip-path.html"/>
 <link rel="import" href="../px-vis/px-vis-radial-gridlines.html"/>
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
-
+<link rel="import" href="../px-colors-design/colors.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
 
 <!--
@@ -83,6 +83,7 @@ time-domain="[[selectedDomain]]"
             <px-vis-register
               id="register"
               class$="{{_getHideClass(hideRegister)}}"
+              dynamic-menu-config="[[dynamicMenuConfig]]"
               tooltip-data="[[tooltipData]]"
               chart-data="[[_filteredData]]"
               complete-series-config="[[completeSeriesConfig]]"
@@ -220,7 +221,9 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorChart.chartAutoResize,
       PxVisBehaviorChart.registerPositioning,
       PxVisBehaviorChart.layers,
-      PxVisBehaviorChart.dataVisColorTheming
+      baseColors,
+      PxVisBehaviorChart.dataVisColorTheming,
+      PxVisBehavior.dynamicMenuConfig
     ],
     /**
     * Properties block
