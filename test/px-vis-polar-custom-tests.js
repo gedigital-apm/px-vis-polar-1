@@ -50,7 +50,7 @@ function runCustomTests() {
     test('layers order', function() {
 
       var root = Polymer.dom(polar.root).querySelector('px-vis-svg'),
-          svg = Polymer.dom(root.root).querySelector('svg'),
+          svg = Polymer.dom(root.root).querySelector('svg').querySelector('g'),
           children = svg.childNodes,
           svgs = [];
 
@@ -58,16 +58,16 @@ function runCustomTests() {
       //it ourselves...
       for(var i = 0; i<children.length; i++) {
         //ignore text nodes
-        if(children[i].nodeType !== 3) {
+        if(children[i].nodeType !== 3 && children[i].id && children[i].id.startsWith('layer')) {
           svgs.push(children[i]);
         }
       }
 
       //order MATTERS for svg drawing: first one is behind, last one on top
-      assert.equal(polar._gridSvg.node(), svgs[0]);
-      assert.equal(polar.svg.node(), svgs[1]);
-      assert.equal(polar._drawingLineSvg.node(), svgs[2]);
-      assert.equal(polar._drawingScatterSvg.node(), svgs[3]);
+      assert.equal(polar.layer[0].node(), svgs[0]);
+      assert.equal(polar.layer[1].node(), svgs[1]);
+      assert.equal(polar.layer[2].node(), svgs[2]);
+      assert.equal(polar.layer[3].node(), svgs[3]);
     });
   });
 
@@ -78,10 +78,16 @@ function runCustomTests() {
       polar.set('counterClockwise', true);
 
       //units
-      var oldConf = polar.seriesConfig;
-      polar.seriesConfig = {};
-      oldConf.firstSerie.yAxisUnit = 'my unit';
-      polar.set('seriesConfig', oldConf);
+      var newConf = {
+                "firstSerie": {
+                "name": "Data",
+                "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                }
+            };      
+      newConf.firstSerie.yAxisUnit = 'my unit';
+     //polar.set('seriesConfig',{});
+      polar.set('seriesConfig', newConf);
 
        //give enough time for drawing
       setTimeout(function() {
