@@ -58,7 +58,7 @@ function runCustomTests() {
       //it ourselves...
       for(var i = 0; i<children.length; i++) {
         //ignore text nodes
-        if(children[i].nodeType !== 3 && children[i].id && children[i].id.startsWith('layer')) {
+        if(children[i].nodeType !== 3 && children[i].id && children[i].id.indexOf('layer') === 0) {
           svgs.push(children[i]);
         }
       }
