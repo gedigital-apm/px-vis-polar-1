@@ -179,6 +179,7 @@ time-domain="[[selectedDomain]]"
           muted-series="[[mutedSeries]]"
           x-axis-type="linear"
           y-axis-type="linear"
+          orientation="top"
           complete-series-config="[[completeSeriesConfig]]"
           hover-target="[[tooltipTarget]]"
           tooltip-style="light"
@@ -397,10 +398,10 @@ time-domain="[[selectedDomain]]"
       if(this.showTooltip) {
         if(evt.detail.show) {
           this.$$('px-vis-tooltip').mousePosition = evt.detail.mouseCoords;
-          this.$$('px-vis-tooltip').tooltipElem._show();
-        } else {
-          this.$$('px-vis-tooltip').tooltipElem._hide();
-        }
+          //force show so that the tooltip will do smart positioning
+          this.$$('px-vis-tooltip').forceShow();
+        } 
+        //else the tooltip will hide itself due to 'hidden' on tooltipData
       }
     },
 
