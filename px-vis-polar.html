@@ -171,21 +171,20 @@ time-domain="[[selectedDomain]]"
         tick-values="[[_drawnTickValues]]"
       >
       </px-vis-radial-gridlines>
-      <template id="tooltipTemplate" is="dom-if" if="{{showTooltip}}">
-        <px-vis-tooltip
-          id="tooltip"
-          tooltip-data="[[tooltipData]]"
-          chart-data="[[chartData]]"
-          muted-series="[[mutedSeries]]"
-          x-axis-type="linear"
-          y-axis-type="linear"
-          orientation="top"
-          complete-series-config="[[completeSeriesConfig]]"
-          hover-target="[[tooltipTarget]]"
-          tooltip-style="light"
-          muted-series="[[mutedSeries]]">
-        </px-vis-tooltip>
-      </template>
+      <px-vis-tooltip
+        id="tooltip"
+        tooltip-data="[[tooltipData]]"
+        chart-data="[[chartData]]"
+        muted-series="[[mutedSeries]]"
+        x-axis-type="linear"
+        y-axis-type="linear"
+        orientation="top"
+        complete-series-config="[[completeSeriesConfig]]"
+        hover-target="[[tooltipTarget]]"
+        tooltip-style="light"
+        muted-series="[[mutedSeries]]"
+        hide="[[!_computedShowTooltip]]">
+      </px-vis-tooltip>
 
 
     </div>
@@ -222,7 +221,9 @@ time-domain="[[selectedDomain]]"
       PxColorsBehavior.baseColors,
       PxColorsBehavior.dataVisColorTheming,
       PxVisBehavior.dynamicMenuConfig,
-      PxVisBehaviorChart.actionRequest
+      PxVisBehaviorChart.actionRequest,
+      PxVisBehaviorChart.registerConfigs,
+      PxVisBehaviorChart.showTooltip 
     ],
     /**
     * Properties block
@@ -273,40 +274,6 @@ time-domain="[[selectedDomain]]"
         }
       },
       /**
-       * Configuration object used to customize the tooltip.
-       * Please refer to px-vis-tooltip (https://github.com/PredixDev/px-vis) for a list of supported properties.
-       * Most interesting properties include:
-       * - width
-       * - height
-       * - tooltipStyle
-       * - forceDateTimeDisplay
-       */
-      tooltipConfig: {
-        type: Object,
-        observer: '_tooltipConfigChanged'
-      },
-      /**
-       * Configuration object used to customize the registers.
-       * Please refer to px-vis-register (https://github.com/PredixDev/px-vis) for a list of supported properties.
-       * Most interesting properties include:
-       * -width
-       * -height
-       *
-       */
-      registerConfig: {
-        type: Object,
-        observer: '_registerConfigChanged'
-      },
-      /**
-       *
-       * Allows to show the tooltip
-       */
-      showTooltip: {
-        type: Boolean,
-        value: false,
-        observer: '_showTooltipChanged'
-      },
-      /**
        * Font size for the unit label
        */
       unitLabelFontSize: {
@@ -342,7 +309,9 @@ time-domain="[[selectedDomain]]"
     observers: [
       '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
       '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)',
-      '_createLayersOnce(svg, numberOfLayers)'
+      '_createLayersOnce(svg, numberOfLayers)',
+      '_tooltipConfigChanged(tooltipConfig)',
+      '_registerConfigChanged(registerConfig)'
     ],
 
     ready: function() {
@@ -367,13 +336,10 @@ time-domain="[[selectedDomain]]"
     },
 
     _tooltipConfigChanged: function(conf) {
-      if(this.$$('px-vis-tooltip')) {
-        this._applyConfigToElement(this.tooltipConfig, this.$$('px-vis-tooltip'));
-      }
+      this._applyConfigToElement(this.tooltipConfig, this.$.tooltip);
     },
 
     _registerConfigChanged: function(conf) {
-
       this._applyConfigToElement(this.registerConfig, this.$.register);
     },
 
@@ -396,14 +362,12 @@ time-domain="[[selectedDomain]]"
 
     _onTooltipRequest: function(evt) {
       //somehting requested the tooltip (likely a scatter point)
-      if(this.showTooltip) {
+      if(this._computedShowTooltip) {
         if(evt.detail.show) {
-          this.$$('px-vis-tooltip').mousePosition = evt.detail.mouseCoords;
-          //force show so that the tooltip will do smart positioning
-          this.$$('px-vis-tooltip').forceShow();
+          //update tooltip pos
+          this.$.tooltip.mousePosition = evt.detail.mouseCoords;
         } 
-        //else the tooltip will hide itself due to 'hidden' on tooltipData
-      }
+      } 
     },
 
     /**
@@ -536,15 +500,5 @@ time-domain="[[selectedDomain]]"
     _getNumberOfTick: function(_radius) {
       return Math.min(Math.max(_radius/70,2),7);
     },
-
-    _showTooltipChanged: function() {
-
-      //make sure the dom if is processed....
-      this.$.tooltipTemplate.render()
-
-      if(this.showTooltip && this.tooltipConfig) {
-        this._tooltipConfigChanged();
-      }
-    }
   });
 </script>
