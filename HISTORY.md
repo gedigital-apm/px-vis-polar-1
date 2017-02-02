@@ -1,7 +1,3 @@
-v1.0.1
-==================
-* changing ghp.sh to account for Alpha releases
-
 v1.0.0
 ===================
 * modified internal mechanism for sizing and laying out the chart
@@ -11,6 +7,7 @@ v1.0.0
 * forceDateTimeDisplay is now turned off by default for tooltip and registers, it can be re-enabled through their respective configs
 * Added layers
 * Changed line to line-svg
+* changing ghp.sh to account for Alpha releases
 
 v0.2.1
 ==================
