@@ -1,7 +1,3 @@
-v1.0.1
-==================
-* changing ghp.sh to account for Alpha releases
-
 v1.0.0
 ===================
 * modified internal mechanism for sizing and laying out the chart
@@ -13,6 +9,7 @@ v1.0.0
 * Changed line to line-svg
 * Added dynamic menus on registers
 * Added toolbar, configurable through toolbarConfig
+* changing ghp.sh to account for Alpha releases
 
 v0.2.1
 ==================
