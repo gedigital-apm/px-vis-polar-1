@@ -235,7 +235,8 @@ time-domain="[[selectedDomain]]"
       PxVisBehaviorChart.actionRequest,
       PxVisBehaviorChart.registerConfigs,
       PxVisBehaviorChart.showTooltip ,
-      PxVisBehaviorChart.toolbarSubConfig
+      PxVisBehaviorChart.toolbarSubConfig,
+      PxVisBehaviorChart.chartToolbarConfig
     ],
     /**
     * Properties block
@@ -310,23 +311,6 @@ time-domain="[[selectedDomain]]"
        */
       _unitLabelGroup: {
         type: Object
-      },
-      /**
-      * Configuration object used to customize the toolbar
-      * Please refer to px-vis-toolbar (https://github.com/PredixDev/px-vis) for a list of supported properties.
-      * Toolbar is empty by default and this chart does not support zooming or panning
-      * Most interesting properties include:
-      * - config (complex object for customizing the toolbar)
-      * - horizontalAlignment
-      * - subToolbarAlignment
-      */
-      toolbarConfig: {
-        type: Object,
-        value: function() {
-          return {
-            "config": {}
-          };
-        }
       }
     },
 
