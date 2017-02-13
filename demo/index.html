@@ -1,0 +1,464 @@
+<!-- Common imports -->
+<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../../px-polymer-font-awesome/polymer-font-awesome.html" />
+
+<!-- Common demo imports -->
+<link rel="import" href="../../px-demo/px-demo-header.html" />
+<link rel="import" href="../../px-demo/px-demo-api-viewer.html" />
+<link rel="import" href="../../px-demo/px-demo-footer.html" />
+<link rel="import" href="../../px-demo/px-demo-configs.html" />
+<link rel="import" href="../../px-demo/px-demo-props.html" />
+<link rel="import" href="../../px-demo/px-demo-interactive.html" />
+<link rel="import" href="../../px-demo/px-demo-component-snippet.html" />
+<link rel="import" href="../../px-demo/px-demo-code-editor.html" />
+<link rel="import" href="../../px-demo/css/px-demo-styles.html" />
+
+<!-- Imports for this componnent -->
+<link rel="import" href="../../px-colors-design/colors.html" />
+<link rel="import" href="../../px-vis/px-vis-chart-navigator.html"/>
+<link rel="import" href="../px-vis-polar.html"/>
+
+<!-- Demo DOM module -->
+<dom-module id="local-element-demo">
+  <template>
+    <style include="px-demo-styles" is="custom-style"></style>
+
+    <!-- Header -->
+    <px-demo-header
+        module-name="px-vis-polar"
+        description="The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property. The chart is built off px-vis components which utilize d3.js 4.0+.">
+    </px-demo-header>
+
+    <!-- Interactive -->
+    <px-demo-interactive>
+      <!-- Configs -->
+      <px-demo-configs configs="[[configs]]" props="{{props}}" chosen-config="{{chosenConfig}}"></px-demo-configs>
+
+      <!-- Props -->
+      <px-demo-props props="{{props}}" config="[[chosenConfig]]"></px-demo-props>
+
+      <!-- Code Editor -->
+      <px-demo-code-editor props="{{props}}"></px-demo-code-editor>
+
+      <!-- Component ---------------------------------------------------------->
+      <px-demo-component class="flex__item flex">
+        <div style="width:100%;">
+          <px-vis-polar
+            width="{{props.width.value}}"
+            height="{{props.height.value}}"
+            margin='{{props.margin.value}}'
+            prevent-resize="{{props.preventResize.value}}"
+            chart-horizontal-alignment="{{props.chartHorizontalAlignment.value}}"
+            chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
+            chart-data="{{props.chartData.value}}"
+            include-all-series="[[props.includeAllSeries.value]]"
+            series-config='{{props.seriesConfig.value}}'
+            counter-clockwise="{{props.counterClockwise.value}}"
+            use-degrees="{{props.useDegrees.value}}"
+            register-location="[[props.registerLocation.value]]"
+            hide-register="{{props.hideRegister.value}}"
+            show-tooltip="{{props.showTooltip.value}}"
+            time-data="props.timeData.value"
+            time-domain="[[selectedDomain]]">
+          </px-vis-polar>
+          <div style="height:100px; width:[[props.width.value]]px;">
+            <px-vis-chart-navigator
+              id="navigator"
+              x-axis-type="time"
+              y-axis-type="linear"
+              chart-horizontal-alignment="{{props.chartHorizontalAlignment.value}}"
+              chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
+              margin='{
+                "top": 5,
+                "right": 10,
+                "bottom": 20,
+                "left": 10
+              }'
+              chart-data="[[props.chartData.value]]"
+              series-config='{
+                "firstSeries": {
+                  "type": "line",
+                  "y": "tag1",
+                  "x":"x"
+                }
+              }'
+              selected-domain="{{selectedDomain}}">
+            </px-vis-chart-navigator>
+          </div>
+        </div>
+      </px-demo-component>
+      <!-- END Component ------------------------------------------------------>
+
+      <px-demo-component-snippet
+          element-properties="{{props}}"
+          element-name="px-vis-polar"
+          links-includes="[[linksIncludes]]"
+          scripts-includes="[[scriptsIncludes]]"
+          polygit-includes="[[polygitIncludes]]">
+      </px-demo-component-snippet>
+    </px-demo-interactive>
+
+    <!-- API Viewer -->
+    <px-demo-api-viewer
+      source="px-vis-polar"
+      hide="[[apiHide]]"
+      mark-private="[[apiMarkPrivate]]"
+      mark-read-only="[[apliMarkReadOnly]]"
+      change-description="[[apiChangeDescription]]">
+    </px-demo-api-viewer>
+
+    <!-- Footer -->
+    <px-demo-footer></px-demo-footer>
+
+  </template>
+
+</dom-module>
+<script>
+  Polymer({
+    is: 'local-element-demo',
+
+    properties: {
+
+      /**
+       * Note: The actual data/values for `props` are placed in `this.demoProps`
+       * to create a static reference that Polymer shouldn't overwrite.
+       *
+       * On object containing all the properties the user can configure for this
+       * demo. Usually a pretty similar copy of the component's `properties` block
+       * with some additional sugar added to describe what kind of input the
+       * user will be shown and how that input should be configured.
+       *
+       * Note that `value` for each property is the default that will be set
+       * unless a config from `configs` is applied by default.
+       *
+       * @example
+       *
+       * `demoProps` is an object containing multipe objects. Each sub-object has
+       * should have a key with the name of the configurable property, and a set
+       * of values that describe that property. At a high level, you might have:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: { ... },
+       *       displayMode: { ... },
+       *       blockDatesBefore: { ... }
+       *     }
+       * ```
+       *
+       * Each sub-object should contain information about the configurable property's
+       * `type` (a reference to the JavaScript literal), a default value, and a set
+       * of additional keys that describe the input it can be changed with.
+       * The following inputs types are currently available:
+       *
+       * - 'toggle' - A toggle switch input to set Boolean values
+       * - 'text' - A simple single-line text input to set String or stringified Array/Object values
+       * - 'dropdown' - A dropdown picker that can be used to select any kind of value from a list of available options
+       *
+       * Full examples for each input:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: {
+       *         type: Boolean,
+       *         value: false,
+       *         inputType: 'toggle'
+       *       },
+       *       displayMode: {
+       *         type: String,
+       *         value: 'day',
+       *         inputType: 'dropdown',
+       *         inputChoices: ['day', 'month', 'year']
+       *       },
+       *       blockDatesBefore: {
+       *         type: String,
+       *         value: '2016-10-10T00:00:00.000Z',
+       *         inputType: 'text',
+       *         inputPlaceholder: 'ISO 8601 String'
+       *       }
+       *     }
+       * ```
+       *
+       * By default, the configurable property names are converted from camelCase
+       * to Title Case and used as input labels (e.g. 'displayMode' -> 'Display Mode').
+       * Labels can be set manually through the key `inputLabel`:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: {
+       *         type: Boolean,
+       *         value: false,
+       *         inputType: 'toggle',
+       *         inputLabel: "Stop range selection"
+       *       }
+       *     }
+       * ```
+       *
+       * @property demoProps
+       * @type {Object}
+       */
+      props: {
+        type: Object,
+        value: function(){ return this.demoProps; }
+      },
+
+      /**
+       * An array of pre-configured `props` that can be used to provide the user
+       * with a set of common examples. These configs will be made available
+       * as a set of tabs the user can click that will automatically change
+       * the `props` to specific values.
+       *
+       * @example
+       *
+       * Each config is an object. Its keys should be the names of the configurable
+       * properties defined in your `demoProps` above. Each key's value should
+       * be the new prop value for the configuration. You can also include these
+       * optional keys:
+       *
+       * - `configName` - a String value that will be used for the title of the tab
+       * - `configReset` - a Boolean, if `true` resets all props (even those not specified in the config) when this config is selected. Defaults to `false`.
+       *
+       * Example of two configs:
+       *
+       * ```
+       *     [
+       *       {
+       *         configName: "Basic",
+       *         preventRangeSelection: true,
+       *         displayMode: 'year',
+       *         blockDatesBefore: '2016-10-10T00:00:00.000Z'
+       *       },
+       *       {
+       *         configName: "Advanced",
+       *         preventRangeSelection: false,
+       *         displayMode: 'day',
+       *         blockDatesBefore: '2010-10-10T00:00:00.000Z'
+       *       }
+       *     ]
+       * ```
+       *
+       * @property demoProps
+       * @type {Array}
+       */
+      configs: {
+        type: Array,
+        value: function(){
+          return [
+            { configName: "Default",
+              configReset: true,
+              width: 700,
+              height: 400 }
+          ]
+        }
+      },
+
+      apiHide: {
+        type: Array,
+        value: function() {
+          return [
+            "generateLayers",
+            "numberOfLayers",
+            "offset",
+            "svg",
+            "addClipPath",
+            "cloneSVGElem",
+            "generateRandomID",
+          ]
+        }
+      },
+      apiMarkPrivate: {
+        type: Array,
+        value: function() {
+          return [
+            "clipPath",
+            "completeSeriesConfig",
+            "domainChanged",
+            "layer",
+            "pxSvgElem",
+            "pxSvgElemLower",
+            "seriesClipPath"
+          ]
+        }
+      },
+      apliMarkReadOnly: {
+        type: Array,
+        value: function() {
+          return [
+            "tooltipData",
+            "x",
+            "y"
+          ]
+        }
+      },
+      apiChangeDescription: {
+        type: Array,
+        value: function() {
+          return [{
+            // "name": "xAxisType",
+            // "desc": "Sets the type of data for the x values\n\nValid entries are:\n\n* `time`: for time domains in UTC [default].\n\n* `timeLocal`: for local time domains."
+          }]
+        }
+      },
+
+      scriptsIncludes: {
+        type: Array,
+        value: function() {
+          return ['https://cdn.rawgit.com/foretagsplatsen/numbro/1.7.1/numbro.js'];
+        }
+      },
+
+      linksIncludes: {
+        type: Array,
+        value: function() {
+          return ['px-vis/px-polygit-imports-vis.html', 'px-datetime-common/px-polygit-imports-datetime.html', 'numbro-element/numbro-element.html'];
+        }
+      },
+
+      polygitIncludes: {
+        type: Array,
+        value: function() {
+          return ['numbro*+MeTaNoV+*'];
+        }
+      }
+    },
+
+    /**
+     * A reference for `this.props`. Read the documentation there.
+     */
+    demoProps: {
+      preventResize: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      width: {
+        type: Number,
+        defaultValue: 0,
+        inputType: 'text'
+      },
+
+      height: {
+        type: Number,
+        defaultValue: 0,
+        inputType: 'text'
+      },
+
+      margin: {
+        type: Object,
+        defaultValue: { "top": 0, "bottom": 0, "left": 0, "right": 0 },
+        inputType: 'code:JSON'
+      },
+
+      chartHorizontalAlignment: {
+        type: String,
+        defaultValue: 'center',
+        inputType: 'dropdown',
+        inputChoices: ['left', 'center', 'right']
+      },
+
+      chartVerticalAlignment: {
+        type: String,
+        defaultValue: 'top',
+        inputType: 'dropdown',
+        inputChoices: ['top', 'center', 'bottom']
+      },
+
+      chartData: {
+        type: Array,
+        defaultValue: [
+          {"tag1": 4.02,  "tag2": 258.66,  "x": 1468982879188},
+          {"tag1": 3.121, "tag2": 298.87,  "x": 1468985171076},
+          {"tag1": 2.923, "tag2": 298.318, "x": 1469017257508},
+          {"tag1": 2.912, "tag2": 299.195, "x": 1469019549396},
+          {"tag1": 0.243, "tag2": 275.593, "x": 1469021841284},
+          {"tag1": 0,     "tag2": 0,       "x": 1469024133172},
+          {"tag1": 0,     "tag2": 0,       "x": 1469026425060}
+          ],
+        inputType: 'code:JSON'
+      },
+
+      includeAllSeries: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      seriesConfig: {
+        type: Object,
+        defaultValue: {
+          "firstSeries": {
+            "type": "line",
+            "name": "Data",
+            "yAxisUnit": "m/s",
+            "y": "tag1",
+            "x": "tag2"
+          }
+        },
+        inputType: 'code:JSON'
+      },
+
+      counterClockwise: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      useDegrees: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      registerLocation: {
+        type: String,
+        defaultValue: 'top',
+        inputType: 'dropdown',
+        inputChoices: ['none', 'top', 'side', 'both']
+      },
+
+      hideRegister: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      showTooltip: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      timeData: {
+        type: String,
+        defaultValue: 'x',
+        inputType: 'text'
+      }
+    },
+
+    listeners: {
+      'px-demo-component-light-dom-loaded' : '_handleDemoLoaded'
+    },
+
+    /**
+     * When the chart is loaded, try to call `notifyResize()` on it to ensure
+     * that it resizes to the correct dimensions.
+     */
+    _handleDemoLoaded: function() {
+      var chart = this.$$('px-vis-polar');
+      if (chart && typeof chart.notifyResize === 'function') {
+        // Wait 1000ms to make sure the parent is sized and ready for the redraw
+        this.async(function(){
+          chart.notifyResize();
+        }, 1000);
+      }
+
+      var nav = this.$$('px-vis-chart-navigator');
+      if (nav && typeof nav.notifyResize === 'function') {
+        // Wait 1000ms to make sure the parent is sized and ready for the redraw
+        this.async(function(){
+          nav.notifyResize();
+        }, 1000);
+      }
+    }
+  });
+</script>
