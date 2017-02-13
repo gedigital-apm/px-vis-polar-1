@@ -7,6 +7,8 @@ v1.0.0
 * forceDateTimeDisplay is now turned off by default for tooltip and registers, it can be re-enabled through their respective configs
 * Added layers
 * Changed line to line-svg
+* Added dynamic menus on registers
+* Added toolbar, configurable through toolbarConfig
 * changing ghp.sh to account for Alpha releases
 
 v0.2.1
@@ -37,7 +39,6 @@ v0.1.12
 v0.1.11
 ==================
 * bower updating px-demo-snippet
->>>>>>> master
 
 v0.1.10
 ===================

@@ -18,6 +18,7 @@
 <link rel="import" href="../px-vis/px-vis-radial-gridlines.html"/>
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
 <link rel="import" href="../px-colors-design/colors.html"/>
+<link rel="import" href="../px-vis/px-vis-toolbar.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
 
 <!--
@@ -89,15 +90,25 @@ time-domain="[[selectedDomain]]"
               x-axis-type="linear"
               y-axis-type="linear">
             </px-vis-register>
-            <px-vis-svg
-              class="inline--flex"
-              id="svg"
-              width="[[_smallerSide]]"
-              height="[[_smallerSide]]"
-              svg="{{svg}}"
-              px-svg-elem="{{pxSvgElem}}"
-              offset="[[_center]]">
-            </px-vis-svg>
+            <div class="flex flex--col">
+              <px-vis-toolbar
+                id="toolbar"
+                current-sub-config='[[toolbarSubConfig]]'
+                action-config='{{actionConfig}}'
+                within-chart
+                chart-margin="[[margin]]"
+                show-tooltip="{{_internalShowTooltip}}">
+              </px-vis-toolbar>
+              <px-vis-svg
+                class="inline--flex"
+                id="svg"
+                width="[[_smallerSide]]"
+                height="[[_smallerSide]]"
+                svg="{{svg}}"
+                px-svg-elem="{{pxSvgElem}}"
+                offset="[[_center]]">
+              </px-vis-svg>
+            </div>
 
             <!-- scatter series -->
             <template is="dom-repeat" items="[[_seriesKeys]]">
@@ -222,7 +233,9 @@ time-domain="[[selectedDomain]]"
       PxVisBehavior.dynamicMenuConfig,
       PxVisBehaviorChart.actionRequest,
       PxVisBehaviorChart.registerConfigs,
-      PxVisBehaviorChart.showTooltip
+      PxVisBehaviorChart.showTooltip ,
+      PxVisBehaviorChart.toolbarSubConfig,
+      PxVisBehaviorChart.chartToolbarConfig
     ],
     /**
     * Properties block
@@ -310,7 +323,8 @@ time-domain="[[selectedDomain]]"
       '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)',
       '_createLayersOnce(svg, numberOfLayers)',
       '_tooltipConfigChanged(tooltipConfig)',
-      '_registerConfigChanged(registerConfig)'
+      '_registerConfigChanged(registerConfig)',
+      '_toolbarConfigChanged(toolbarConfig)'
     ],
 
     ready: function() {
@@ -341,20 +355,30 @@ time-domain="[[selectedDomain]]"
     _registerConfigChanged: function(conf) {
       this._applyConfigToElement(this.registerConfig, this.$.register);
     },
+    _toolbarConfigChanged: function(conf) {
+      this._applyConfigToElement(this.toolbarConfig, this.$.toolbar);
+    },
 
     _onIronResize: function() {
       if(!this.preventResize) {
         this.debounce('ironresize', function() {
           var wrapperRect = this.$.wrapper.getBoundingClientRect(),
-              registerRect = this.$.register.getBoundingClientRect();
+              toolbarRect = this.$.toolbar.getBoundingClientRect(),
+              registerRect = this.$.register.getBoundingClientRect(),
+              widthDeduct = 0,
+              heightDeduct = 0;
+
+          heightDeduct += toolbarRect.height;
 
           if(this.$.register.type === 'horizontal') {
-            this.set('width', Math.max(wrapperRect.width,0));
-            this.set('height', Math.max(wrapperRect.height - registerRect.height,0));
+            heightDeduct += registerRect.height;
           } else {
-            this.set('width', Math.max(wrapperRect.width - registerRect.width,0));
-            this.set('height', Math.max(wrapperRect.height,0));
+            widthDeduct += registerRect.width;
           }
+
+          this.set('width', Math.max(wrapperRect.width - widthDeduct, 0));
+          this.set('height', Math.max(wrapperRect.height - heightDeduct, 0));
+
         },50);
       }
     },
