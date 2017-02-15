@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>px-vis-polar Demo</title>
+  <link rel="stylesheet" type="text/css" href="css/px-vis-polar-demo.css" />
+  <!-- Import custom element. Note: see comment about relative paths to dependencies in the *.html file referenced below -->
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../px-theme/px-theme-styles.html">
+  <style include="px-theme-styles" is="custom-style"></style>
+
+  <link rel="import" href="../px-api-viewer/px-api-viewer.html" />
+  <link rel="import" href="../px-tabs/px-tab-set.html" />
+  <link rel="import" href="../px-dropdown/px-dropdown.html" />
+  <link rel="import" href="../px-vis/px-vis-chart-navigator.html" />
+  <link rel="import" href="px-vis-polar.html" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <link rel="import" href="../px-demo-snippet/px-demo-snippet.html">
+  <link rel="import" href="../px-polymer-font-awesome/polymer-font-awesome.html" />
+  <!-- Requires Webcomponents.js polyfill is provided by the page for browsers that don't support html imports -->
+</head>
+
+<body>
+
+  <!-- Wrap elements with auto-binding template to -->
+  <!-- allow use of Polymer bindings in main document -->
+  <template id="just-for-demo" is="dom-bind">
+
+    <iron-ajax
+      url="../px-demo-data/demo-data/apm/polar.json"
+      handle-as="json"
+      last-response="{{data}}" auto></iron-ajax>
+
+    <!-- discription -->
+    <div class="hero u-p++ text--shadow">
+      <a class="actionable flex flex--right flex--middle" href="https://github.com/PredixDev/px-vis-polar" target="_blank">
+        <iron-icon class="menu__open" icon="fa:fa-github"></iron-icon>View on Github
+      </a>
+      <h1 class="delta">px-vis-polar</h1>
+      <div class="description-text">
+        The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
+      </div>
+      <div class="flex">
+        <img class="u-mr-- " src="https://img.shields.io/travis/PredixDev/px-vis-polar/master.svg?style=flat-square" alt="Travis"  onerror="this.style.display='none'"/>
+        <img class="u-mr--" src="https://img.shields.io/bower/v/px-vis-polar.svg?style=flat-square" alt="Bower" onerror="this.style.display='none'" />
+        <img class="u-mr--" src="https://img.shields.io/github/issues-raw/PredixDev/px-vis-polar.svg?style=flat-square" alt="Issues" onerror="this.style.display='none'" />
+      </div>
+    </div>
+    <br />
+
+    <!-- mega demo -->
+    <div style="position: relative;" class="u-pb++ flex flex--col" id="defaultTab">
+      <div class="tabContainer u-pt++ u-pl++">
+        <px-tab-set selected="{{selected}}" bare no-bottom-border>
+          <template is="dom-repeat" items="{{optionsArray}}">
+            <px-tab>Option {{indexPlusOne(index)}}</px-tab>
+          </template>
+        </px-tab-set>
+      </div>
+      <px-tab-pages selected="{{selected}}">
+        <template is="dom-repeat" items="{{optionsArray}}">
+          <section class="tab-page">
+            <div class="mega-demo flex u-ph++ u-pb++">
+              <!-- Properties -->
+              <div class="properties u-ph+ u-pb+ u-mt+">
+                <p class="epsilon">Properties</p>
+                <!--
+                //code sample for dropdown
+                <div class="u-mb-">DROPDOWN TITLE:
+                  <div style="width: 100%;">
+                    <px-vis-polar
+                      id="chart"
+                      chart-data="{{data}}"
+                      margin='{ "top": "20", "bottom": "60", "left": "20", "right": "40" }'
+                      register-config='{
+                          "height": 50,
+                          "type": "horizontal"}'
+                      series-config='{
+                          "firstSeries": {
+                          "type": "line",
+                          "name": "Data",
+                          "markerScale": "1.5",
+                          "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                          "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                          }
+                      }'
+                      >
+                      </px-vis-polar>
+                  </div>
+                </div> -->
+
+                <div class="u-mb-">Width: <input id="width" class="text-input" type="text" placeholder="{{item.width}}" value="{{item.width::input}}" /></div>
+                <div class="u-mb-">Height: <input id="height" class="text-input" type="text" placeholder="{{item.height}}" value="{{item.height::input}}" /></div>
+                <div class="flex u-mb-">
+                  <input id="counterClockwise{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.counterClockwise::change}}">
+                  <label for$="counterClockwise{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
+                  <div class="u-ml-">Counter Clockwise</div>
+                </div>
+                <div class="flex u-mb-">
+                  <input id="showTooltip{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.showTooltip::change}}">
+                  <label for$="showTooltip{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
+                  <div class="u-ml-">Show Tooltip</div>
+                </div>
+                <div class="flex u-mb-">
+                  <input id="hideRegister{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.hideRegister::change}}">
+                  <label for$="hideRegister{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
+                  <div class="u-ml-">Hide Register</div>
+                </div>
+                <div class="u-mb-">Horizontal Alignment:
+                <div style="width: 100%;">
+                  <px-dropdown id="chartHorizontalAlignment" value="{{item.chartHorizontalAlignment}}" display-value="{{item.chartHorizontalAlignment}}" bound-target="properties">
+                    <px-dropdown-content
+                      items='[
+                        {"key":"one", "val": "left"},
+                        {"key":"two", "val": "center"},
+                        {"key":"three", "val": "right"}]'>
+                    </px-dropdown-content>
+                  </px-dropdown>
+                </div>
+              </div>
+
+              <div class="u-mb-">Vertical Alignment:
+                <div style="width: 100%;">
+                  <px-dropdown id="chartVerticalAlignment" value="{{item.chartVerticalAlignment}}" display-value="{{item.chartVerticalAlignment}}" bound-target="properties">
+                    <px-dropdown-content
+                      items='[
+                        {"key":"one", "val": "top"},
+                        {"key":"two", "val": "center"},
+                        {"key":"three", "val": "bottom"}]'>
+                    </px-dropdown-content>
+                  </px-dropdown>
+                </div>
+              </div>
+
+              <div class="flex u-mb-">
+                <input id="preventResize{{indexPlusOne(index)}}" class="toggle__input toggle__input--small" type="checkbox" checked="{{item.preventResize::change}}">
+                <label for$="preventResize{{indexPlusOne(index)}}" class="toggle__label toggle__label--small"></label>
+                <div class="u-ml-">Prevent Resize</div>
+              </div>
+
+              </div>
+
+              <div class="demoContainer u-mt+">
+                <!-- demo -->
+                <div class="flex flex--col">
+                  <div class="flex__item demo u-ph+ u-pb+" style="overflow:auto">
+                    <div style="height: 400px">
+                    <px-vis-polar
+                      class="flex__item"
+                      id="chart"
+                      chart-data="{{data}}"
+                      margin='{ "top": "0", "bottom": "0", "left": "0", "right": "0" }'
+                      width="{{item.width}}"
+                      height="{{item.height}}"
+                      prevent-resize = "{{item.preventResize}}"
+                      counter-clockwise="{{item.counterClockwise}}"
+                      show-tooltip="{{item.showTooltip}}"
+                      hide-register="{{item.hideRegister}}"
+                      use-degrees="{{item.useDegrees}}"
+                      register-config='{
+                          "height": 50,
+                          "type": "horizontal"}'
+                      series-config='{
+                          "firstSeries": {
+                          "type": "line",
+                          "name": "Data",
+                          "yAxisUnit": "m/s",
+                          "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                          "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
+                          }
+                      }'
+                      time-data="x"
+                      time-domain="[[selectedDomain]]"
+                      >
+                      </px-vis-polar>
+                      </div>
+                      <div style="height:100px" class="flex__item">
+                        <px-vis-chart-navigator
+
+                            id="navigator"
+                            x-axis-type="time"
+                            y-axis-type="linear"
+                            margin='{
+                              "top": 5,
+                              "right": 10,
+                              "bottom": 20,
+                              "left": 10
+                            }'
+                            chart-data="[[data]]"
+                            series-config='{
+                              "firstSeries": {
+                              "type": "line",
+                              "name": "Data",
+                              "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
+                              "x":"x"
+                              }
+                            }'
+                            selected-domain="{{selectedDomain}}">
+                        </px-vis-chart-navigator>
+                    </div>
+                  </div>
+                  <div class="flex__item">
+                    <px-demo-snippet
+                      element-properties={{item}}
+                      element-name="px-vis-polar"
+                      scripts-includes="[[scriptsIncludes]]"
+                      links-includes="[[linksIncludes]]"
+                      polygit-includes="[[polygitIncludes]]"
+                      >
+                    </px-demo-snippet>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="apiContainer">
+              <div class="flex flex--col api u-mt++" >
+                <!--
+                //these are optional in case the component has any children or associated components. remove this code if they don't.
+                <div class="flex">
+                  <div class="flex__item">
+                    <div class="flex flex--col childrenAssociated">
+                      <div class="componentHeader">Children Component</div>
+                      <div class="componentList">
+                        <ul>
+                          <li><a href="demo-page.html">Demo Page</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex__item">
+                    <div class="flex flex--col">
+                      <div class="componentHeader">Associated Components</div>
+                      <div class="componentList">
+                        <ul>
+                          <li><a href="demo-page.html">Demo Page</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+                <div>
+                  <px-api-viewer source="px-vis-polar"></px-api-viewer>
+                </div>
+              </div>
+            </div>
+          </section>
+        </template>
+      </px-tab-pages>
+    </div>
+    <footer class="footer flex flex--center">
+      <div class="footer__container u-pv++">
+        <div>
+          <a href="https://ge.com/digital" >
+            <img src="monogram-wdmk.png" alt="GE Monogram" class="footer__img">
+          </a>
+        </div>
+        <div class="footer__list">
+          <ul class="list-inline list-inline--delimited">
+            <li>
+              <a href="http://predix.io/legal" class="footer__list--lnk">Legal</a>
+            </li>
+            <li>
+              <a href="mailto:info@predix.io" class="footer__list--lnk">Contact Us</a>
+            </li>
+            <li>Copyright &copy; 2016 General Electric Company. All rights reserved.</li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </template>
+  <script>
+    window.addEventListener('WebComponentsReady', function() {
+
+      var template = document.querySelector('template[is=dom-bind]'),
+          optionsArray = [
+            {
+            "margin": { "top": "0", "bottom": "0", "left": "0", "right": "0" },
+            "chartData" : [
+              	{"tag1": 2.923, "tag2": 298.318, "x": 1469017257508},
+                {"tag1": 2.912, "tag2": 299.195, "x": 1469019549396},
+                {"tag1": 0.243, "tag2": 275.593, "x": 1469021841284},
+                {"tag1": 0,     "tag2": 0,       "x": 1469024133172},
+                {"tag1": 3.121, "tag2": 298.87,  "x": 1468985171076},
+                {"tag1": 4.02,  "tag2": 258.66,  "x": 1468982879188},
+                {"tag1": 0,     "tag2": 0,       "x": 1469026425060}
+              ],
+              "width": 550,
+              "height": 400,
+              "counterClockwise": false,
+              "preventResize": false,
+              "showTooltip": false,
+              "hideRegister": false,
+              "useDegrees": true,
+              "seriesConfig": {
+                  "firstSeries": {
+                  "type": "line",
+                  "name": "Data",
+                  "yAxisUnit": "m/s",
+                  "y": "tag1",
+                  "x": "tag2"
+                  }
+              },
+              "timeData": "x",
+              "chartHorizontalAlignment": "center",
+              "chartVerticalAlignment": "center",
+              "parentComponent": ["<div style='width:600px'>","</div>"]
+            }
+          ],
+          indexPlusOne = function(num) {
+            return num + 1;
+          };
+
+          template.selected = "0";
+          template.optionsArray = optionsArray;
+          template.indexPlusOne = indexPlusOne;
+          template.scriptsIncludes = ['https://cdn.rawgit.com/foretagsplatsen/numbro/1.7.1/numbro.js'];
+          template.linksIncludes = ['px-vis/px-polygit-imports-vis.html', 'px-datetime-common/px-polygit-imports-datetime.html'];
+          template.polygitIncludes = ['numbro*+MeTaNoV+*'];
+
+    });
+  </script>
+</body>
+</html>
