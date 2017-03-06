@@ -26,7 +26,7 @@
     <!-- Header -->
     <px-demo-header
         module-name="px-vis-polar"
-        description="The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property. The chart is built off px-vis components which utilize d3.js 4.0+.">
+        description="The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property. The chart is built off px-vis components which utilize d3.js 4.0+. The navigator is independent of the chart and has been added to demonstrate how it can be linked to a polar chart.">
     </px-demo-header>
 
     <!-- Interactive -->
@@ -41,33 +41,43 @@
       <px-demo-code-editor props="{{props}}"></px-demo-code-editor>
 
       <!-- Component ---------------------------------------------------------->
-      <px-demo-component class="flex__item flex">
-        <div style="width:100%;">
-          <px-vis-polar
-            width="{{props.width.value}}"
-            height="{{props.height.value}}"
-            margin='{{props.margin.value}}'
-            prevent-resize="{{props.preventResize.value}}"
-            chart-horizontal-alignment="{{props.chartHorizontalAlignment.value}}"
-            chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
-            chart-data="{{props.chartData.value}}"
-            include-all-series="[[props.includeAllSeries.value]]"
-            series-config='{{props.seriesConfig.value}}'
-            counter-clockwise="{{props.counterClockwise.value}}"
-            use-degrees="{{props.useDegrees.value}}"
-            register-location="[[props.registerLocation.value]]"
-            hide-register="{{props.hideRegister.value}}"
-            show-tooltip="{{props.showTooltip.value}}"
-            time-data="props.timeData.value"
-            time-domain="[[selectedDomain]]">
-          </px-vis-polar>
-          <div style="height:100px; width:[[props.width.value]]px;">
+      <px-demo-component class="flex__item flex" style="width:100%">
+        <div class="flex--column flex__item" style="width:100%;">
+          <div style="height:80%">
+            <px-vis-polar
+              id="chart"
+              width="{{appliedWidth}}"
+              height="{{appliedHeight}}"
+              margin='{{props.margin.value}}'
+              prevent-resize
+              chart-horizontal-alignment="{{props.chartHorizontalAlignment.value}}"
+              chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
+              chart-data="{{props.chartData.value}}"
+              include-all-series="[[props.includeAllSeries.value]]"
+              series-config='{{props.seriesConfig.value}}'
+              counter-clockwise="{{props.counterClockwise.value}}"
+              use-degrees="{{props.useDegrees.value}}"
+              hide-register="{{props.hideRegister.value}}"
+              register-config="{{props.registerConfig.value}}"
+              show-tooltip="{{props.showTooltip.value}}"
+              tooltip-config="{{props.tooltipConfig.value}}"
+              time-data="[[props.timeData.value]]"
+              time-domain="[[selectedDomain]]"
+              axis-labels="[[props.axisLabels.value]]"
+              unit-label-font-size="[[props.unitLabelFontSize.value]]"
+              clockwise-label-font-size="[[props.clockwiseLabelFontSize.value]]"
+              toolbar-config="{{props.toolbarConfig.value}}"
+              dynamic-menu-config='{{props.dynamicMenuConfig.value}}'
+              chart-extents='{{props.chartExtents.value}}'>
+            </px-vis-polar>
+          </div>
+          <div style="height:100px">
             <px-vis-chart-navigator
               id="navigator"
               x-axis-type="time"
               y-axis-type="linear"
-              chart-horizontal-alignment="{{props.chartHorizontalAlignment.value}}"
-              chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
+              chart-vertical-alignment="top"
+              height="100"
               margin='{
                 "top": 5,
                 "right": 10,
@@ -243,10 +253,7 @@
         type: Array,
         value: function(){
           return [
-            { configName: "Default",
-              configReset: true,
-              width: 700,
-              height: 400 }
+            { configName: "Default"}
           ]
         }
       },
@@ -318,7 +325,17 @@
         value: function() {
           return ['numbro*+MeTaNoV+*'];
         }
-      }
+      },
+
+      appliedWidth: {
+        type: Number,
+        defaultValue: 700
+      },
+
+      appliedHeight: {
+        type: Number,
+        defaultValue: 450
+      },
     },
 
     /**
@@ -327,26 +344,24 @@
     demoProps: {
       preventResize: {
         type: Boolean,
-        defaultValue: false,
+        defaultValue: true,
         inputType: 'toggle'
       },
 
+      //we need inputDisabled: false to be able to dynamically turn it on
       width: {
         type: Number,
-        defaultValue: 0,
+        defaultValue: 700,
+        inputDisabled: false,
         inputType: 'text'
       },
 
+      //we need inputDisabled: false to be able to dynamically turn it on
       height: {
         type: Number,
-        defaultValue: 0,
+        defaultValue: 450,
+        inputDisabled: false,
         inputType: 'text'
-      },
-
-      margin: {
-        type: Object,
-        defaultValue: { "top": 0, "bottom": 0, "left": 0, "right": 0 },
-        inputType: 'code:JSON'
       },
 
       chartHorizontalAlignment: {
@@ -358,9 +373,39 @@
 
       chartVerticalAlignment: {
         type: String,
-        defaultValue: 'top',
+        defaultValue: 'center',
         inputType: 'dropdown',
         inputChoices: ['top', 'center', 'bottom']
+      },
+
+      margin: {
+        type: Object,
+        defaultValue: { "top": 0, "bottom": 0, "left": 0, "right": 0 },
+        inputType: 'code:JSON'
+      },
+
+      showTooltip: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      tooltipConfig: {
+        type: Object,
+        defaultValue: { "forceDateTimeDisplay": true,},
+        inputType: 'code:JSON'
+      },
+
+      hideRegister: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      registerConfig: {
+        type: Object,
+        defaultValue: { "type": "vertical", "width": 220, "forceDateTimeDisplay": true},
+        inputType: 'code:JSON'
       },
 
       chartData: {
@@ -405,60 +450,85 @@
 
       useDegrees: {
         type: Boolean,
-        defaultValue: false,
+        defaultValue: true,
         inputType: 'toggle'
       },
 
-      registerLocation: {
-        type: String,
-        defaultValue: 'top',
-        inputType: 'dropdown',
-        inputChoices: ['none', 'top', 'side', 'both']
+      axisLabels: {
+        type: Array,
+        defaultValue: ['0°','90°','180°','270°'],
+        inputType: 'code:JSON'
       },
 
-      hideRegister: {
-        type: Boolean,
-        defaultValue: false,
-        inputType: 'toggle'
+      unitLabelFontSize: {
+        type: Number,
+        defaultValue: 15,
+        inputType: 'text'
       },
 
-      showTooltip: {
-        type: Boolean,
-        defaultValue: false,
-        inputType: 'toggle'
+      clockwiseLabelFontSize: {
+        type: Number,
+        defaultValue: 15,
+        inputType: 'text'
       },
 
       timeData: {
         type: String,
         defaultValue: 'x',
         inputType: 'text'
-      }
+      },
+
+      dynamicMenuConfig: {
+        type: Array,
+        defaultValue: [
+          {
+            'name': 'Log something',
+            'action': "function(data) {console.log(\"special action for \" + data.additionalDetail.name);}",
+            'eventName': 'log',
+            'icon': 'fa-trash',
+          }
+        ],
+        inputType: 'code:JSON'
+      },
+
+      toolbarConfig: {
+        type: Array,
+        defaultValue:{"config": {
+            }
+          },
+        inputType: 'code:JSON'
+      },
     },
 
-    listeners: {
-      'px-demo-component-light-dom-loaded' : '_handleDemoLoaded'
+    observers: [
+      '_preventResizeChanged(props.preventResize.value)',
+      '_appliedWidthChanged(appliedWidth)',
+      '_appliedHeightChanged(appliedHeight)',
+      '_widthChanged(props.width.value)',
+      '_heightChanged(props.height.value)'
+    ],
+
+    _preventResizeChanged: function() {
+      this.set('props.width.inputDisabled', !this.props.preventResize.value);
+      this.set('props.height.inputDisabled', !this.props.preventResize.value);
+      this.$.chart.set('preventResize', this.props.preventResize.value);
     },
-
-    /**
-     * When the chart is loaded, try to call `notifyResize()` on it to ensure
-     * that it resizes to the correct dimensions.
-     */
-    _handleDemoLoaded: function() {
-      var chart = this.$$('px-vis-polar');
-      if (chart && typeof chart.notifyResize === 'function') {
-        // Wait 1000ms to make sure the parent is sized and ready for the redraw
-        this.async(function(){
-          chart.notifyResize();
-        }, 1000);
+    _widthChanged: function() {
+      if(this.props.preventResize.value) {
+       this.set('appliedWidth', this.props.width.value);
       }
-
-      var nav = this.$$('px-vis-chart-navigator');
-      if (nav && typeof nav.notifyResize === 'function') {
-        // Wait 1000ms to make sure the parent is sized and ready for the redraw
-        this.async(function(){
-          nav.notifyResize();
-        }, 1000);
+    },
+    _heightChanged: function() {
+      if(this.props.preventResize.value) {
+       this.set('appliedHeight', this.props.height.value);
       }
-    }
+    },
+    _appliedWidthChanged: function() {
+      this.set('props.width.value', this.appliedWidth);
+    },
+    _appliedHeightChanged: function() {
+      this.set('props.height.value', this.appliedHeight);
+    },
+  
   });
 </script>

@@ -429,22 +429,25 @@ Custom property | Description | Default
     _onIronResize: function() {
       if(!this.preventResize) {
         this.debounce('ironresize', function() {
-          var wrapperRect = this.$.wrapper.getBoundingClientRect(),
-              toolbarRect = this.$.toolbar.getBoundingClientRect(),
-              registerRect = this.$.register.getBoundingClientRect(),
-              widthDeduct = 0,
-              heightDeduct = 0;
 
-          heightDeduct += toolbarRect.height;
+          if(!this.preventResize) {
+            var wrapperRect = this.$.wrapper.getBoundingClientRect(),
+                toolbarRect = this.$.toolbar.getBoundingClientRect(),
+                registerRect = this.$.register.getBoundingClientRect(),
+                widthDeduct = 0,
+                heightDeduct = 0;
 
-          if(this.$.register.type === 'horizontal') {
-            heightDeduct += registerRect.height;
-          } else {
-            widthDeduct += registerRect.width;
+            heightDeduct += toolbarRect.height;
+
+            if(this.$.register.type === 'horizontal') {
+              heightDeduct += registerRect.height;
+            } else {
+              widthDeduct += registerRect.width;
+            }
+
+            this.set('width', Math.max(wrapperRect.width - widthDeduct, 0));
+            this.set('height', Math.max(wrapperRect.height - heightDeduct, 0));
           }
-
-          this.set('width', Math.max(wrapperRect.width - widthDeduct, 0));
-          this.set('height', Math.max(wrapperRect.height - heightDeduct, 0));
 
         },50);
       }
