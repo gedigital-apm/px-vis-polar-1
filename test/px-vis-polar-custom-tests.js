@@ -94,36 +94,7 @@ function runCustomTests() {
         done();
       }, 400);
     });
-
-    test('labels are counter clockwise', function() {
-      var labels = polar.svg.node().querySelectorAll('.title-group');
-
-      assert.equal(labels[0].textContent, '0°');
-      assert.equal(labels[3].textContent, '90°');
-      assert.equal(labels[2].textContent, '180°');
-      assert.equal(labels[1].textContent, '270°');
-    });
-  });
-
-  suite('Chart counter clockwise', function() {
-    suiteSetup(function(done) {
-
-      polar.set('counterClockwise', true);
-       //give enough time for drawing
-      setTimeout(function() {
-        done();
-      }, 400);
-    });
-
-    test('labels are counter clockwise', function() {
-      var labels = polar.svg.node().querySelectorAll('.title-group');
-
-      assert.equal(labels[0].textContent, '0°');
-      assert.equal(labels[3].textContent, '90°');
-      assert.equal(labels[2].textContent, '180°');
-      assert.equal(labels[1].textContent, '270°');
-    });
-
+ 
     test('clockwise label', function() {
       var clockLabel = polar.svg.node().querySelector('.clockwise-group');
 
