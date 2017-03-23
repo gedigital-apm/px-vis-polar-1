@@ -194,6 +194,7 @@ Custom property | Description | Default
                 tooltip-data="{{tooltipData}}"
                 tooltip-on-hover
                 time-data="{{timeData}}"
+                clean-on-detached="[[cleanOnDetached]]"
                 >
               </px-vis-scatter>
               <px-vis-line-svg
@@ -207,7 +208,8 @@ Custom property | Description | Default
                 x="[[x]]"
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
-                complete-series-config="[[completeSeriesConfig]]">
+                complete-series-config="[[completeSeriesConfig]]"
+                clean-on-detached="[[cleanOnDetached]]">
               </px-vis-line-svg>
             </template>
         </div>
@@ -449,7 +451,7 @@ Custom property | Description | Default
             this.set('height', Math.max(wrapperRect.height - heightDeduct, 0));
           }
 
-        },50);
+        }, this.debounceResizeTiming);
       }
     },
 

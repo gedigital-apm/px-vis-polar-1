@@ -68,7 +68,8 @@
               clockwise-label-font-size="[[props.clockwiseLabelFontSize.value]]"
               toolbar-config="{{props.toolbarConfig.value}}"
               dynamic-menu-config='{{props.dynamicMenuConfig.value}}'
-              chart-extents='{{props.chartExtents.value}}'>
+              chart-extents='{{props.chartExtents.value}}'
+              debounce-resize-timing="{{props.debounceResizeTiming.value}}">
             </px-vis-polar>
           </div>
           <div style="height:100px">
@@ -92,7 +93,8 @@
                   "x":"x"
                 }
               }'
-              selected-domain="{{selectedDomain}}">
+              selected-domain="{{selectedDomain}}"
+              debounce-resize-timing="{{props.debounceResizeTiming.value}}">
             </px-vis-chart-navigator>
           </div>
         </div>
@@ -348,6 +350,12 @@
         inputType: 'toggle'
       },
 
+      debounceResizeTiming: {
+        type: Number,
+        defaultValue: 250,
+        inputType: 'text'
+      },
+
       //we need inputDisabled: false to be able to dynamically turn it on
       width: {
         type: Number,
@@ -529,6 +537,6 @@
     _appliedHeightChanged: function() {
       this.set('props.height.value', this.appliedHeight);
     },
-  
+
   });
 </script>
