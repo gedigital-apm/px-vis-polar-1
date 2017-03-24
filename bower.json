@@ -30,6 +30,6 @@
     "iron-ajax": "PolymerElements/iron-ajax#~1.4.1",
     "px-demo-data": "^0.0.20",
     "px-starter-kit-design": "^0.7.0",
-    "px-demo": "~1.4.3"
+    "px-demo": "^1.5.9"
   }
 }
