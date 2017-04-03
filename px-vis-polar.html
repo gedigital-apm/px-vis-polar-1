@@ -8,9 +8,10 @@
 <link rel="import" href="../px-vis/px-vis-behavior-common.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-d3.html"/>
 <link rel="import" href="../px-vis/px-vis-radial-scale.html"/>
-<link rel="import" href="../px-vis/px-vis-svg.html"/>
+<link rel="import" href="../px-vis/px-vis-svg-canvas.html"/>
 <link rel="import" href="../px-vis/px-vis-scatter.html"/>
 <link rel="import" href="../px-vis/px-vis-line-svg.html"/>
+<link rel="import" href="../px-vis/px-vis-interaction-space.html"/>
 <link rel="import" href="../px-vis/px-vis-axis.html"/>
 <link rel="import" href="../px-vis/px-vis-tooltip.html"/>
 <link rel="import" href="../px-vis/px-vis-register.html"/>
@@ -19,6 +20,7 @@
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
 <link rel="import" href="../px-colors-design/colors.html"/>
 <link rel="import" href="../px-vis/px-vis-toolbar.html"/>
+<link rel="import" href="../px-vis/px-vis-cursor.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
 
 <!--
@@ -138,11 +140,10 @@ Custom property | Description | Default
             x="{{x}}"
             y="{{y}}"
             domain-changed="{{domainChanged}}"
-            current-domain-x="{{currentDomainX}}"
-            current-domain-y="{{currentDomainY}}"
             selected-domain="[[selectedDomain]]"
             complete-series-config="[[completeSeriesConfig]]"
-            amplitude-keys="[[_amplitudeKey]]">
+            amplitude-keys="[[_amplitudeKey]]"
+            use-degrees="[[useDegrees]]">
           </px-vis-radial-scale>
           <div class$="{{_registerWrapperClass}}">
             <px-vis-register
@@ -166,16 +167,40 @@ Custom property | Description | Default
                 chart-margin="[[margin]]"
                 show-tooltip="{{_internalShowTooltip}}">
               </px-vis-toolbar>
-              <px-vis-svg
+              <px-vis-svg-canvas
                 class="inline--flex"
                 id="svg"
                 width="[[_smallerSide]]"
                 height="[[_smallerSide]]"
+                canvas-context="{{canvasContext}}"
                 svg="{{svg}}"
                 px-svg-elem="{{pxSvgElem}}"
+                svg-lower="{{svgLower}}"
                 offset="[[_center]]">
-              </px-vis-svg>
+              </px-vis-svg-canvas>
             </div>
+            <px-vis-interaction-space
+              svg="[[layer.4]]"
+              width="[[_radius]]"
+              height="[[_radius]]"
+              radial
+              use-degrees="[[useDegrees]]"
+              counter-clockwise="[[counterClockwise]]"
+              x="[[x]]"
+              y="[[y]]"
+              domain-changed="[[domainChanged]]"
+              series-keys="[[_seriesKeys]]"
+              chart-data="[[_filteredData]]"
+              tooltip-data="{{tooltipData}}"
+              x-axis-type="linear"
+              y-axis-type="linear"
+              complete-series-config="[[completeSeriesConfig]]"
+              mouse-rect="{{mouseRect}}"
+              series-keys="[[_seriesKeys]]"
+              time-data="[[timeData]]"
+              action-config="{{actionConfig}}"
+              show-tooltip="{{_computedShowTooltip}}">
+            </px-vis-interaction-space>
 
             <!-- scatter series -->
             <template is="dom-repeat" items="[[_seriesKeys]]">
@@ -194,7 +219,7 @@ Custom property | Description | Default
                 tooltip-data="{{tooltipData}}"
                 tooltip-on-hover
                 time-data="{{timeData}}"
->
+                time-data="{{timeData}}">
               </px-vis-scatter>
               <px-vis-line-svg
                 svg="[[layer.2]]"
@@ -212,6 +237,23 @@ Custom property | Description | Default
             </template>
         </div>
       </div>
+      <px-vis-cursor
+        horizontal-line="full"
+        vertical-line="full"
+        circle-point="yes"
+        radial
+        counter-clockwise="[[counterClockwise]]"
+        use-degrees="[[useDegrees]]"
+        svg="[[layer.2]]"
+        width="[[_diameter]]"
+        height="[[_diameter]]"
+        margin="[[_internalCircleMargins]]"
+        chart-data="[[_filteredData]]"
+        tooltip-data="[[tooltipData]]"
+        complete-series-config="[[completeSeriesConfig]]"
+        muted-series="[[mutedSeries]]"
+        offset="[[offset]]">
+      </px-vis-cursor>
       <!-- the 4 axis -->
       <template is="dom-repeat" items="[[_axisConfigArray]]">
         <px-vis-axis
@@ -261,7 +303,8 @@ Custom property | Description | Default
         hover-target="[[tooltipTarget]]"
         tooltip-style="light"
         muted-series="[[mutedSeries]]"
-        hide="[[!_computedShowTooltip]]">
+        hide="[[!_computedShowTooltip]]"
+        tooltip-data="[[tooltipData]]">
       </px-vis-tooltip>
 
 
@@ -302,7 +345,8 @@ Custom property | Description | Default
       PxVisBehaviorChart.registerConfigs,
       PxVisBehaviorChart.showTooltip ,
       PxVisBehaviorChart.toolbarSubConfig,
-      PxVisBehaviorChart.chartToolbarConfig
+      PxVisBehaviorChart.chartToolbarConfig,
+      PxVisBehavior.actionConfig
     ],
     /**
     * Properties block
@@ -406,7 +450,7 @@ Custom property | Description | Default
         this.defaultSeriesConfig.xAxisUnit = '°';
       }
 
-      this.set('numberOfLayers',4);
+      this.set('numberOfLayers',5);
 
       //use some default internal margins to make space for labels
       this.set('_internalCircleMargins', {top: 30, right: 0, bottom: 60,left: 10});
