@@ -55,7 +55,8 @@
                 "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                 }
             }'
-            show-tooltip
+
+            render-to-canvas
             time-data="x"
             time-domain="[[selectedDomain]]"
             use-degrees>
@@ -173,7 +174,7 @@
             'icon': 'fa-arrow-up'
           }
         ];
-        
+
         chart.set('dynamicMenuConfig', menuConfig);
 
       btnSnap.addEventListener('click', function() {
