@@ -190,6 +190,12 @@ Custom property | Description | Default
               counter-clockwise="[[counterClockwise]]"
               x="[[x]]"
               y="[[y]]"
+              action-config='{
+                  "mousedown": null,
+                  "mouseup": null,
+                  "mouseout": "resetTooltip",
+                  "mousemove": "calcTooltipData"
+                }'
               domain-changed="[[domainChanged]]"
               series-keys="[[_seriesKeys]]"
               chart-data="[[_filteredData]]"
