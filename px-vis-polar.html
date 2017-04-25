@@ -1,8 +1,3 @@
-<!--
-    Relative paths assume component is being run from inside an app or another component, where dependencies are flat
-    siblings. When this component is run from its own repo (e.g. tests, examples), we assume the server is started with
-    'gulp serve' (or similar server setup) to enable correct finding of bower dependencies for local runs.
--->
 <link rel="import" href="../polymer/polymer.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-chart.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-common.html"/>
@@ -24,6 +19,8 @@
 <link rel="import" href="../px-vis/px-vis-toolbar.html"/>
 <link rel="import" href="../px-vis/px-vis-cursor.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
+<link rel="import" href="../px-vis/px-vis-highlight-point.html"/>
+<link rel="import" href="../px-vis/px-vis-highlight-point-canvas.html"/>
 
 <!--
 The	px-vis-polar component allows to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
@@ -131,154 +128,153 @@ Custom property | Description | Default
 
     <div id="wrapper" class$="{{_chartWrapperClass}}">
       <!-- Legend -->
-        <div id="svgWrapper">
-          <!-- Core -->
-          <px-vis-radial-scale
-            id="scale"
+      <div id="svgWrapper">
+        <!-- Core -->
+        <px-vis-radial-scale
+          id="scale"
+          width="[[_radius]]"
+          height="[[_radius]]"
+          margin="[[margin]]"
+          chart-data="[[chartData]]"
+          x="{{x}}"
+          y="{{y}}"
+          domain-changed="{{domainChanged}}"
+          selected-domain="[[selectedDomain]]"
+          complete-series-config="[[completeSeriesConfig]]"
+          amplitude-keys="[[_amplitudeKey]]"
+          use-degrees="[[useDegrees]]">
+        </px-vis-radial-scale>
+        <div class$="{{_registerWrapperClass}}">
+          <px-vis-register
+            id="register"
+            class$="{{_getHideClass(hideRegister)}}"
+            dynamic-menu-config="[[dynamicMenuConfig]]"
+            tooltip-data="[[tooltipData]]"
+            chart-data="[[_filteredData]]"
+            complete-series-config="[[completeSeriesConfig]]"
+            muted-series={{mutedSeries}}
+            type="{{_registerType}}"
+            x-axis-type="linear"
+            y-axis-type="linear">
+          </px-vis-register>
+          <div class="flex flex--col">
+            <px-vis-toolbar
+              id="toolbar"
+              current-sub-config='[[toolbarSubConfig]]'
+              action-config='{{actionConfig}}'
+              within-chart
+              chart-margin="[[margin]]"
+              show-tooltip="{{_internalShowTooltip}}">
+            </px-vis-toolbar>
+            <px-vis-svg-canvas
+              class="inline--flex"
+              id="svg"
+              width="[[_smallerSide]]"
+              height="[[_smallerSide]]"
+              canvas-context="{{canvasContext}}"
+              canvas-context-top="{{canvasContextTop}}"
+              svg="{{svg}}"
+              px-svg-elem="{{pxSvgElem}}"
+              svg-lower="{{svgLower}}"
+              offset="[[_center]]">
+            </px-vis-svg-canvas>
+          </div>
+
+          <px-vis-interaction-space
+            chart-id="[[_chartId]]"
+            svg="[[layer.4]]"
             width="[[_radius]]"
             height="[[_radius]]"
-            margin="[[margin]]"
-            chart-data="[[chartData]]"
-            x="{{x}}"
-            y="{{y}}"
-            domain-changed="{{domainChanged}}"
-            selected-domain="[[selectedDomain]]"
+            radial
+            use-degrees="[[useDegrees]]"
+            counter-clockwise="[[counterClockwise]]"
+            x="[[x]]"
+            y="[[y]]"
+            domain-changed="[[domainChanged]]"
+            series-keys="[[_seriesKeys]]"
+            chart-data="[[_filteredData]]"
+            tooltip-data="{{tooltipData}}"
+            crosshair-data="{{crosshairData}}"
+            generating-crosshair-data="{{generatingCrosshairData}}"
+            x-axis-type="linear"
+            y-axis-type="linear"
             complete-series-config="[[completeSeriesConfig]]"
-            amplitude-keys="[[_amplitudeKey]]"
-            use-degrees="[[useDegrees]]">
-          </px-vis-radial-scale>
-          <div class$="{{_registerWrapperClass}}">
-            <px-vis-register
-              id="register"
-              class$="{{_getHideClass(hideRegister)}}"
-              dynamic-menu-config="[[dynamicMenuConfig]]"
-              tooltip-data="[[tooltipData]]"
-              chart-data="[[_filteredData]]"
-              complete-series-config="[[completeSeriesConfig]]"
-              muted-series={{mutedSeries}}
-              type="{{_registerType}}"
-              x-axis-type="linear"
-              y-axis-type="linear">
-            </px-vis-register>
-            <div class="flex flex--col">
-              <px-vis-toolbar
-                id="toolbar"
-                current-sub-config='[[toolbarSubConfig]]'
-                action-config='{{actionConfig}}'
-                within-chart
-                chart-margin="[[margin]]"
-                show-tooltip="{{_internalShowTooltip}}">
-              </px-vis-toolbar>
-              <px-vis-svg-canvas
-                class="inline--flex"
-                id="svg"
-                width="[[_smallerSide]]"
-                height="[[_smallerSide]]"
-                canvas-context="{{canvasContext}}"
-                svg="{{svg}}"
-                px-svg-elem="{{pxSvgElem}}"
-                svg-lower="{{svgLower}}"
-                offset="[[_center]]">
-              </px-vis-svg-canvas>
-            </div>
-            <px-vis-interaction-space
-              svg="[[layer.4]]"
-              width="[[_radius]]"
-              height="[[_radius]]"
-              radial
-              use-degrees="[[useDegrees]]"
-              counter-clockwise="[[counterClockwise]]"
-              x="[[x]]"
-              y="[[y]]"
-              action-config='{
-                  "mousedown": null,
-                  "mouseup": null,
-                  "mouseout": "resetTooltip",
-                  "mousemove": "calcTooltipData"
-                }'
-              domain-changed="[[domainChanged]]"
-              series-keys="[[_seriesKeys]]"
-              chart-data="[[_filteredData]]"
-              tooltip-data="{{tooltipData}}"
-              x-axis-type="linear"
-              y-axis-type="linear"
-              complete-series-config="[[completeSeriesConfig]]"
-              mouse-rect="{{mouseRect}}"
-              series-keys="[[_seriesKeys]]"
-              time-data="[[timeData]]"
-              action-config="{{actionConfig}}"
-              show-tooltip="{{_computedShowTooltip}}">
-            </px-vis-interaction-space>
+            mouse-rect="{{mouseRect}}"
+            series-keys="[[_seriesKeys]]"
+            time-data="[[timeData]]"
+            action-config='[[actionConfig]]'
+            show-tooltip="{{_computedShowTooltip}}">
+          </px-vis-interaction-space>
 
-            <!-- scatter series -->
-            <template is="dom-repeat" items="[[_seriesKeys]]">
-              <template is="dom-if" if="[[renderToCanvas]]" restamp>
-                <px-vis-scatter-canvas
-                  canvas-context="[[canvasContext]]"
-                  series-id="[[item]]"
-                  chart-data="[[_filteredData]]"
-                  complete-series-config="[[completeSeriesConfig]]"
-                  radial
-                  counter-clockwise="[[counterClockwise]]"
-                  use-degrees="[[useDegrees]]"
-                  x="[[x]]"
-                  y="[[y]]"
-                  no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
-                  progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
-                  progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
-                  domain-changed="[[domainChanged]]"
-                  muted-series="[[mutedSeries]]"
-                  serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
-                </px-vis-scatter-canvas>
-                <px-vis-line-canvas
-                  id="lineCanvas"
-                  canvas-context="[[canvasContext]]"
-                  series-id="[[item]]"
-                  chart-data="[[_filteredData]]"
-                  complete-series-config="[[completeSeriesConfig]]"
-                  radial-line
-                  counter-clockwise="[[counterClockwise]]"
-                  use-degrees="[[useDegrees]]"
-                  x="[[x]]"
-                  y="[[y]]"
-                  domain-changed="[[domainChanged]]"
-                  muted-series="[[mutedSeries]]"
-                  no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
-                  progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
-                  progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
-                  serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
-                </px-vis-line-canvas>
-              </template>
-              <template is="dom-if" if="[[!renderToCanvas]]" restamp>
-                <px-vis-scatter
-                  svg="[[layer.3]]"
-                  series-id="[[item]]"
-                  chart-data="[[_filteredData]]"
-                  radial
-                  counter-clockwise="[[counterClockwise]]"
-                  use-degrees="[[useDegrees]]"
-                  x="[[x]]"
-                  y="[[y]]"
-                  domain-changed="[[domainChanged]]"
-                  muted-series="[[mutedSeries]]"
-                  complete-series-config="[[completeSeriesConfig]]"
-                  time-data="{{timeData}}">
-                </px-vis-scatter>
-                <px-vis-line-svg
-                  svg="[[layer.2]]"
-                  radial-line
-                  counter-clockwise="[[counterClockwise]]"
-                  use-degrees="[[useDegrees]]"
-                  series-id="[[item]]"
-                  chart-data="[[_filteredData]]"
-                  muted-series="[[mutedSeries]]"
-                  x="[[x]]"
-                  y="[[y]]"
-                  domain-changed="[[domainChanged]]"
-                  complete-series-config="[[completeSeriesConfig]]">
-                </px-vis-line-svg>
-              </template>
+          <!-- scatter series -->
+          <template is="dom-repeat" items="[[_seriesKeys]]">
+            <template is="dom-if" if="[[renderToCanvas]]" restamp>
+              <px-vis-scatter-canvas
+                canvas-context="[[canvasContext]]"
+                series-id="[[item]]"
+                chart-data="[[_filteredData]]"
+                complete-series-config="[[completeSeriesConfig]]"
+                radial
+                counter-clockwise="[[counterClockwise]]"
+                use-degrees="[[useDegrees]]"
+                x="[[x]]"
+                y="[[y]]"
+                no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
+                progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
+                progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
+                domain-changed="[[domainChanged]]"
+                muted-series="[[mutedSeries]]"
+                serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
+              </px-vis-scatter-canvas>
+              <px-vis-line-canvas
+                id="lineCanvas"
+                canvas-context="[[canvasContext]]"
+                series-id="[[item]]"
+                chart-data="[[_filteredData]]"
+                complete-series-config="[[completeSeriesConfig]]"
+                radial-line
+                counter-clockwise="[[counterClockwise]]"
+                use-degrees="[[useDegrees]]"
+                x="[[x]]"
+                y="[[y]]"
+                domain-changed="[[domainChanged]]"
+                muted-series="[[mutedSeries]]"
+                no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
+                progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
+                progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
+                serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
+              </px-vis-line-canvas>
             </template>
+            <template is="dom-if" if="[[!renderToCanvas]]" restamp>
+              <px-vis-scatter
+                svg="[[layer.3]]"
+                series-id="[[item]]"
+                chart-data="[[_filteredData]]"
+                radial
+                counter-clockwise="[[counterClockwise]]"
+                use-degrees="[[useDegrees]]"
+                x="[[x]]"
+                y="[[y]]"
+                domain-changed="[[domainChanged]]"
+                muted-series="[[mutedSeries]]"
+                complete-series-config="[[completeSeriesConfig]]"
+                time-data="{{timeData}}">
+              </px-vis-scatter>
+              <px-vis-line-svg
+                svg="[[layer.2]]"
+                radial-line
+                counter-clockwise="[[counterClockwise]]"
+                use-degrees="[[useDegrees]]"
+                series-id="[[item]]"
+                chart-data="[[_filteredData]]"
+                muted-series="[[mutedSeries]]"
+                x="[[x]]"
+                y="[[y]]"
+                domain-changed="[[domainChanged]]"
+                complete-series-config="[[completeSeriesConfig]]">
+              </px-vis-line-svg>
+            </template>
+          </template>
         </div>
       </div>
       <px-vis-cursor
@@ -345,6 +341,39 @@ Custom property | Description | Default
         hide="[[!_computedShowTooltip]]">
       </px-vis-tooltip>
 
+      <template id="highlighterDomIf" is="dom-if" if="[[renderToCanvas]]" restamp>
+        <px-vis-highlight-point-canvas
+          id="highlighterCanvas"
+          radial
+          canvas-context="[[canvasContextTop]]"
+          layer-to-mask="[[canvasContext]]"
+          x="[[x]]"
+          y="[[y]]"
+          domain-changed="[[domainChanged]]"
+          time-data="[[timeData]]"
+          complete-series-config="[[completeSeriesConfig]]"
+          series-keys="[[_seriesKeys]]"
+          chart-data="[[chartData]]"
+          generating-crosshair-data="[[generatingCrosshairData]]"
+          crosshair-data="[[crosshairData]]">
+        </px-vis-highlight-point-canvas>
+      </template>
+      <template is="dom-if" if="[[!renderToCanvas]]" restamp>
+        <px-vis-highlight-point
+          id="highlighter"
+          radial
+          svg="[[layer.3]]"
+          layer-to-mask="[[layer.2]]"
+          x="[[x]]"
+          y="[[y]]"
+          domain-changed="[[domainChanged]]"
+          time-data="[[timeData]]"
+          complete-series-config="[[completeSeriesConfig]]"
+          chart-data="[[chartData]]"
+          generating-crosshair-data="[[generatingCrosshairData]]"
+          crosshair-data="[[crosshairData]]">
+        </px-vis-highlight-point>
+      </template>
 
     </div>
 
@@ -387,7 +416,10 @@ Custom property | Description | Default
       PxVisBehavior.actionConfig,
       PxVisBehaviorD3.canvasContext,
       PxVisBehaviorD3.renderToCanvas,
-      PxVisBehaviorChart.tooltipFollowMouseCalculation
+      PxVisBehaviorChart.tooltipFollowMouseCalculation,
+      PxVisBehaviorChart.highlighterConfigs,
+      PxVisBehavior.crosshairData,
+      PxVisBehaviorChart.webWorkerSynchonization
     ],
     /**
     * Properties block
@@ -478,8 +510,12 @@ Custom property | Description | Default
       '_createLayersOnce(svg, numberOfLayers)',
       '_tooltipConfigChanged(tooltipConfig)',
       '_registerConfigChanged(registerConfig)',
+      '_highlighterConfigChanged(highlighterConfig.*)',
       '_toolbarConfigChanged(toolbarConfig)'
     ],
+    detached: function() {
+      this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
+    },
     created: function() {
       this._tooltipCalcHoverTargetId = 'wrapper';
     },
@@ -494,6 +530,9 @@ Custom property | Description | Default
       if(!this.defaultSeriesConfig.xAxisUnit) {
         this.defaultSeriesConfig.xAxisUnit = '°';
       }
+
+      // only listen to one since it is a toggle
+      this.listen(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
 
       this.set('numberOfLayers',5);
 
@@ -511,8 +550,16 @@ Custom property | Description | Default
     _registerConfigChanged: function(conf) {
       this._applyConfigToElement(this.registerConfig, this.$.register);
     },
+
     _toolbarConfigChanged: function(conf) {
       this._applyConfigToElement(this.toolbarConfig, this.$.toolbar);
+    },
+
+    _highlighterConfigChanged: function(conf) {
+      var elem = this.renderToCanvas ? this.$$('#highlighterCanvas') : this.$$('#highlighter');
+      if(elem && this._doesObjHaveValues(this.highlighterConfig)) {
+        this._applyConfigToElement(this.highlighterConfig, elem);
+      }
     },
 
     _onIronResize: function() {
