@@ -5,6 +5,7 @@
     "px-vis-polar.html"
   ],
   "ignore": [
+    "*.enc",
     "**/.*",
     "node_modules",
     "bower_components",
