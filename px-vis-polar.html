@@ -181,6 +181,7 @@ Custom property | Description | Default
           </div>
 
           <px-vis-interaction-space
+            id="interactionSpace"
             chart-id="[[_chartId]]"
             svg="[[layer.4]]"
             width="[[_radius]]"
@@ -497,7 +498,7 @@ Custom property | Description | Default
       },
       mouseRect: {
         type: Object
-      },
+      }
     },
 
     listeners: {
@@ -511,7 +512,8 @@ Custom property | Description | Default
       '_tooltipConfigChanged(tooltipConfig)',
       '_registerConfigChanged(registerConfig)',
       '_highlighterConfigChanged(highlighterConfig.*)',
-      '_toolbarConfigChanged(toolbarConfig)'
+      '_toolbarConfigChanged(toolbarConfig)',
+      '_interactionSpaceConfigChanged(interactionSpaceConfig.*)'
     ],
     detached: function() {
       this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
@@ -553,6 +555,10 @@ Custom property | Description | Default
 
     _toolbarConfigChanged: function(conf) {
       this._applyConfigToElement(this.toolbarConfig, this.$.toolbar);
+    },
+
+    _interactionSpaceConfigChanged: function(interactionSpaceConfig) {
+      this._applyConfigToElement(this.interactionSpaceConfig, this.$.interactionSpace)
     },
 
     _highlighterConfigChanged: function(conf) {
