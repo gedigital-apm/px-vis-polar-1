@@ -182,7 +182,7 @@ Custom property | Description | Default
 
           <px-vis-interaction-space
             id="interactionSpace"
-            chart-id="[[_chartId]]"
+            chart-id="[[chartId]]"
             svg="[[layer.4]]"
             width="[[_radius]]"
             height="[[_radius]]"
@@ -513,7 +513,11 @@ Custom property | Description | Default
       '_registerConfigChanged(registerConfig)',
       '_highlighterConfigChanged(highlighterConfig.*)',
       '_toolbarConfigChanged(toolbarConfig)',
+<<<<<<< HEAD
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)'
+=======
+      '_keepDataInSync(_filteredData.*, chartId)'
+>>>>>>> 76ed6aff296c8b57224d82f8014c1693c03aa626
     ],
     detached: function() {
       this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
@@ -522,6 +526,7 @@ Custom property | Description | Default
       this._tooltipCalcHoverTargetId = 'wrapper';
     },
     ready: function() {
+      this._wwSyncDataPropName = '_filteredData';
       //set defaults if they have not been set
       if(!this.defaultSeriesConfig.markerFillOpacity) {
         this.defaultSeriesConfig.markerFillOpacity = '0.5';
