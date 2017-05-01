@@ -422,7 +422,8 @@ Custom property | Description | Default
       PxVisBehaviorChart.tooltipFollowMouseCalculation,
       PxVisBehaviorChart.highlighterConfigs,
       PxVisBehavior.crosshairData,
-      PxVisBehaviorChart.webWorkerSynchonization
+      PxVisBehaviorChart.webWorkerSynchonization,
+      Polymer.AppLocalizeBehavior
     ],
     /**
     * Properties block
@@ -500,6 +501,33 @@ Custom property | Description | Default
       },
       mouseRect: {
         type: Object
+      },
+      /**
+       * List of key/values to be included for translating this component
+       */
+      resources: {
+        type: Object,
+        value: function() {
+          return {
+            'clockwise': 'clockwise',
+            'counter clockwise': 'counter clockwise'
+          };
+        }
+      },
+      /**
+      * set a default for localizing
+      */
+      language: {
+        type: String,
+        value: 'en'
+      },
+      /**
+      * Use the key for localization if value for  language is missing. Should
+      * always be true for  our components
+      */
+      useKeyIfMissing: {
+        type: Boolean,
+        value: true
       }
     },
 
@@ -509,14 +537,15 @@ Custom property | Description | Default
 
     observers: [
       '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
-      '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize)',
+      '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize, localize)',
       '_createLayersOnce(svg, numberOfLayers)',
       '_tooltipConfigChanged(tooltipConfig)',
       '_registerConfigChanged(registerConfig)',
       '_highlighterConfigChanged(highlighterConfig.*)',
       '_toolbarConfigChanged(toolbarConfig)',
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
-      '_keepDataInSync(_filteredData.*, chartId)'
+      '_keepDataInSync(_filteredData.*, chartId)',
+      '_langChanged(language)'
     ],
     detached: function() {
       this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
@@ -712,7 +741,7 @@ Custom property | Description | Default
 
       //make sure text is up to date
       this._clockwiseLabelGroup.selectAll('text')
-            .text(!counterClockwise ? 'clockwise' : 'counter clockwise')
+            .text(!counterClockwise ? this.localize('clockwise') : this.localize('counter clockwise'))
             .attr('font-size', fontSize + 'px')
             .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
             .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']))
@@ -729,5 +758,10 @@ Custom property | Description | Default
     _getNumberOfTick: function(_radius) {
       return Math.min(Math.max(_radius/70,2),7);
     },
+    _langChanged: function() {
+
+      //recreate X and Y in case d3 locale changed
+      this.$.scale._recreateScales();
+    }
   });
 </script>
