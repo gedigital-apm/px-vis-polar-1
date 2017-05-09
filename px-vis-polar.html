@@ -209,8 +209,9 @@ Custom property | Description | Default
           </px-vis-interaction-space>
 
           <!-- scatter series -->
-          <template is="dom-repeat" items="[[_seriesKeys]]">
-            <template is="dom-if" if="[[renderToCanvas]]" restamp>
+
+          <template is="dom-if" if="[[renderToCanvas]]" restamp>
+            <template is="dom-repeat" items="[[_seriesKeys]]">
               <px-vis-scatter-canvas
                 canvas-context="[[canvasContext]]"
                 series-id="[[item]]"
@@ -247,7 +248,9 @@ Custom property | Description | Default
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
               </px-vis-line-canvas>
             </template>
-            <template is="dom-if" if="[[!renderToCanvas]]" restamp>
+          </template>
+          <template is="dom-if" if="[[!renderToCanvas]]" restamp>
+            <template is="dom-repeat" items="[[_seriesKeys]]">
               <px-vis-scatter
                 svg="[[layer.3]]"
                 series-id="[[item]]"
@@ -698,15 +701,15 @@ Custom property | Description | Default
      */
     _computeAmplitudeKey: function(completeSeriesConfig) {
 
-      var serieName = Object.keys(completeSeriesConfig)[0];
-      return [completeSeriesConfig[serieName].y];
+      return Object.keys(completeSeriesConfig).map(function(serie) {
+        return completeSeriesConfig[serie].y;
+      });
     },
 
     _drawUnitLabel: function(svg, completeSeriesConfig, _radius, unitLabelFontSize) {
       //fetch unit from first config...
-      //TODO: multi series?
       var seriesId = Object.keys(this.completeSeriesConfig),
-          unit = this.completeSeriesConfig[seriesId[0]].yAxisUnit,
+          unit,
           angle = Math.PI/4,
           length = this._radius + 10;
 
@@ -714,6 +717,15 @@ Custom property | Description | Default
       if(!this._unitLabelGroup) {
         this.set('_unitLabelGroup', this.svg.append('g').attr('class','unit-group'));
         this._unitLabelGroup.append('text');
+      }
+
+      //find first unit...
+      for(var i=0; i<seriesId.length; i++) {
+        if(!unit) {
+          unit = this.completeSeriesConfig[seriesId[i]].yAxisUnit
+        } else {
+          break;
+        }
       }
 
       //make sure text is up to date
