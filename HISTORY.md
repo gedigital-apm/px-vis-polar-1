@@ -1,6 +1,6 @@
 v1.1.1
 ===================
-* removed cleanOnDetached
+* remove cleanOnDetached
 
 v1.1.0
 ===================
