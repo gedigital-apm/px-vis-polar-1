@@ -218,6 +218,9 @@ Custom property | Description | Default
                 chart-data="[[_filteredData]]"
                 complete-series-config="[[completeSeriesConfig]]"
                 radial
+                width="[[_diameter]]"
+                height="[[_diameter]]"
+                clip-path
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
@@ -256,6 +259,9 @@ Custom property | Description | Default
                 series-id="[[item]]"
                 chart-data="[[_filteredData]]"
                 radial
+                width="[[_diameter]]"
+                height="[[_diameter]]"
+                clip-path
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
@@ -350,6 +356,8 @@ Custom property | Description | Default
         <px-vis-highlight-point-canvas
           id="highlighterCanvas"
           radial
+          width="[[_diameter]]"
+          height="[[_diameter]]"
           canvas-context="[[canvasContextTop]]"
           layers-to-mask="[[canvasContext]]"
           x="[[x]]"
@@ -369,7 +377,7 @@ Custom property | Description | Default
           id="highlighter"
           radial
           svg="[[layer.5]]"
-          layers-to-mask="[[layer.2]]"
+          layers-to-mask="[[getSvgLayersToMask(layer)]]"
           x="[[x]]"
           y="[[y]]"
           domain-changed="[[domainChanged]]"
@@ -775,6 +783,9 @@ Custom property | Description | Default
 
       //recreate X and Y in case d3 locale changed
       this.$.scale._recreateScales();
+    },
+    getSvgLayersToMask: function() {
+      return [this.layer[2], this.layer[3]];
     }
   });
 </script>
