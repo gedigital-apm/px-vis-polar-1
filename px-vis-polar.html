@@ -195,7 +195,7 @@ Custom property | Description | Default
             use-quadtree
             series-keys="[[_seriesKeys]]"
             chart-data="[[_filteredData]]"
-            default-empty-data="[[defautEmptyData]]"
+            default-empty-data="[[defaultEmptyData]]"
             tooltip-data="{{tooltipData}}"
             crosshair-data="{{crosshairData}}"
             generating-crosshair-data="{{generatingCrosshairData}}"
@@ -357,6 +357,8 @@ Custom property | Description | Default
         <px-vis-highlight-point-canvas
           id="highlighterCanvas"
           radial
+          counter-clockwise="[[counterClockwise]]"
+          use-degrees="[[useDegrees]]"
           width="[[_diameter]]"
           height="[[_diameter]]"
           canvas-context="[[canvasContextTop]]"
@@ -369,7 +371,7 @@ Custom property | Description | Default
           series-keys="[[_seriesKeys]]"
           chart-data="[[chartData]]"
           generating-crosshair-data="[[generatingCrosshairData]]"
-          default-empty-data="{{defautEmptyData}}"
+          default-empty-data="{{defaultEmptyData}}"
           tooltip-data="{{tooltipData}}"
           crosshair-data="[[crosshairData]]">
         </px-vis-highlight-point-canvas>
@@ -378,6 +380,8 @@ Custom property | Description | Default
         <px-vis-highlight-point
           id="highlighter"
           radial
+          counter-clockwise="[[counterClockwise]]"
+          use-degrees="[[useDegrees]]"
           svg="[[layer.5]]"
           layers-to-mask="[[getSvgLayersToMask(layer)]]"
           x="[[x]]"
@@ -387,7 +391,7 @@ Custom property | Description | Default
           complete-series-config="[[completeSeriesConfig]]"
           chart-data="[[chartData]]"
           generating-crosshair-data="[[generatingCrosshairData]]"
-          default-empty-data="{{defautEmptyData}}"
+          default-empty-data="{{defaultEmptyData}}"
           tooltip-data="{{tooltipData}}"
           crosshair-data="[[crosshairData]]">
         </px-vis-highlight-point>
