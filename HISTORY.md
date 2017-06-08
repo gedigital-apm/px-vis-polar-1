@@ -1,3 +1,10 @@
+v2.0.0
+===================
+* Upgrade to vis 2.0.0
+* Added highlight components for optional crosshair
+* added ability to have multi series
+* added canvas
+
 v1.1.1
 ===================
 * remove cleanOnDetached
