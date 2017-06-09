@@ -43,15 +43,13 @@ function runCustomTests() {
 
     test('register shown', function() {
 
-      var reg = Polymer.dom(polar.root).querySelector('px-vis-register');
+      var reg = polar.querySelector('px-vis-register');
       assert.isFalse(reg.classList.contains('visuallyHidden'));
     });
 
     test('layers order', function() {
-
-      var root = Polymer.dom(polar.root).querySelector('px-vis-svg'),
-          svg = Polymer.dom(root.root).querySelector('svg').querySelector('g'),
-          children = svg.childNodes,
+      var svg = polar.svg.nodes(),
+          children = svg[0].childNodes,
           svgs = [];
 
       //because of mibofsoft we can't use 'children' on the svg, so building
@@ -84,7 +82,7 @@ function runCustomTests() {
                 "y": "AVD-CHART-ASSET-CHILD03-ID.BR1X_1XAMP_ID",
                 "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                 }
-            };      
+            };
       newConf.firstSerie.yAxisUnit = 'my unit';
      //polar.set('seriesConfig',{});
       polar.set('seriesConfig', newConf);
@@ -94,7 +92,7 @@ function runCustomTests() {
         done();
       }, 400);
     });
- 
+
     test('clockwise label', function() {
       var clockLabel = polar.svg.node().querySelector('.clockwise-group');
 
@@ -115,7 +113,7 @@ function runCustomTests() {
 
       //custom labels
       polar.set('axisLabels', ['North', 'East', 'South', 'West']);
-      
+
       //give enough time for drawing
       setTimeout(function() {
         done();
@@ -142,7 +140,7 @@ function runCustomTests() {
     suiteSetup(function(done) {
       //restore default clockwise
       polar.set('hideRegister', true);
-      
+
       //give enough time for drawing
       setTimeout(function() {
         done();
