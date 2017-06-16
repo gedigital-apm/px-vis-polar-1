@@ -2,8 +2,18 @@ v2.0.0
 ===================
 * Upgrade to vis 2.0.0
 * Added highlight components for optional crosshair
+* Includes Web workers:
+  * for scale calculations
+  * for quadtree calculations
 * added ability to have multi series
 * added canvas
+* New marker next to timestamp indicating which series the timestamp corresponds to.
+* Internationalization support
+* Breaking changes:
+  * Default toolipData search now shows all series data at the closest timestamp
+    * To use the old behavior of closest data values regardless of their timestamp, set "interactionSpaceConfig.searchType" to "pointPerSeries"
+  * Defaults to using web workers
+    * Use "preventWebWorkerSynchronization" to disable web worker. Will not be able to use quadtree or crosshair features.
 
 v1.1.1
 ===================
