@@ -223,6 +223,7 @@ Custom property | Description | Default
                 chart-data="[[_filteredData]]"
                 complete-series-config="[[completeSeriesConfig]]"
                 radial
+                renderer-type="filteredChartData"
                 width="[[_diameter]]"
                 height="[[_diameter]]"
                 clip-path
@@ -230,9 +231,6 @@ Custom property | Description | Default
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
                 y="[[y]]"
-                no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
-                progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
-                progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
@@ -244,15 +242,13 @@ Custom property | Description | Default
                 chart-data="[[_filteredData]]"
                 complete-series-config="[[completeSeriesConfig]]"
                 radial-line
+                renderer-type="filteredChartData"
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
-                no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
-                progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
-                progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
               </px-vis-line-canvas>
             </template>
