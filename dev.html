@@ -55,7 +55,6 @@
                 "x":"AVD-CHART-ASSET-CHILD03-ID.BR1X_1XPH_ID"
                 }
             }'
-
             render-to-canvas
             time-data="x"
             time-domain="[[selectedDomain]]"
@@ -179,36 +178,12 @@
 
       btnSnap.addEventListener('click', function() {
 
-        //fetch svg+canvas from chart and svg
-        //from navigator and render them on a canvas
-        var canvas = document.createElement('canvas'),
-                context,
-                chartCanvasContext = chart.canvasContext,
-                svgChart = chart.pxSvgElem,
-                svgNavigator = navigator.pxSvgElem,
-                count = 0;
-
-        canvas.width = Math.max(chart.width, navigator.width);
-        canvas.height = chart.height + navigator.height;
-        context = canvas.getContext('2d');
-        //render chart canvas
-     //   context.drawImage(chartCanvasContext.canvas, 0, 0);
-
-        //to be called when svg is done drawing
-        var callback = function(res) {
-          if(count === 0) {
-            //first svg has rendered, wait for second one
-            count++;
-          } else {
-
-            //everything done
-            window.open().location = res.toDataURL("image/png");
-          }
-        }
-
-        //render chart svg and navigator svg
-        chart._drawSVGOnCanvas(canvas, callback);
-        navigator._drawSVGOnCanvas(canvas, callback, 0, chart.height);
+        chart.getImage(function(result) {
+          var img = document.createElement('img');
+          img.src= result.image;
+          document.body.appendChild(img);
+        //   window.open().location = result.image;
+        }, true);
       });
 
       btnInc.addEventListener('click', function() {
