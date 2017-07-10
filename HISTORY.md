@@ -1,3 +1,7 @@
+v2.0.2
+===================
+* Ensure getImage gets all svg and canvas
+
 v2.0.1
 ===================
 * Ensure old series are deleted from canvas if reusing the chart from a pool
