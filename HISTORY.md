@@ -2,6 +2,10 @@ v3.0.0
 ===================
 * Design refresh
 
+v2.0.1
+===================
+* Ensure old series are deleted from canvas if reusing the chart from a pool
+
 v2.0.0
 ===================
 * Upgrade to vis 2.0.0

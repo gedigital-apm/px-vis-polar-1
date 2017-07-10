@@ -151,6 +151,7 @@ Custom property | Description
               svg="{{svg}}"
               px-svg-elem="{{pxSvgElem}}"
               svg-lower="{{svgLower}}"
+              px-svg-elem-lower="{{pxSvgElemLower}}"
               offset="[[_center]]">
             </px-vis-svg-canvas>
           </div>
@@ -532,12 +533,14 @@ Custom property | Description
       '_drawUnitLabel(svg, completeSeriesConfig.*, _radius, unitLabelFontSize)',
       '_drawClockwiseLabel(svg, _radius, counterClockwise, clockwiseLabelFontSize, localize)',
       '_createLayersOnce(svg, numberOfLayers)',
+      '_keepDataInSync(_filteredData.*, chartId)',
+      '_seriesKeysChanged(_seriesKeys.*)',
+
       '_tooltipConfigChanged(tooltipConfig)',
       '_registerConfigChanged(registerConfig)',
       '_highlighterConfigChanged(highlighterConfig.*)',
       '_toolbarConfigChanged(toolbarConfig)',
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
-      '_keepDataInSync(_filteredData.*, chartId)',
       '_langChanged(language)'
     ],
     detached: function() {
@@ -591,6 +594,13 @@ Custom property | Description
       var elem = this.renderToCanvas ? this.$$('#highlighterCanvas') : this.$$('#highlighter');
       if(elem && this._doesObjHaveValues(this.highlighterConfig)) {
         this._applyConfigToElement(this.highlighterConfig, elem);
+      }
+    },
+
+    _seriesKeysChanged: function() {
+      //make sure we clean the canvas so that ols series are removed
+      if(this.renderToCanvas && this.canvasContext && this.canvasContext.pxClearCanvas) {
+        this.canvasContext.pxClearCanvas();
       }
     },
 
