@@ -8,27 +8,15 @@
  * under which the software has been supplied.
  */
 
-//
-// Sass for the "sketch" notion of the px-vis-polar component
-//
-// @author
-//
-
-/*
-THIS FILE SHOULD CONTAIN ONLY ABSTRACT/'SKETCH' THEME RULES, NOT SPECIFIC TO PREDIX BRANDING
-Predix branding rules go in px-vis-polar-predix.scss, not in this file.
-*/
-
-
+// Settings
+@import "px-defaults-design/_settings.defaults.scss";
 
 // Generic
 @import "px-normalize-design/_generic.normalize.scss";
 @import "px-box-sizing-design/_generic.box-sizing.scss";
-@import "px-helpers-design/_generic.helpers.scss";
 
 // Base
 @import "px-flexbox-design/_base.flexbox.scss";
-@import "px-viewport-design/_base.viewport.scss";
 
 :host {
     width: 100%;
@@ -40,10 +28,6 @@ Predix branding rules go in px-vis-polar-predix.scss, not in this file.
     height: 100%;
 }
 
-
-
 // Component
 
 // Trumps
-@import "px-spacing-responsive-design/_trumps.spacing-responsive.scss";
-@import "px-widths-responsive-design/_trumps.widths-responsive.scss";
