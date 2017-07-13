@@ -541,7 +541,12 @@ Custom property | Description
       '_highlighterConfigChanged(highlighterConfig.*)',
       '_toolbarConfigChanged(toolbarConfig)',
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
-      '_langChanged(language)'
+      '_langChanged(language)',
+
+      //renderer
+      '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
+      '_renderHighlight(domainChanged, canvasContextTop, _highlightData.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
+      '_renderSeriesOnTop(serieToRedrawOnTop)'
     ],
     detached: function() {
       this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
