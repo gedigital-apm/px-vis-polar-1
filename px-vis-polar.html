@@ -147,7 +147,8 @@ Custom property | Description
               width="[[_smallerSide]]"
               height="[[_smallerSide]]"
               canvas-context="{{canvasContext}}"
-              canvas-context-top="{{canvasContextTop}}"
+              canvas-layers="{{canvasLayers}}"
+              canvas-layers-config="[[canvasLayersConfig]]"
               svg="{{svg}}"
               px-svg-elem="{{pxSvgElem}}"
               svg-lower="{{svgLower}}"
@@ -334,7 +335,8 @@ Custom property | Description
           use-degrees="[[useDegrees]]"
           width="[[_diameter]]"
           height="[[_diameter]]"
-          canvas-context="[[canvasContextTop]]"
+          canvas-context="[[canvasLayers.highlighter]]"
+          canvas-layers-config="{{canvasLayersConfig}}"
           layers-to-mask="[[canvasContext]]"
           x="[[x]]"
           y="[[y]]"
@@ -545,7 +547,7 @@ Custom property | Description
 
       //renderer
       '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
-      '_renderHighlight(domainChanged, canvasContextTop, _highlightData.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
+      '_renderHighlight(domainChanged, canvasLayers.highlighter, _highlightData.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
       '_renderSeriesOnTop(serieToRedrawOnTop)'
     ],
     detached: function() {
