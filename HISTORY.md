@@ -1,3 +1,9 @@
+v3.0.0
+===================
+* Design refresh
+* Updates for new renderer
+* See px-vis release notes for breaking changes
+
 v2.0.2
 ===================
 * Ensure getImage gets all svg and canvas

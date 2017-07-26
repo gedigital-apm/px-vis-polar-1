@@ -2,6 +2,7 @@
 <link rel="import" href="../px-vis/px-vis-behavior-chart.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-common.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-d3.html"/>
+<link rel="import" href="../px-vis/px-vis-behavior-renderer.html"/>
 <link rel="import" href="../px-vis/px-vis-radial-scale.html"/>
 <link rel="import" href="../px-vis/px-vis-svg-canvas.html"/>
 <link rel="import" href="../px-vis/px-vis-scatter.html"/>
@@ -15,7 +16,6 @@
 <link rel="import" href="../px-vis/px-vis-clip-path.html"/>
 <link rel="import" href="../px-vis/px-vis-radial-gridlines.html"/>
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html" />
-<link rel="import" href="../px-colors-design/colors.html"/>
 <link rel="import" href="../px-vis/px-vis-toolbar.html"/>
 <link rel="import" href="../px-vis/px-vis-cursor.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
@@ -52,68 +52,42 @@ The	px-vis-polar component allows to draw a phase and amplitude on a polar plot.
 ### Styling
 The following custom properties are available for styling:
 
-Custom property | Description | Default
-----------------|-------------|----------
-  `--px-vis-axis-color` | The color for the axis lines, axis ticks, and axis tick labels | `$gray9`
-  `--px-vis-axis-title-color` | The color for the axis title | `$gray9`
-  `--px-vis-axis-inline-title-color` | The color for the axis title  | `$gray9`
-  `--px-vis-axis-inline-type-color` | The color for the axis lines, axis ticks, and axis tick labels when using 'inline' labelPosition | `$white`
-  `--px-vis-axis-inline-box-color` | The color for the tick boxes when using 'inline' labelPosition | `$gray9`
-  |  |
-  |  |
-  |  |
-  `--px-vis-gridlines-color` | The color for the gridlines | `$gray3`
-  |  |
-  |  |
-  |  |
-  `--px-vis-register-series-name` | The color of the data series name | `$gray5`
-  `--px-vis-register-data-value` | The color of the data series value | `$black`
-  `--px-vis-register-box` | The color of the box around the register when a scrollbar is present | `$gray3`
-  |  |
-  |  |
-  |  |
-  `--px-vis-series-color-0` | These are the colors used to represent the data series on the charts. Used in numerical order by default. Colors MUST start at 0 and cannot contain gaps between numbers. | `$d-dv-basic-1`
-  `--px-vis-series-color-1` |  | `$d-dv-basic-2`
-  `--px-vis-series-color-2` |  | `$d-dv-basic-3`
-  `--px-vis-series-color-3` |  | `$d-dv-basic-4`
-  `--px-vis-series-color-4` |  | `$d-dv-basic-5`
-  `--px-vis-series-color-5` |  | `$d-dv-basic-6`
-  `--px-vis-series-color-6` |  | `$d-dv-basic-7`
-  `--px-vis-series-color-7` |  | `$d-dv-basic-8`
-  `--px-vis-series-color-8` |  | `$d-dv-basic-9`
-  `--px-vis-series-color-9` |  | `$d-dv-basic-10`
-  `--px-vis-series-color-10` |  | `$d-dv-bright-1`
-  `--px-vis-series-color-11` |  | `$d-dv-bright-2`
-  `--px-vis-series-color-12` |  | `$d-dv-bright-3`
-  `--px-vis-series-color-13` |  | `$d-dv-bright-4`
-  `--px-vis-series-color-14` |  | `$d-dv-bright-5`
-  `--px-vis-series-color-15` |  | `$d-dv-bright-6`
-  `--px-vis-series-color-16` |  | `$d-dv-bright-7`
-  `--px-vis-series-color-17` |  | `$d-dv-bright-8`
-  `--px-vis-series-color-18` |  | `$d-dv-bright-9`
-  `--px-vis-series-color-19` |  | `$d-dv-bright-10`
-  `--px-vis-series-color-20` |  | `$d-dv-muted-1`
-  `--px-vis-series-color-21` |  | `$d-dv-muted-2`
-  `--px-vis-series-color-22` |  | `$d-dv-muted-3`
-  `--px-vis-series-color-23` |  | `$d-dv-muted-4`
-  `--px-vis-series-color-24` |  | `$d-dv-muted-5`
-  `--px-vis-series-color-25` |  | `$d-dv-muted-6`
-  `--px-vis-series-color-26` |  | `$d-dv-muted-7`
-  `--px-vis-series-color-27` |  | `$d-dv-muted-8`
-  `--px-vis-series-color-28` |  | `$d-dv-muted-9`
-  `--px-vis-series-color-29` |  | `$d-dv-muted-10`
-  |  |
-  |  |
-  |  |
-  `--px-tooltip-background-color` | The color of the tooltip | `$black`;
-  `--px-tooltip-text-color` | The color of the tooltip text | `$white`;
-  `--px-tooltip-light-background-color` | The color of the light version tooltip | `$white`;
-  `--px-tooltip-light-text-color` | The color of the light version tooltip text | `$black`;
-  `--px-tooltip-light-border-color`| The color of the light version tooltip border |  `$black`;
-  |  |
-  |  |
-  |  |
-  `--px-font-family` | The font family for all labels and text | `GE Inspira Sans`
+Custom property | Description
+----------------|-------------
+  `--px-vis-axis-color` | The color for the axis lines, axis ticks, and axis tick labels
+  `--px-vis-axis-title-color` | The color for the axis title
+  `--px-vis-axis-inline-title-color` | The color for the axis title
+  `--px-vis-axis-inline-type-color` | The color for the axis lines, axis ticks, and axis tick labels when using 'inline' labelPosition
+  `--px-vis-axis-inline-box-color` | The color for the tick boxes when using 'inline' labelPosition
+  |
+  |
+  |
+  `--px-vis-gridlines-color` | The color for the gridlines
+  |
+  |
+  |
+  `--px-vis-register-series-name` | The color of the data series name
+  `--px-vis-register-data-value` | The color of the data series value
+  `--px-vis-register-box` | The color of the box around the register when a scrollbar is present
+  |
+  |
+  |
+  `--px-vis-series-color-0` | These are the colors used to represent the data series on the charts. Used in numerical order by default. Colors MUST start at 0 and cannot contain gaps between numbers.
+  `--px-vis-series-color-1` |
+  `--px-vis-series-color-2` |
+  `--px-vis-series-color-n` |
+  |
+  |
+  |
+  `--px-tooltip-background-color` | The color of the tooltip
+  `--px-tooltip-text-color` | The color of the tooltip text
+  `--px-tooltip-light-background-color` | The color of the light version tooltip
+  `--px-tooltip-light-text-color` | The color of the light version tooltip text
+  `--px-tooltip-light-border-color`| The color of the light version tooltip border
+  |
+  |
+  |
+  `--px-vis-font-family` | The font family for all labels and text
 
 
 @element px-vis-polar
@@ -173,7 +147,8 @@ Custom property | Description | Default
               width="[[_smallerSide]]"
               height="[[_smallerSide]]"
               canvas-context="{{canvasContext}}"
-              canvas-context-top="{{canvasContextTop}}"
+              canvas-layers="{{canvasLayers}}"
+              canvas-layers-config="[[canvasLayersConfig]]"
               svg="{{svg}}"
               px-svg-elem="{{pxSvgElem}}"
               svg-lower="{{svgLower}}"
@@ -223,6 +198,7 @@ Custom property | Description | Default
                 chart-data="[[_filteredData]]"
                 complete-series-config="[[completeSeriesConfig]]"
                 radial
+                renderer-type="filteredChartData"
                 width="[[_diameter]]"
                 height="[[_diameter]]"
                 clip-path
@@ -230,9 +206,6 @@ Custom property | Description | Default
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
                 y="[[y]]"
-                no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
-                progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
-                progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
@@ -244,15 +217,13 @@ Custom property | Description | Default
                 chart-data="[[_filteredData]]"
                 complete-series-config="[[completeSeriesConfig]]"
                 radial-line
+                renderer-type="filteredChartData"
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
-                no-canvas-progressive-rendering="[[noCanvasProgressiveRendering]]"
-                progressive-rendering-points-per-frame="[[progressiveRenderingPointsPerFrame]]"
-                progressive-rendering-minimum-frames="[[progressiveRenderingMinimumFrames]]"
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
               </px-vis-line-canvas>
             </template>
@@ -331,7 +302,6 @@ Custom property | Description | Default
           prevent-series-bar
           domain-changed="[[domainChanged]]"
           label-position="inline"
-          axis-color="grey4"
           drawn-tick-values="{{_drawnTickValues}}">
         </px-vis-axis>
       </template>
@@ -365,7 +335,8 @@ Custom property | Description | Default
           use-degrees="[[useDegrees]]"
           width="[[_diameter]]"
           height="[[_diameter]]"
-          canvas-context="[[canvasContextTop]]"
+          canvas-context="[[canvasLayers.highlighter]]"
+          canvas-layers-config="{{canvasLayersConfig}}"
           layers-to-mask="[[canvasContext]]"
           x="[[x]]"
           y="[[y]]"
@@ -431,7 +402,6 @@ Custom property | Description | Default
       PxVisBehaviorChart.chartAutoResize,
       PxVisBehaviorChart.registerPositioning,
       PxVisBehaviorChart.layers,
-      PxColorsBehavior.baseColors,
       PxColorsBehavior.dataVisColorTheming,
       PxVisBehavior.dynamicMenuConfig,
       PxVisBehaviorChart.actionRequest,
@@ -446,7 +416,8 @@ Custom property | Description | Default
       PxVisBehaviorChart.highlighterConfigs,
       PxVisBehavior.crosshairData,
       PxVisBehaviorChart.webWorkerSynchronization,
-      Polymer.AppLocalizeBehavior
+      Polymer.AppLocalizeBehavior,
+      PxVisBehaviorRenderer.base
     ],
     /**
     * Properties block
@@ -572,7 +543,12 @@ Custom property | Description | Default
       '_highlighterConfigChanged(highlighterConfig.*)',
       '_toolbarConfigChanged(toolbarConfig)',
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
-      '_langChanged(language)'
+      '_langChanged(language)',
+
+      //renderer
+      '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
+      '_renderHighlight(domainChanged, canvasLayers.highlighter, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
+      '_renderSeriesOnTop(serieToRedrawOnTop)'
     ],
     detached: function() {
       this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
@@ -762,8 +738,8 @@ Custom property | Description | Default
       this._unitLabelGroup.selectAll('text')
             .text(unit)
             .attr('font-size', unitLabelFontSize + 'px')
-            .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
-            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']));
+            .style('font-family',this._checkThemeVariable("--px-vis-font-family", ''))
+            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", "rgb(0,0,0)"));
 
       //place label
       this._unitLabelGroup.attr('transform','translate(' + (Math.cos(angle) * length) +
@@ -786,8 +762,8 @@ Custom property | Description | Default
       this._clockwiseLabelGroup.selectAll('text')
             .text(!counterClockwise ? this.localize('clockwise') : this.localize('counter clockwise'))
             .attr('font-size', fontSize + 'px')
-            .style('font-family',this._checkThemeVariable("--px-font-family", 'GE Inspira Sans'))
-            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", this.colors['grey4']))
+            .style('font-family',this._checkThemeVariable("--px-font-family", ''))
+            .attr('fill', this._checkThemeVariable("--px-vis-axis-inline-title-color", 'rgb(0,0,0)'))
             .attr('text-anchor', 'middle');
 
       //place label
