@@ -1,3 +1,7 @@
+v3.0.1
+===================
+* Removing obsolete import from demo
+
 v3.0.0
 ===================
 * Design refresh
