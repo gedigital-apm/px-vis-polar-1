@@ -44,7 +44,7 @@ function runCustomTests() {
     test('register shown', function() {
 
       var reg = polar.querySelector('px-vis-register');
-      assert.isFalse(reg.classList.contains('visuallyHidden'));
+      assert.isFalse(reg.classList.contains('hideAxis'));
     });
 
     test('layers order', function() {
@@ -150,12 +150,12 @@ function runCustomTests() {
     test('register hidden', function() {
 
       var reg = Polymer.dom(polar.root).querySelector('px-vis-register');
-      assert.isTrue(reg.classList.contains('visuallyhidden'));
+      assert.isTrue(reg.classList.contains('hideAxis'));
     });
 
     test('hiding class function', function() {
       assert.equal(polar._getHideClass(false), '');
-      assert.equal(polar._getHideClass(true), 'visuallyhidden');
+      assert.equal(polar._getHideClass(true), 'hideAxis');
     });
 
   });
