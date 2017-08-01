@@ -1,3 +1,8 @@
+v3.0.2
+===================
+* fix sarfari 9 flex bug causing registers to overlap if screen is too small
+* Add hidden class for registers via sass partial
+
 v3.0.1
 ===================
 * Removing obsolete import from demo
