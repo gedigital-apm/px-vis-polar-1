@@ -224,6 +224,7 @@ Custom property | Description
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
+                stroke-width="[[_returnStrokeWidth(item, completeSeriesConfig)]]"
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
               </px-vis-line-canvas>
             </template>
@@ -258,6 +259,7 @@ Custom property | Description
                 x="[[x]]"
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
+                stroke-width="[[_returnStrokeWidth(item, completeSeriesConfig)]]"
                 complete-series-config="[[completeSeriesConfig]]">
               </px-vis-line-svg>
             </template>
@@ -417,7 +419,8 @@ Custom property | Description
       PxVisBehavior.crosshairData,
       PxVisBehaviorChart.webWorkerSynchronization,
       Polymer.AppLocalizeBehavior,
-      PxVisBehaviorRenderer.base
+      PxVisBehaviorRenderer.base,
+      PxVisBehavior.updateStylesOverride
     ],
     /**
     * Properties block

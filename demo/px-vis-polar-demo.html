@@ -18,7 +18,7 @@
 <link rel="import" href="../px-vis-polar.html"/>
 
 <!-- Demo DOM module -->
-<dom-module id="local-element-demo">
+<dom-module id="px-vis-polar-demo">
   <template>
     <style include="px-demo-styles" is="custom-style"></style>
 
@@ -103,9 +103,8 @@
       <px-demo-component-snippet
           element-properties="{{props}}"
           element-name="px-vis-polar"
-          links-includes="[[linksIncludes]]"
-          scripts-includes="[[scriptsIncludes]]"
-          polygit-includes="[[polygitIncludes]]">
+          codepen-link="https://px-vis-polar-demo.glitch.me"
+          suppress-property-values="[[suppressPropertyValues]]">
       </px-demo-component-snippet>
     </px-demo-interactive>
 
@@ -126,7 +125,7 @@
 </dom-module>
 <script>
   Polymer({
-    is: 'local-element-demo',
+    is: 'px-vis-polar-demo',
 
     properties: {
 
@@ -307,25 +306,9 @@
         }
       },
 
-      scriptsIncludes: {
+      suppressPropertyValues: {
         type: Array,
-        value: function() {
-          return ['https://cdn.rawgit.com/foretagsplatsen/numbro/1.7.1/numbro.js'];
-        }
-      },
-
-      linksIncludes: {
-        type: Array,
-        value: function() {
-          return ['px-vis/px-polygit-imports-vis.html', 'px-datetime-common/px-polygit-imports-datetime.html', 'numbro-element/numbro-element.html'];
-        }
-      },
-
-      polygitIncludes: {
-        type: Array,
-        value: function() {
-          return ['numbro*+MeTaNoV+*'];
-        }
+        value: function() { return ['chartData']; }
       },
 
       appliedWidth: {

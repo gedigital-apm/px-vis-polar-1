@@ -1,3 +1,11 @@
+v3.1.0
+==================
+* Adding ability to pass strokeWidth down to lines from seriesConfig
+* Change CodePen to Glitch
+* Use updated demo snippet
+* Added PxVisBehavior.updateStylesOverride behavior
+* Added ability to dynamically update stuff drawn with css variable
+
 v3.0.2
 ===================
 * fix sarfari 9 flex bug causing registers to overlap if screen is too small
