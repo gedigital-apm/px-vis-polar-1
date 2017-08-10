@@ -1,3 +1,7 @@
+v3.1.1
+==================
+* passing chartWidth to register to resolve scrollOn issue
+
 v3.1.0
 ==================
 * Adding ability to pass strokeWidth down to lines from seriesConfig
