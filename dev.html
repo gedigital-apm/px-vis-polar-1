@@ -154,9 +154,9 @@
       var menuConfig = [
           {
             'name': 'Delete',
-            'action': function(itemConfig, additionalDetail) {
+            'action': function(data) {
               var conf = this.seriesConfig;
-              delete conf[additionalDetail.name];
+              delete conf[data.additionalDetail.name];
               this.set('seriesConfig', {});
               this.set('seriesConfig', conf);
             },
@@ -166,8 +166,8 @@
           },
           {
             'name': 'Bring To Front',
-            'action': function(itemConfig, additionalDetail) {
-              this.set('serieToRedrawOnTop', additionalDetail.name);
+            'action': function(data) {
+              this.set('serieToRedrawOnTop', data.additionalDetail.name);
             },
             'actionContext': chart,
             'eventName': 'bring-to-front',

@@ -140,7 +140,8 @@ Custom property | Description
               action-config='{{actionConfig}}'
               within-chart
               chart-margin="[[margin]]"
-              show-tooltip="{{_internalShowTooltip}}">
+              show-tooltip="{{_internalShowTooltip}}"
+              config='{"zoom": true, "tooltip": true}'>
             </px-vis-toolbar>
             <px-vis-svg-canvas
               class="inline--flex"
@@ -813,17 +814,21 @@ Custom property | Description
       this.zoomStack.push({ radius: this._radius, center: this._center });
 
       /*
-        To zoom, we change our _center and _radius. This has the effect of scaling our chart to the enlarged size and translating it to be centered on our drawn box.
+        To zoom, we change our _center and _radius. This has the effect of
+        scaling our chart to the enlarged size and translating it to be
+        centered on our drawn box.
 
-        To calculate the center and radius, we will want to unscale our sizes/points and recalculate the from "absolute" values instead of scaled values, and calculate from the original center and radius.
+        To calculate the center and radius, we will want to unscale our
+        sizes/points and recalculate the from "absolute" values instead
+        of scaled values, and calculate from the original center and radius.
       */
-      var i = this._lastScale.length - 1,
-          lastScale = this._lastScale[i], //used to unscale everything
-          maxSize = Math.max(this.extentsData.w, this.extentsData.h), //only scale up to the larger of width or height
+      var lastScale = this._getLastScale(), //used to unscale everything
+          //Calc what our scale and overall size is
+          maxSize = Math.max(this.extentsData.w, this.extentsData.h), //use the great of width or height
           unscaledMaxSize = maxSize/lastScale,
           newScale = 2*this.zoomStack[0].radius/unscaledMaxSize, //want to compare diameter to maxSize
-          newRadius = newScale * this.zoomStack[0].radius;
-          //get the center point of the box so we can figure out the angle to it
+          newRadius = newScale * this.zoomStack[0].radius,
+          //get the center point of the box so we can figure out our translation
           centerX = (this.extentsData.x2 - this.extentsData.x1) / 2 + this.extentsData.x1,
           centerY = (this.extentsData.y2 - this.extentsData.y1) / 2 + this.extentsData.y1,
           unscaledX = centerX/lastScale,
@@ -834,6 +839,11 @@ Custom property | Description
 
       this._lastScale.push(newScale);
       this.zoomTo(newRadius, newCenter);
+    },
+
+    _getLastScale: function() {
+      var i = this._lastScale.length - 1;
+      return  this._lastScale[i];
     },
 
     zoomTo: function(radius, center) {
@@ -847,6 +857,7 @@ Custom property | Description
       if(!this.zoomStack.length) { return; }
 
       var settings = this.zoomStack.pop();
+      this._lastScale.pop();
       this.zoomTo(settings.radius, settings.center);
     },
 
@@ -855,7 +866,32 @@ Custom property | Description
 
       var settings = this.zoomStack[0];
       this.zoomStack = [];
+      this._lastScale = [1];
       this.zoomTo(settings.radius, settings.center);
+    },
+
+    _autoZoom: function(isZoomIn) {
+      this.zoomStack.push({ radius: this._radius, center: this._center });
+      // Treat very similar to box zoom, but different
+      // instead of calc factor, we use use a preset one
+      var factor = isZoomIn ? 1 + this.zoomInPercentage : 1 - this.zoomOutPercentage,
+          oldScale = this._getLastScale(),
+          newScale = oldScale * factor,
+          newRadius = newScale * this.zoomStack[0].radius,
+
+          // add or subtract based on zooming in or out
+          dir = isZoomIn ? -1 : 1,
+          // FIXME Something is off in calc the center. It drifts slightly which is ok if
+          // you dont have a frame of reference. Hacky fix is to just reuse _center if we
+          // are centered and the drifting would be noticable
+          centerX = this.zoomStack[0].center[0] === this._center[0] ?
+              this._center[0] : this._center[0]/oldScale*newScale + this._center[0]/oldScale*dir,
+          centerY = this.zoomStack[0].center[1] === this._center[1] ?
+              this._center[1] : this._center[1]/oldScale*newScale + this._center[1]/oldScale*dir,
+          newCenter = [centerX,centerY];
+
+      this._lastScale.push(newScale);
+      this.zoomTo(newRadius, newCenter);
     }
   });
 </script>
