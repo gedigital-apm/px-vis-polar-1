@@ -1,3 +1,7 @@
+
+==================
+* Added amplitudeExtents allowing you to set the extents of the amplitude scale
+
 v3.1.1
 ==================
 * passing chartWidth to register to resolve scrollOn issue

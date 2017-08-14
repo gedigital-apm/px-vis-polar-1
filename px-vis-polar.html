@@ -114,9 +114,9 @@ Custom property | Description
           x="{{x}}"
           y="{{y}}"
           domain-changed="{{domainChanged}}"
-          selected-domain="[[selectedDomain]]"
           complete-series-config="[[completeSeriesConfig]]"
           amplitude-keys="[[_amplitudeKey]]"
+          amplitude-extents="[[amplitudeExtents]]"
           use-degrees="[[useDegrees]]">
         </px-vis-radial-scale>
         <div class$="{{_registerWrapperClass}}">
@@ -186,7 +186,8 @@ Custom property | Description
             action-config='[[actionConfig]]'
             show-tooltip="{{_computedShowTooltip}}"
             prevent-web-worker-synchronization="[[preventWebWorkerSynchronization]]"
-            ww-data-sync-counter="[[wwDataSyncCounter]]">
+            ww-data-sync-counter="[[wwDataSyncCounter]]"
+            extents-data="{{extentsData}}">
           </px-vis-interaction-space>
 
           <!-- scatter series -->
@@ -202,7 +203,6 @@ Custom property | Description
                 renderer-type="filteredChartData"
                 width="[[_diameter]]"
                 height="[[_diameter]]"
-                clip-path
                 counter-clockwise="[[counterClockwise]]"
                 use-degrees="[[useDegrees]]"
                 x="[[x]]"
@@ -421,7 +421,9 @@ Custom property | Description
       PxVisBehaviorChart.webWorkerSynchronization,
       Polymer.AppLocalizeBehavior,
       PxVisBehaviorRenderer.base,
-      PxVisBehavior.updateStylesOverride
+      PxVisBehavior.updateStylesOverride,
+      PxVisBehavior.amplitudeExtents,
+      PxVisBehaviorChart.zoomGeneric
     ],
     /**
     * Properties block
@@ -528,11 +530,24 @@ Custom property | Description
       useKeyIfMissing: {
         type: Boolean,
         value: true
+      },
+
+      _lastScale: {
+        type: Array,
+        value: function() {
+          return [1];
+        }
       }
     },
 
     listeners: {
-     'iron-resize': '_onIronResize'
+      'iron-resize': '_onIronResize',
+      'px-vis-toolbar-reset-zoom': 'resetZoom',
+      'px-vis-toolbar-zoom-in': 'zoomIn',
+      'px-vis-toolbar-zoom-out': 'zoomOut',
+      'px-vis-toolbar-undo-zoom': 'undoZoom',
+      'px-vis-interaction-space-start-panning': '_intSpaceStartPan',
+      'px-vis-interaction-space-stop-panning': '_intSpaceStopPan'
     },
 
     observers: [
@@ -552,7 +567,10 @@ Custom property | Description
       //renderer
       '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
       '_renderHighlight(domainChanged, canvasLayers.highlighter, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
-      '_renderSeriesOnTop(serieToRedrawOnTop)'
+      '_renderSeriesOnTop(serieToRedrawOnTop)',
+
+      '_zooooooooom(extentsData.*)'
+
     ],
     detached: function() {
       this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterConfigChanged');
@@ -788,6 +806,56 @@ Custom property | Description
     },
     getSvgLayersToMask: function() {
       return [this.layer[2], this.layer[3]];
+    },
+
+    _zooooooooom: function() {
+      // save our current zoom so we can return to it
+      this.zoomStack.push({ radius: this._radius, center: this._center });
+
+      /*
+        To zoom, we change our _center and _radius. This has the effect of scaling our chart to the enlarged size and translating it to be centered on our drawn box.
+
+        To calculate the center and radius, we will want to unscale our sizes/points and recalculate the from "absolute" values instead of scaled values, and calculate from the original center and radius.
+      */
+      var i = this._lastScale.length - 1,
+          lastScale = this._lastScale[i], //used to unscale everything
+          maxSize = Math.max(this.extentsData.w, this.extentsData.h), //only scale up to the larger of width or height
+          unscaledMaxSize = maxSize/lastScale,
+          newScale = 2*this.zoomStack[0].radius/unscaledMaxSize, //want to compare diameter to maxSize
+          newRadius = newScale * this.zoomStack[0].radius;
+          //get the center point of the box so we can figure out the angle to it
+          centerX = (this.extentsData.x2 - this.extentsData.x1) / 2 + this.extentsData.x1,
+          centerY = (this.extentsData.y2 - this.extentsData.y1) / 2 + this.extentsData.y1,
+          unscaledX = centerX/lastScale,
+          unscaledY = centerY/lastScale,
+          offsetX = this.zoomStack[0].center[0] - unscaledX * newScale,
+          offsetY = this.zoomStack[0].center[1] - unscaledY * newScale,
+          newCenter = [offsetX, offsetY];
+
+      this._lastScale.push(newScale);
+      this.zoomTo(newRadius, newCenter);
+    },
+
+    zoomTo: function(radius, center) {
+      this.set('_center', center);
+      this.set('_radius', radius);
+      // force a redraw
+      this.set('domainChanged', !this.domainChanged)
+    },
+
+    undoZoom: function() {
+      if(!this.zoomStack.length) { return; }
+
+      var settings = this.zoomStack.pop();
+      this.zoomTo(settings.radius, settings.center);
+    },
+
+    resetZoom: function() {
+      if(!this.zoomStack.length) { return; }
+
+      var settings = this.zoomStack[0];
+      this.zoomStack = [];
+      this.zoomTo(settings.radius, settings.center);
     }
   });
 </script>
