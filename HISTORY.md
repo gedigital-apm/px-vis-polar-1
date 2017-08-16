@@ -1,6 +1,9 @@
 
 ==================
 * Added amplitudeExtents allowing you to set the extents of the amplitude scale
+* Added Default Toolbar
+* Added ability to perform a box zoom
+* Added ability to Pan
 
 v3.1.1
 ==================

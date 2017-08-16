@@ -141,7 +141,7 @@ Custom property | Description
               within-chart
               chart-margin="[[margin]]"
               show-tooltip="{{_internalShowTooltip}}"
-              config='{"zoom": true, "tooltip": true}'>
+              config='{"zoom": true, "pan": true, "tooltip": true}'>
             </px-vis-toolbar>
             <px-vis-svg-canvas
               class="inline--flex"
@@ -188,7 +188,8 @@ Custom property | Description
             show-tooltip="{{_computedShowTooltip}}"
             prevent-web-worker-synchronization="[[preventWebWorkerSynchronization]]"
             ww-data-sync-counter="[[wwDataSyncCounter]]"
-            extents-data="{{extentsData}}">
+            extents-data="{{extentsData}}"
+            extents-action="{{extentsAction}}">
           </px-vis-interaction-space>
 
           <!-- scatter series -->
@@ -547,8 +548,7 @@ Custom property | Description
       'px-vis-toolbar-zoom-in': 'zoomIn',
       'px-vis-toolbar-zoom-out': 'zoomOut',
       'px-vis-toolbar-undo-zoom': 'undoZoom',
-      'px-vis-interaction-space-start-panning': '_intSpaceStartPan',
-      'px-vis-interaction-space-stop-panning': '_intSpaceStopPan'
+      'px-vis-interaction-space-start-panning': 'addToZoomStack'
     },
 
     observers: [
@@ -569,8 +569,6 @@ Custom property | Description
       '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
       '_renderHighlight(domainChanged, canvasLayers.highlighter, completeSeriesConfig.*, preventInitialDrawing, radial, counterClockwise, renderToCanvas)',
       '_renderSeriesOnTop(serieToRedrawOnTop)',
-
-      '_zooooooooom(extentsData.*)'
 
     ],
     detached: function() {
@@ -602,6 +600,9 @@ Custom property | Description
 
       //make sure the change is processed... might be a better way
       this._setCompleteSeriesConfig();
+
+      this._extentsDataRoutes.zoom = '_zooooooooom';
+      this._extentsDataRoutes.pan =  '_paaaaaaaaan';
     },
 
     _tooltipConfigChanged: function(conf) {
@@ -892,6 +893,18 @@ Custom property | Description
 
       this._lastScale.push(newScale);
       this.zoomTo(newRadius, newCenter);
+    },
+
+    _paaaaaaaaan: function() {
+      var centerX = this._center[0] + (this.extentsData.x2 - this.extentsData.x1),
+          centerY = this._center[1] + (this.extentsData.y2 - this.extentsData.y1),
+          newCenter = [centerX,centerY];
+
+      this.zoomTo(this._radius, newCenter);
+    },
+
+    addToZoomStack: function() {
+      this.zoomStack.push({ radius: this._radius, center: this._center });
     }
   });
 </script>
