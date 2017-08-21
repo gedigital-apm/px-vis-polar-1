@@ -53,6 +53,7 @@
               chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
               chart-data="{{props.chartData.value}}"
               include-all-series="[[props.includeAllSeries.value]]"
+              render-to-canvas="[[props.renderToCanvas.value]]"
               series-config='{{props.seriesConfig.value}}'
               counter-clockwise="{{props.counterClockwise.value}}"
               use-degrees="{{props.useDegrees.value}}"
@@ -414,6 +415,12 @@
       },
 
       includeAllSeries: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      renderToCanvas: {
         type: Boolean,
         defaultValue: false,
         inputType: 'toggle'
