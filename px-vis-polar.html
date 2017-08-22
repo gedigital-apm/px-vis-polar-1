@@ -872,6 +872,7 @@ Custom property | Description
     },
 
     _autoZoom: function(isZoomIn) {
+
       this.zoomStack.push({ radius: this._radius, center: this._center });
       // Treat very similar to box zoom, but different
       // instead of calc factor, we use use a preset one
@@ -879,16 +880,10 @@ Custom property | Description
           oldScale = this._getLastScale(),
           newScale = oldScale * factor,
           newRadius = newScale * this.zoomStack[0].radius,
-
-          // add or subtract based on zooming in or out
-          dir = isZoomIn ? -1 : 1,
-          // FIXME Something is off in calc the center. It drifts slightly which is ok if
-          // you dont have a frame of reference. Hacky fix is to just reuse _center if we
-          // are centered and the drifting would be noticable
-          centerX = this.zoomStack[0].center[0] === this._center[0] ?
-              this._center[0] : this._center[0]/oldScale*newScale + this._center[0]/oldScale*dir,
-          centerY = this.zoomStack[0].center[1] === this._center[1] ?
-              this._center[1] : this._center[1]/oldScale*newScale + this._center[1]/oldScale*dir,
+          xOffset = this._smallerSide/2 - this._center[0],
+          yOffset = this._smallerSide/2 - this._center[1],
+          centerX = this._smallerSide/2 - xOffset*factor,
+          centerY = this._smallerSide/2 - yOffset*factor,
           newCenter = [centerX,centerY];
 
       this._lastScale.push(newScale);
