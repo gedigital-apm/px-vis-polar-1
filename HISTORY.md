@@ -1,3 +1,7 @@
+v3.1.2
+==================
+* Update glitch link
+
 v3.1.1
 ==================
 * passing chartWidth to register to resolve scrollOn issue
