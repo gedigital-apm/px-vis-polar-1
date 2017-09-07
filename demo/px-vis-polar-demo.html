@@ -68,7 +68,8 @@
               toolbar-config="{{props.toolbarConfig.value}}"
               dynamic-menu-config='{{props.dynamicMenuConfig.value}}'
               chart-extents='{{props.chartExtents.value}}'
-              debounce-resize-timing="{{props.debounceResizeTiming.value}}">
+              debounce-resize-timing="{{props.debounceResizeTiming.value}}"
+              render-to-canvas="{{props.renderToCanvas.value}}">
             </px-vis-polar>
           </div>
           <div style="height:100px">
@@ -336,6 +337,12 @@
         type: Number,
         defaultValue: 250,
         inputType: 'text'
+      },
+
+      renderToCanvas: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
       },
 
       //we need inputDisabled: false to be able to dynamically turn it on
