@@ -3,7 +3,7 @@
 <link rel="import" href="../px-vis/px-vis-behavior-common.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-d3.html"/>
 <link rel="import" href="../px-vis/px-vis-behavior-renderer.html"/>
-<link rel="import" href="../px-vis/px-vis-radial-scale.html"/>
+<link rel="import" href="../px-vis/px-vis-behavior-scale-radial.html"/>
 <link rel="import" href="../px-vis/px-vis-svg-canvas.html"/>
 <link rel="import" href="../px-vis/px-vis-scatter.html"/>
 <link rel="import" href="../px-vis/px-vis-line-svg.html"/>
@@ -105,20 +105,6 @@ Custom property | Description
       <!-- Legend -->
       <div id="svgWrapper">
         <!-- Core -->
-        <px-vis-radial-scale
-          id="scale"
-          width="[[_radius]]"
-          height="[[_radius]]"
-          margin="[[margin]]"
-          chart-data="[[chartData]]"
-          x="{{x}}"
-          y="{{y}}"
-          domain-changed="{{domainChanged}}"
-          complete-series-config="[[completeSeriesConfig]]"
-          amplitude-keys="[[_amplitudeKey]]"
-          amplitude-extents="[[amplitudeExtents]]"
-          use-degrees="[[useDegrees]]">
-        </px-vis-radial-scale>
         <div class$="{{_registerWrapperClass}}">
           <px-vis-register
             id="register"
@@ -398,6 +384,7 @@ Custom property | Description
       PxVisBehavior.extentsData,
       PxVisBehavior.axisTypes,
       PxVisBehavior.completeSeriesConfig,
+      PxVisBehaviorScale.radial,
       PxVisBehaviorChart.chartCommon,
       PxVisBehaviorChart.saveImage,
       PxVisBehaviorChart.subConfiguration,
@@ -557,6 +544,11 @@ Custom property | Description
       '_createLayersOnce(svg, numberOfLayers)',
       '_keepDataInSync(_filteredData.*, chartId)',
       '_seriesKeysChanged(_seriesKeys.*)',
+
+      '_setYScale(_radius,margin,centerOffset)',
+      '_generateChartExtents(chartData.*, _amplitudeKey)',
+      '_generateChartExtents(amplitudeExtents)',
+      '_setDomain(y, _calculatedExtents)',
 
       '_tooltipConfigChanged(tooltipConfig)',
       '_registerConfigChanged(registerConfig)',
@@ -804,7 +796,7 @@ Custom property | Description
     _langChanged: function() {
 
       //recreate X and Y in case d3 locale changed
-      this.$.scale._recreateScales();
+      this._recreateScales();
     },
     getSvgLayersToMask: function() {
       return [this.layer[2], this.layer[3]];
