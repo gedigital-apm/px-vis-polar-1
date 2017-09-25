@@ -5,6 +5,10 @@
 * Added ability to perform a box zoom
 * Added ability to Pan
 
+v3.1.2
+==================
+* Update glitch link
+
 v3.1.1
 ==================
 * passing chartWidth to register to resolve scrollOn issue
