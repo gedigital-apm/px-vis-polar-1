@@ -175,7 +175,9 @@ Custom property | Description
             prevent-web-worker-synchronization="[[preventWebWorkerSynchronization]]"
             ww-data-sync-counter="[[wwDataSyncCounter]]"
             extents-data="{{extentsData}}"
-            extents-action="{{extentsAction}}">
+            extents-action="{{extentsAction}}"
+            muted-series="[[mutedSeries]]"
+            hard-mute="[[hardMute]]">
           </px-vis-interaction-space>
 
           <!-- scatter series -->
@@ -309,6 +311,7 @@ Custom property | Description
         tooltip-data="[[tooltipData]]"
         chart-data="[[_filteredData]]"
         muted-series="[[mutedSeries]]"
+        hard-mute="[[hardMute]]"
         x-axis-type="linear"
         y-axis-type="linear"
         complete-series-config="[[completeSeriesConfig]]"
@@ -526,6 +529,16 @@ Custom property | Description
         value: function() {
           return [1];
         }
+      },
+      /**
+      * Usually a polar plot won't accept negative values and will use at least
+      * 0 as the minimum value for the center. Negative values are
+      * then "flipped" by 180. In some very specific instance you might want
+      * to plot negative values, for dB for example
+      */
+      allowNegativeValues: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -551,8 +564,8 @@ Custom property | Description
       '_seriesKeysChanged(_seriesKeys.*)',
 
       '_setYScale(_radius,centerOffset)',
-      '_generateChartExtents(chartData.*, _amplitudeKey)',
-      '_generateChartExtents(amplitudeExtents)',
+      '_generateChartExtents(chartData.*, _amplitudeKey, mutedSeries.*)',
+      '_generateChartExtents(amplitudeExtents, mutedSeries.*)',
       '_setDomain(y, _calculatedExtents)',
 
       '_tooltipConfigChanged(tooltipConfig)',
