@@ -1,4 +1,4 @@
-
+v3.2.0
 ==================
 * Added amplitudeExtents allowing you to set the extents of the amplitude scale
 * Added Default Toolbar
