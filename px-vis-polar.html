@@ -564,8 +564,8 @@ Custom property | Description
       '_seriesKeysChanged(_seriesKeys.*)',
 
       '_setYScale(_radius,centerOffset)',
-      '_generateChartExtents(chartData.*, _amplitudeKey, mutedSeries.*)',
-      '_generateChartExtents(amplitudeExtents, mutedSeries.*)',
+      '_generateChartExtents(chartData.*, _amplitudeKey)',
+      '_generateChartExtents(amplitudeExtents)',
       '_setDomain(y, _calculatedExtents)',
 
       '_tooltipConfigChanged(tooltipConfig)',
@@ -574,6 +574,7 @@ Custom property | Description
       '_toolbarConfigChanged(toolbarConfig)',
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
       '_langChanged(language)',
+      '_mutedChanged(mutedSeries.*, hardMute)',
 
       //renderer
       '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, counterClockwise, renderToCanvas)',
@@ -910,6 +911,12 @@ Custom property | Description
 
     addToZoomStack: function() {
       this.zoomStack.push({ radius: this._radius, center: this._center });
+    },
+
+    _mutedChanged: function() {
+      if(this.hardMute === true) {
+        this._generateChartExtents();
+      }
     }
   });
 </script>
