@@ -272,6 +272,7 @@ Custom property | Description
         tooltip-data="[[tooltipData]]"
         complete-series-config="[[completeSeriesConfig]]"
         muted-series="[[mutedSeries]]"
+        hard-mute="[[hardMute]]"
         offset="[[offset]]">
       </px-vis-cursor>
       <!-- the 4 axis -->
@@ -342,7 +343,9 @@ Custom property | Description
           generating-crosshair-data="[[generatingCrosshairData]]"
           default-empty-data="{{defaultEmptyData}}"
           tooltip-data="{{tooltipData}}"
-          crosshair-data="[[crosshairData]]">
+          crosshair-data="[[crosshairData]]"
+          hard-mute="[[hardMute]]"
+          muted-series="[[mutedSeries]]">
         </px-vis-highlight-point-canvas>
       </template>
       <template is="dom-if" if="[[!renderToCanvas]]" restamp>
@@ -362,7 +365,9 @@ Custom property | Description
           generating-crosshair-data="[[generatingCrosshairData]]"
           default-empty-data="{{defaultEmptyData}}"
           tooltip-data="{{tooltipData}}"
-          crosshair-data="[[crosshairData]]">
+          crosshair-data="[[crosshairData]]"
+          hard-mute="[[hardMute]]"
+          muted-series="[[mutedSeries]]">
         </px-vis-highlight-point>
       </template>
 
