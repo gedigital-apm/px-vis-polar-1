@@ -1,3 +1,7 @@
+v3.3.0
+==================
+* Added hard-mute
+
 v3.2.0
 ==================
 * Added amplitudeExtents allowing you to set the extents of the amplitude scale
