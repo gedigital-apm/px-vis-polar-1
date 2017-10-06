@@ -175,7 +175,9 @@ Custom property | Description
             prevent-web-worker-synchronization="[[preventWebWorkerSynchronization]]"
             ww-data-sync-counter="[[wwDataSyncCounter]]"
             extents-data="{{extentsData}}"
-            extents-action="{{extentsAction}}">
+            extents-action="{{extentsAction}}"
+            muted-series="[[mutedSeries]]"
+            hard-mute="[[hardMute]]">
           </px-vis-interaction-space>
 
           <!-- scatter series -->
@@ -270,6 +272,7 @@ Custom property | Description
         tooltip-data="[[tooltipData]]"
         complete-series-config="[[completeSeriesConfig]]"
         muted-series="[[mutedSeries]]"
+        hard-mute="[[hardMute]]"
         offset="[[offset]]">
       </px-vis-cursor>
       <!-- the 4 axis -->
@@ -309,6 +312,7 @@ Custom property | Description
         tooltip-data="[[tooltipData]]"
         chart-data="[[_filteredData]]"
         muted-series="[[mutedSeries]]"
+        hard-mute="[[hardMute]]"
         x-axis-type="linear"
         y-axis-type="linear"
         complete-series-config="[[completeSeriesConfig]]"
@@ -339,7 +343,9 @@ Custom property | Description
           generating-crosshair-data="[[generatingCrosshairData]]"
           default-empty-data="{{defaultEmptyData}}"
           tooltip-data="{{tooltipData}}"
-          crosshair-data="[[crosshairData]]">
+          crosshair-data="[[crosshairData]]"
+          hard-mute="[[hardMute]]"
+          muted-series="[[mutedSeries]]">
         </px-vis-highlight-point-canvas>
       </template>
       <template is="dom-if" if="[[!renderToCanvas]]" restamp>
@@ -359,7 +365,9 @@ Custom property | Description
           generating-crosshair-data="[[generatingCrosshairData]]"
           default-empty-data="{{defaultEmptyData}}"
           tooltip-data="{{tooltipData}}"
-          crosshair-data="[[crosshairData]]">
+          crosshair-data="[[crosshairData]]"
+          hard-mute="[[hardMute]]"
+          muted-series="[[mutedSeries]]">
         </px-vis-highlight-point>
       </template>
 
@@ -526,6 +534,16 @@ Custom property | Description
         value: function() {
           return [1];
         }
+      },
+      /**
+      * Usually a polar plot won't accept negative values and will use at least
+      * 0 as the minimum value for the center. Negative values are
+      * then "flipped" by 180. In some very specific instance you might want
+      * to plot negative values, for dB for example
+      */
+      allowNegativeValues: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -561,6 +579,7 @@ Custom property | Description
       '_toolbarConfigChanged(toolbarConfig)',
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
       '_langChanged(language)',
+      '_mutedChanged(mutedSeries.*, hardMute)',
 
       //renderer
       '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, counterClockwise, renderToCanvas)',
@@ -897,6 +916,12 @@ Custom property | Description
 
     addToZoomStack: function() {
       this.zoomStack.push({ radius: this._radius, center: this._center });
+    },
+
+    _mutedChanged: function() {
+      if(this.hardMute === true) {
+        this._generateChartExtents();
+      }
     }
   });
 </script>
