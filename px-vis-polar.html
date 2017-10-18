@@ -21,7 +21,7 @@
 <link rel="import" href="../px-vis/px-vis-highlight-point.html"/>
 <link rel="import" href="../px-vis/px-vis-highlight-point-canvas.html"/>
 <link rel="import" href="../app-localize-behavior/app-localize-behavior.html"/>
-
+<link rel="import" href="../px-vis/px-vis-annotations.html"/>
 <link rel="import" href="css/px-vis-polar-styles.html">
 <!--
 The	px-vis-polar component allows the user to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
@@ -142,6 +142,18 @@ Custom property | Description
               svg-lower="{{svgLower}}"
               px-svg-elem-lower="{{pxSvgElemLower}}"
               offset="[[_center]]">
+                <px-vis-annotations
+                  slot="4"
+                  svg="[[svg]]"
+                  x="[[x]]"
+                  y="[[y]]"
+                  margin="[[_internalMargin]]"
+                  domain-changed="[[domainChanged]]"
+                  complete-series-config="[[completeSeriesConfig]]"
+                  annotation-data="[[annotationData]]"
+                  offset="[[_center]]"
+                  radial>
+              </px-vis-annotations>
             </px-vis-svg-canvas>
           </div>
 
@@ -429,7 +441,9 @@ Custom property | Description
       PxVisBehaviorRenderer.base,
       PxVisBehavior.updateStylesOverride,
       PxVisBehavior.amplitudeExtents,
-      PxVisBehaviorChart.zoomGeneric
+      PxVisBehaviorChart.zoomGeneric,
+      PxVisBehaviorD3.scatterArrow,
+      PxVisBehavior.annotationData
     ],
     /**
     * Properties block
