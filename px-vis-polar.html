@@ -273,7 +273,8 @@ Custom property | Description
         complete-series-config="[[completeSeriesConfig]]"
         muted-series="[[mutedSeries]]"
         hard-mute="[[hardMute]]"
-        offset="[[offset]]">
+        offset="[[offset]]"
+        series-keys="[[_seriesKey]]">
       </px-vis-cursor>
       <!-- the 4 axis -->
       <template is="dom-repeat" items="[[_axisConfigArray]]">
@@ -319,7 +320,8 @@ Custom property | Description
         hover-target="[[mouseRect]]"
         mouse-position="[[mousePosition]]"
         tooltip-style="light"
-        hide="[[!_computedShowTooltip]]">
+        hide="[[!_computedShowTooltip]]"
+        series-keys="[[_seriesKey]]">
       </px-vis-tooltip>
 
       <template id="highlighterDomIf" is="dom-if" if="[[renderToCanvas]]" restamp>
@@ -345,7 +347,8 @@ Custom property | Description
           tooltip-data="{{tooltipData}}"
           crosshair-data="[[crosshairData]]"
           hard-mute="[[hardMute]]"
-          muted-series="[[mutedSeries]]">
+          muted-series="[[mutedSeries]]"
+          series-keys="[[_seriesKey]]">
         </px-vis-highlight-point-canvas>
       </template>
       <template is="dom-if" if="[[!renderToCanvas]]" restamp>
@@ -367,7 +370,8 @@ Custom property | Description
           tooltip-data="{{tooltipData}}"
           crosshair-data="[[crosshairData]]"
           hard-mute="[[hardMute]]"
-          muted-series="[[mutedSeries]]">
+          muted-series="[[mutedSeries]]"
+          series-keys="[[_seriesKey]]">
         </px-vis-highlight-point>
       </template>
 
