@@ -1,3 +1,7 @@
+v3.3.3
+==================
+* pass series keys to elements dealing with mutes series
+
 v3.3.2
 ==================
 * add device flags
