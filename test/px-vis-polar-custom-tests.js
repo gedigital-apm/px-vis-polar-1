@@ -18,6 +18,7 @@ function runCustomTests() {
     });
 
     test('counterClockwise false by default', function() {
+      debugger
       assert.isFalse(polar.counterClockwise);
     });
 
@@ -43,7 +44,7 @@ function runCustomTests() {
 
     test('register shown', function() {
 
-      var reg = polar.querySelector('px-vis-register');
+      var reg = Polymer.dom(polar.root).querySelector('px-vis-register');
       assert.isFalse(reg.classList.contains('hideAxis'));
     });
 

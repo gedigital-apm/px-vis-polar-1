@@ -8,11 +8,13 @@
     <title>
       px-vis-polar Demo</title>
     <!-- Requires Webcomponents.js polyfill is provided by the page for browsers that don't support html imports -->
-    <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../px-theme/px-theme-styles.html">
     <!-- <link rel="import" href="../px-dark-theme/px-dark-theme-styles.html"> -->
-    <style include="px-theme-styles" is="custom-style"></style>
+    <custom-style>
+      <style include="px-theme-styles" is="custom-style"></style>
+    </custom-style>
 
     <!-- Import custom element. Note: see comment about relative paths to dependencies in the *.html file referenced below -->
     <link rel="import" href="../promise-polyfill/promise-polyfill-lite.html">
@@ -24,6 +26,7 @@
   <!-- <body style="padding:30px; background-color: rgb(27,42,51);"> -->
   <body>
 
+    <dom-bind>
     <template id="demo" is="dom-bind">
       <h3>Demo</h3>
       <iron-ajax
@@ -135,6 +138,7 @@
             </px-vis-chart-navigator>
           </div>-->
     </template>
+    </dom-bind>
   </body>
   <script>
     document.addEventListener('WebComponentsReady', function() {
