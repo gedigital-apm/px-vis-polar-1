@@ -198,7 +198,9 @@ Custom property | Description
                 y="[[y]]"
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
-                serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
+                serie-to-redraw-on-top="[[serieToRedrawOnTop]]"
+                show-arrows="[[showArrows]]"
+                arrow-config="[[arrowConfig]]">
               </px-vis-scatter-canvas>
               <px-vis-line-canvas
                 id="lineCanvas"
@@ -236,7 +238,9 @@ Custom property | Description
                 domain-changed="[[domainChanged]]"
                 muted-series="[[mutedSeries]]"
                 complete-series-config="[[completeSeriesConfig]]"
-                time-data="{{timeData}}">
+                time-data="{{timeData}}"
+                show-arrows="[[showArrows]]"
+                arrow-config="[[arrowConfig]]">
               </px-vis-scatter>
               <px-vis-line-svg
                 svg="[[layer.2]]"
@@ -273,7 +277,8 @@ Custom property | Description
         muted-series="[[mutedSeries]]"
         hard-mute="[[hardMute]]"
         offset="[[offset]]"
-        series-keys="[[_seriesKey]]">
+        series-keys="[[_seriesKey]]"
+        allow-negative-values="[[allowNegativeValues]]">
       </px-vis-cursor>
       <!-- the 4 axis -->
       <template is="dom-repeat" items="[[_axisConfigArray]]">
@@ -424,7 +429,8 @@ Custom property | Description
       PxVisBehaviorRenderer.base,
       PxVisBehavior.updateStylesOverride,
       PxVisBehavior.amplitudeExtents,
-      PxVisBehaviorChart.zoomGeneric
+      PxVisBehaviorChart.zoomGeneric,
+      PxVisBehaviorD3.scatterArrow
     ],
     /**
     * Properties block

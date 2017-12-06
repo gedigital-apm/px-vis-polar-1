@@ -1,3 +1,7 @@
+
+==================
+* Added arrows
+
 v3.3.3
 ==================
 * pass series keys to elements dealing with mutes series
