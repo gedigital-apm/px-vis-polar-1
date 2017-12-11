@@ -1,7 +1,7 @@
 v3.4.0
 ==================
 * Polymer 1.x/2.x hybrid element support
-* Added arrows
+* Added arrow support pending vis feature release
 
 v3.3.3
 ==================
