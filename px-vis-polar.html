@@ -341,7 +341,7 @@ Custom property | Description
         series-keys="[[_seriesKey]]">
       </px-vis-tooltip>
 
-      <template id="highlighterDomIf" is="dom-if" if="[[renderToCanvas]]" restamp>
+      <template id="highlighterDomIf" is="dom-if" if="[[renderToCanvas]]" restamp on-dom-change="_highlighterConfigChanged">
         <px-vis-highlight-point-canvas
           id="highlighterCanvas"
           radial
@@ -368,7 +368,7 @@ Custom property | Description
           series-keys="[[_seriesKey]]">
         </px-vis-highlight-point-canvas>
       </template>
-      <template is="dom-if" if="[[!renderToCanvas]]" restamp>
+      <template is="dom-if" if="[[!renderToCanvas]]" restamp on-dom-change="_highlighterConfigChanged">
         <px-vis-highlight-point
           id="highlighter"
           radial
@@ -611,9 +611,6 @@ Custom property | Description
       '_renderSeriesOnTop(serieToRedrawOnTop)'
     ],
 
-    detached: function() {
-      this.unlisten(this.$.highlighterDomIf, 'dom-change', '_highlighterDomChanged');
-    },
     created: function() {
       this._tooltipCalcHoverTargetId = 'wrapper';
     },
@@ -629,9 +626,6 @@ Custom property | Description
       if(!this.defaultSeriesConfig.xAxisUnit) {
         this.defaultSeriesConfig.xAxisUnit = '°';
       }
-
-      // only listen to one since it is a toggle
-      this.listen(this.$.highlighterDomIf, 'dom-change', '_highlighterDomChanged');
 
       this.set('numberOfLayers',7);
 
@@ -675,16 +669,6 @@ Custom property | Description
       }
 
       this._applyConfigToElement(this.interactionSpaceConfig, this.$.interactionSpace)
-    },
-
-    _highlighterDomChanged: function() {
-      var elem = this.renderToCanvas ? this.$$('#highlighterCanvas') : this.$$('#highlighter');
-
-      if(!elem) {
-        //force render of the dom if so we can grab the highlighter and apply config
-        this.$.highlighterDomIf.render();
-      }
-      this._highlighterConfigChanged();
     },
 
     _highlighterConfigChanged: function(conf) {
