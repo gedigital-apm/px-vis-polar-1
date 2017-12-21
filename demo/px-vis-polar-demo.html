@@ -71,7 +71,8 @@
               dynamic-menu-config='{{props.dynamicMenuConfig.value}}'
               chart-extents='{{props.chartExtents.value}}'
               debounce-resize-timing="{{props.debounceResizeTiming.value}}"
-              render-to-canvas="{{props.renderToCanvas.value}}">
+              render-to-canvas="{{props.renderToCanvas.value}}"
+              show-arrows="[[props.showArrows.value]]">
             </px-vis-polar>
           </div>
           <div style="height:100px">
@@ -505,6 +506,11 @@
           },
         inputType: 'code:JSON'
       },
+      showArrows: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      }
     },
 
     observers: [
