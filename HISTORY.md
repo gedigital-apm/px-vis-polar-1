@@ -1,3 +1,9 @@
+v3.5.0
+==================
+* Annotations
+* Highlighter conf updates
+* Arrow config support
+
 v3.4.0
 ==================
 * Polymer 1.x/2.x hybrid element support
