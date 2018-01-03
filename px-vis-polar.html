@@ -100,7 +100,6 @@ Custom property | Description
   <template>
     <style include="px-vis-polar-styles"></style>
 
-
     <div id="wrapper" class$="{{_chartWrapperClass}}">
       <!-- Legend -->
       <div id="svgWrapper">
@@ -111,13 +110,16 @@ Custom property | Description
             chart-width="[[width]]"
             class$="{{_getHideClass(hideRegister)}}"
             dynamic-menu-config="[[dynamicMenuConfig]]"
-            tooltip-data="[[tooltipData]]"
+            tooltip-data="[[_registerTooltipData]]"
             chart-data="[[_filteredData]]"
             complete-series-config="[[completeSeriesConfig]]"
             muted-series="{{mutedSeries}}"
             type="{{_registerType}}"
             x-axis-type="linear"
-            y-axis-type="linear">
+            y-axis-type="linear"
+            current-page="[[_registerCurrentPage]]"
+            total-pages="[[_registerTotalPages]]"
+            display-page-arrows="[[_registerDisplayPageArrows]]">
           </px-vis-register>
           <div class="flex flex--col safari-flex-fix">
             <px-vis-toolbar
@@ -444,7 +446,9 @@ Custom property | Description
       PxVisBehavior.amplitudeExtents,
       PxVisBehaviorChart.zoomGeneric,
       PxVisBehaviorD3.scatterArrow,
-      PxVisBehavior.annotationData
+      PxVisBehavior.annotationData,
+      PxVisBehaviorChart.cursorConfig,
+      PxVisBehaviorChart.registerPagnation
     ],
     /**
     * Properties block
@@ -604,6 +608,7 @@ Custom property | Description
       '_interactionSpaceConfigChanged(interactionSpaceConfig.*)',
       '_langChanged(language)',
       '_mutedChanged(mutedSeries.*, hardMute)',
+      '_tooltipDataUpdated(tooltipData.*)',
 
       //renderer
       '_renderFilteredChartData(domainChanged, canvasContext, _filteredData.*, mutedSeries.*, completeSeriesConfig.*, preventInitialDrawing, counterClockwise, renderToCanvas)',
