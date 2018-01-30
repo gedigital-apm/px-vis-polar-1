@@ -1,3 +1,7 @@
+v3.5.2
+==================
+* Fix order of some <template> to avoid racing conditions on dynamic creation
+
 v3.5.1
 ==================
 * fix demo code editor

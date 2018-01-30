@@ -193,9 +193,8 @@ Custom property | Description
           </px-vis-interaction-space>
 
           <!-- scatter series -->
-
-          <template is="dom-if" if="[[renderToCanvas]]" restamp>
-            <template is="dom-repeat" items="[[_seriesKeys]]">
+          <template is="dom-repeat" items="[[_seriesKeys]]">
+            <template is="dom-if" if="[[renderToCanvas]]" restamp>
               <px-vis-scatter-canvas
                 canvas-context="[[canvasContext]]"
                 series-id="[[item]]"
@@ -233,9 +232,7 @@ Custom property | Description
                 serie-to-redraw-on-top="[[serieToRedrawOnTop]]">
               </px-vis-line-canvas>
             </template>
-          </template>
-          <template is="dom-if" if="[[!renderToCanvas]]" restamp>
-            <template is="dom-repeat" items="[[_seriesKeys]]">
+            <template is="dom-if" if="[[!renderToCanvas]]" restamp>
               <px-vis-scatter
                 svg="[[layer.3]]"
                 series-id="[[item]]"
