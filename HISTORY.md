@@ -1,3 +1,7 @@
+v3.5.3
+==================
+* Fix demo for IE
+
 v3.5.2
 ==================
 * Fix order of some <template> to avoid racing conditions on dynamic creation
