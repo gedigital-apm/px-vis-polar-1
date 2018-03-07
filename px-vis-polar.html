@@ -939,7 +939,7 @@ Custom property | Description
       this.set('_center', center);
       this.set('_radius', radius);
       // force a redraw
-      this.set('domainChanged', !this.domainChanged)
+      this.set('domainChanged', this.domainChanged + 1);
     },
 
     undoZoom: function() {
