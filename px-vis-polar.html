@@ -446,7 +446,8 @@ Custom property | Description
       PxVisBehaviorD3.scatterArrow,
       PxVisBehavior.annotationData,
       PxVisBehaviorChart.cursorConfig,
-      PxVisBehaviorChart.registerPagnation
+      PxVisBehaviorChart.registerPagnation,
+      PxVisBehaviorChart.sizeVerticalRegister
     ],
     /**
     * Properties block
@@ -579,7 +580,6 @@ Custom property | Description
     polar: true,
 
     listeners: {
-      'iron-resize': '_onIronResize',
       'px-vis-toolbar-reset-zoom': 'resetZoom',
       'px-vis-toolbar-zoom-in': 'zoomIn',
       'px-vis-toolbar-zoom-out': 'zoomOut',
@@ -616,6 +616,8 @@ Custom property | Description
 
     created: function() {
       this._tooltipCalcHoverTargetId = 'wrapper';
+      this.set('_verticalRegisterDrawingCanvasId', 'svg');
+      this.set('_verticalRegisterHeightDeductions', ['toolbar']);
     },
     ready: function() {
       this._wwSyncDataPropName = '_filteredData';
@@ -693,31 +695,25 @@ Custom property | Description
       }
     },
 
-    _onIronResize: function() {
-      if(!this.preventResize) {
-        this.debounce('ironresize', function() {
+    _resizeCalculations: function() {
 
-          if(!this.preventResize) {
-            var wrapperRect = this.$.wrapper.getBoundingClientRect(),
-                toolbarRect = this.$.toolbar.getBoundingClientRect(),
-                registerRect = this.$.register.getBoundingClientRect(),
-                widthDeduct = 0,
-                heightDeduct = 0;
+      var wrapperRect = this.$.wrapper.getBoundingClientRect(),
+          toolbarRect = this.$.toolbar.getBoundingClientRect(),
+          registerRect = this.$.register.getBoundingClientRect(),
+          widthDeduct = 0,
+          heightDeduct = 0;
 
-            heightDeduct += toolbarRect.height;
+      heightDeduct += toolbarRect.height;
 
-            if(this.$.register.type === 'horizontal') {
-              heightDeduct += registerRect.height;
-            } else {
-              widthDeduct += registerRect.width;
-            }
-
-            this.set('width', Math.max(wrapperRect.width - widthDeduct, 0));
-            this.set('height', Math.max(wrapperRect.height - heightDeduct, 0));
-          }
-
-        }, this.debounceResizeTiming);
+      if(this.$.register.type === 'horizontal') {
+        heightDeduct += registerRect.height;
+      } else {
+        widthDeduct += registerRect.width;
       }
+
+      this.set('width', Math.max(wrapperRect.width - widthDeduct, 0));
+      this.set('height', Math.max(wrapperRect.height - heightDeduct, 0));
+      this._computeVerticalRegisterHeight([toolbarRect.height]);
     },
 
     /**

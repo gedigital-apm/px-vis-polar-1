@@ -44,7 +44,6 @@
             id="chart"
             chart-data="{{data}}"
             register-config='{
-                "type": "horizontal",
                 "numberFormat": "0,0.0",
                 "forceDateTimeDisplay": true}'
             tooltip-config='{
@@ -63,7 +62,9 @@
             time-data="x"
             time-domain="[[selectedDomain]]"
             toolbar-config='{"config": {
-              "tooltipWithOptions": true
+              "tooltipWithSearchTypes": true,
+              "zoom": true,
+              "pan": true
             }}'
             use-degrees>
             </px-vis-polar>
