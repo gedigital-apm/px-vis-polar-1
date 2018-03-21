@@ -22,6 +22,9 @@
 <link rel="import" href="../px-vis/px-vis-highlight-point-canvas.html"/>
 <link rel="import" href="../app-localize-behavior/app-localize-behavior.html"/>
 <link rel="import" href="../px-vis/px-vis-annotations.html"/>
+<link rel="import" href="../px-vis/px-vis-central-tooltip-content.html"/>
+<link rel="import" href="../px-tooltip/px-tooltip.html"/>
+
 <link rel="import" href="css/px-vis-polar-styles.html">
 <!--
 The	px-vis-polar component allows the user to draw a phase and amplitude on a polar plot. Initial height and width can be set but the component will try to fill its parent container on resize. It can be manually notified to recalculate its size by using notifyResize(). The chart is expecting the phase in radians but can use degrees by using the useDegrees property.
@@ -394,6 +397,22 @@ Custom property | Description
 
     </div>
 
+    <px-tooltip
+      id="centralTooltip"
+      smart-orientation
+      ignore-target-events
+      orientation="[[tooltipOrientation]]">
+      <px-vis-central-tooltip-content
+        resources="[[resources]]"
+        use-key-if-missing="[[useKeyIfMissing]]"
+        language="[[language]]"
+        first-date-time-format="[[firstDateTimeFormat]]"
+        second-date-time-format="[[secondDateTimeFormat]]"
+        separator="[[separator]]"
+        timezone="[[timezone]]">
+      </px-vis-central-tooltip-content>
+    </px-tooltip>
+
   </template>
 </dom-module>
 
@@ -447,7 +466,9 @@ Custom property | Description
       PxVisBehavior.annotationData,
       PxVisBehaviorChart.cursorConfig,
       PxVisBehaviorChart.registerPagnation,
-      PxVisBehaviorChart.sizeVerticalRegister
+      PxVisBehaviorChart.sizeVerticalRegister,
+      PxVisBehaviorChart.centralTooltip
+
     ],
     /**
     * Properties block
