@@ -9,7 +9,7 @@ function runCustomTests() {
         setTimeout(function() {
           polar = document.getElementById('polar');
           done();
-        }, 1000);
+        }, 2000);
       })
     });
 
@@ -86,7 +86,7 @@ function runCustomTests() {
        //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 400);
+      }, 2000);
     });
 
     test('clockwise label', function() {
@@ -113,7 +113,7 @@ function runCustomTests() {
       //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 400);
+      }, 2000);
     });
 
     test('counterClockwise false', function() {
@@ -140,7 +140,7 @@ function runCustomTests() {
       //give enough time for drawing
       setTimeout(function() {
         done();
-      }, 400);
+      }, 2000);
     });
 
     test('register hidden', function() {
