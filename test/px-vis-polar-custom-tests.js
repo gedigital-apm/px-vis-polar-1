@@ -13,12 +13,11 @@ function runCustomTests() {
       flush(function() {
         setTimeout(function() {
           done();
-        }, 600);
+        }, 1000);
       })
     });
 
     test('counterClockwise false by default', function() {
-      debugger
       assert.isFalse(polar.counterClockwise);
     });
 
