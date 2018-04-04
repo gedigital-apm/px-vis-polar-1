@@ -634,10 +634,12 @@ Custom property | Description
 
     created: function() {
       this._tooltipCalcHoverTargetId = 'wrapper';
+    },
+
+    ready: function() {
       this.set('_verticalRegisterDrawingCanvasId', 'svg');
       this.set('_verticalRegisterHeightDeductions', ['toolbar']);
-    },
-    ready: function() {
+
       this._wwSyncDataPropName = '_filteredData';
       //set defaults if they have not been set
       if(!this.defaultSeriesConfig.markerFillOpacity) {
