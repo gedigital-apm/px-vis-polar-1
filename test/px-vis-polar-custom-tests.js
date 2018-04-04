@@ -18,23 +18,23 @@ function runCustomTests() {
     });
 
     test('labels are clockwise', function() {
-      var labels = polar.svg.node().querySelectorAll('.title-group');
+      var labels = polar.svg.selectAll('.title-group');
 
-      assert.equal(labels[0].textContent, '0°');
-      assert.equal(labels[1].textContent, '90°');
-      assert.equal(labels[2].textContent, '180°');
-      assert.equal(labels[3].textContent, '270°');
+      assert.equal(Px.d3.select(labels.nodes()[0]).text(), '0°');
+      assert.equal(Px.d3.select(labels.nodes()[1]).text(), '90°');
+      assert.equal(Px.d3.select(labels.nodes()[2]).text(), '180°');
+      assert.equal(Px.d3.select(labels.nodes()[3]).text(), '270°');
     });
 
     test('clockwise label', function() {
-      var clockLabel = polar.svg.node().querySelector('.clockwise-group');
+      var clockLabel = polar.svg.select('.clockwise-group');
 
-      assert.equal(clockLabel.textContent, 'clockwise');
+      assert.equal(clockLabel.text(), 'clockwise');
     });
 
     test('no units drawn', function() {
-      var unit = polar.svg.node().querySelector('.unit-group');
-      assert.equal(unit.textContent, '');
+      var unit = polar.svg.select('.unit-group');
+      assert.equal(unit.text(), '');
     });
 
     test('register shown', function() {
@@ -90,14 +90,14 @@ function runCustomTests() {
     });
 
     test('clockwise label', function() {
-      var clockLabel = polar.svg.node().querySelector('.clockwise-group');
+      var clockLabel = polar.svg.select('.clockwise-group');
 
-      assert.equal(clockLabel.textContent, 'counter clockwise');
+      assert.equal(clockLabel.text(), 'counter clockwise');
     });
 
     test('units label show', function() {
-      var unit = polar.svg.node().querySelector('.unit-group');
-      assert.equal(unit.textContent, 'my unit');
+      var unit = polar.svg.select('.unit-group');
+      assert.equal(unit.text(), 'my unit');
     });
   });
 
@@ -121,12 +121,12 @@ function runCustomTests() {
     });
 
     test('labels are clockwise', function() {
-      var labels = polar.svg.node().querySelectorAll('.title-group');
+      var labels = polar.svg.selectAll('.title-group').nodes();
 
-      assert.equal(labels[0].textContent, 'North');
-      assert.equal(labels[1].textContent, 'East');
-      assert.equal(labels[2].textContent, 'South');
-      assert.equal(labels[3].textContent, 'West');
+      assert.equal(Px.d3.select(labels[0]).text(), 'North');
+      assert.equal(Px.d3.select(labels[1]).text(), 'East');
+      assert.equal(Px.d3.select(labels[2]).text(), 'South');
+      assert.equal(Px.d3.select(labels[3]).text(), 'West');
     });
 
   });
