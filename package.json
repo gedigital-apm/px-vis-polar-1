@@ -2,12 +2,12 @@
   "name": "px-vis-polar",
   "author": "General Electric",
   "description": "A Px component",
-  "version": "3.5.3",
+  "version": "4.0.0",
   "private": false,
   "extName": null,
   "repository": {
     "type": "git",
-    "url": "https://github.com/PredixDev/change-this-in-package.json-please.git"
+    "url": "https://github.com/predixdesignsystem/px-vis-polar.git"
   },
   "homepage": "https://www.predix-ui.com/",
   "devDependencies": {
