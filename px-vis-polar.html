@@ -138,7 +138,8 @@ Custom property | Description
             y-axis-type="linear"
             current-page="[[_registerCurrentPage]]"
             total-pages="[[_registerTotalPages]]"
-            display-page-arrows="[[_registerDisplayPageArrows]]">
+            display-page-arrows="[[_registerDisplayPageArrows]]"
+            decimal-format="[[decimalFormat]]">
           </px-vis-register>
           <div class="flex flex--col safari-flex-fix">
             <px-vis-toolbar
@@ -210,7 +211,8 @@ Custom property | Description
             extents-data="{{extentsData}}"
             extents-action="{{extentsAction}}"
             muted-series="[[mutedSeries]]"
-            hard-mute="[[hardMute]]">
+            hard-mute="[[hardMute]]"
+            decimal-format="[[decimalFormat]]">
           </px-vis-interaction-space>
 
           <!-- scatter series -->
@@ -354,7 +356,8 @@ Custom property | Description
         mouse-position="[[mousePosition]]"
         tooltip-style="light"
         hide="[[!_computedShowTooltip]]"
-        series-keys="[[_seriesKey]]">
+        series-keys="[[_seriesKey]]"
+        decimal-format="[[decimalFormat]]">
       </px-vis-tooltip>
 
       <template id="highlighterDomIf" is="dom-if" if="[[renderToCanvas]]" restamp on-dom-change="_highlighterConfigChanged">
