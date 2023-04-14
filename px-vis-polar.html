@@ -127,6 +127,7 @@ Custom property | Description
           <px-vis-register
             id="register"
             chart-width="[[width]]"
+            width="[[registerWidth]]"
             class$="{{_getHideClass(hideRegister)}}"
             dynamic-menu-config="[[dynamicMenuConfig]]"
             tooltip-data="[[_registerTooltipData]]"
@@ -183,6 +184,8 @@ Custom property | Description
           <px-vis-interaction-space
             id="interactionSpace"
             chart-id="[[chartId]]"
+            is-ebq-chart="[[isEbqChart]]"
+            is-polar-chart="[[isPolarChart]]"
             svg="[[layer.6]]"
             width="[[_radius]]"
             height="[[_radius]]"
@@ -515,6 +518,12 @@ Custom property | Description
         type: String,
         computed: '_computeAmplitudeKey(completeSeriesConfig)'
       },
+
+      registerWidth: {
+        type: Number,
+        value: 250,
+        computed: '_registerWidth(tooltipData.*)'
+      },
       /**
        * Returned tick values from the axis
        *
@@ -610,7 +619,6 @@ Custom property | Description
         value: false
       }
     },
-
     /**
     * self identify as a polar chart
     */
@@ -1031,6 +1039,13 @@ Custom property | Description
       if(this.hardMute === true) {
         this._generateChartExtents();
       }
+    },
+
+    _registerWidth: function () {
+      if(this.hasUndefinedArguments(arguments)) {
+        return;
+      }
+        return this.tooltipData && this.tooltipData.width;
     }
   });
 </script>
